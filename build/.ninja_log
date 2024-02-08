@@ -1,0 +1,14 @@
+# ninja log v5
+90	237	7289344931479708	MAM.elf	5ed7e2b616966949
+2	48	0	clean	a3f0aa62412f55b6
+7	174	7289992416720755	CMakeFiles/FASTIC.elf.dir/src/main.cpp.obj	b65f5c3a45d60797
+9	175	7289992416720755	CMakeFiles/FASTIC.elf.dir/src/clock.cpp.obj	2363ae6ba2704792
+86	235	7289345129378138	FASTIC.elf	986e592fcaa88fea
+13	34	7290023538889921	CMakeFiles/FASTIC.elf.dir/startup/startup_stm32h743zitx.s.obj	d6732c3aa2b6d276
+24	52	7290048147408616	CMakeFiles/FASTIC.elf.dir/startup/startup_stm32h743zitx.s.obj	37dd837d5eb200bc
+13	106	7290048147936853	CMakeFiles/FASTIC.elf.dir/src/main.cpp.obj	b65f5c3a45d60797
+16	114	7290048148036515	CMakeFiles/FASTIC.elf.dir/src/clock.cpp.obj	2363ae6ba2704792
+16	99	7290048637977974	CMakeFiles/FASTIC.elf.dir/src/timer.cpp.obj	b20fa4968e37d2d9
+13	100	7290048637987947	CMakeFiles/FASTIC.elf.dir/src/main.cpp.obj	b65f5c3a45d60797
+3	79	7290049005037106	CMakeFiles/FASTIC.elf.dir/src/status.cpp.obj	ba90df30cd443dd
+79	479	7290049005684957	FASTIC.elf	96c49f5ef985c18

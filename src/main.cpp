@@ -1,0 +1,63 @@
+#include "main.hpp"
+#include "stm32h743xx.h"
+#include "core_cm7.h"
+#include "cmsis_compiler.h"
+
+#include "clock.hpp"
+#include "timer.hpp"
+#include "status.hpp"
+
+
+extern "C" void SystemInit(void){
+	//Initialize the clock
+	if(clock::init() != 0) status::error::set();
+
+	//For debugging purposes, output the PLL1/6 (80MHz) to the PA8 pin 
+	RCC->CFGR |= (3 << RCC_CFGR_MCO1_Pos);
+	RCC->CFGR |= (6 << RCC_CFGR_MCO1PRE_Pos);
+	GPIOA->MODER |= (0b10 << GPIO_MODER_MODE8_Pos);
+	GPIOA->OSPEEDR |= (0b11 << GPIO_OSPEEDR_OSPEED8_Pos);
+
+}
+
+extern "C" int main(void){
+
+	status::init();
+
+	timer::init();
+
+	while(1){
+		__ASM("nop");
+		status::process();
+	}
+	
+}
+
+extern "C" void HardFault_Handler(void){
+	//Ooops, hard fault!
+	__ASM("bkpt");
+
+	/*
+	What now?
+	Check the CFSR
+		DIVBYZERO - division by zero
+		UNALIGNED - access of unaligned word
+		NOCP - disabled coprocessor (is the FPU enabled?)
+		INVPC
+		INVSTATE - can occur 99% only if writing hand assembly
+		UNDEFINSTR - undefined instruction (corrupted stack, wrong code path)
+
+	Check the BFSR
+		BFARVALID - indicates that BFAR holds the address causing the fault
+		LSPERR & STKERR - might occur in case of stack overflow
+		UNSTKERR - fault while returning from except (corrupted stack)
+		IMPRECISERR - was the MCU able to determine the exact fault location?
+		PRECISERR - instruction executed befor exception caused the fault
+	*/
+	
+}
+
+
+
+
+

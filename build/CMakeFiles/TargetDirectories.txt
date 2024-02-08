@@ -1,0 +1,3 @@
+C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/FASTIC.elf.dir
+C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/edit_cache.dir
+C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/rebuild_cache.dir

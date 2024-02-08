@@ -1,0 +1,46 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "build",
+			"command": "cmake",
+			"args": [
+				"--build",
+				"${command:cmake.buildDirectory}",
+				"-j",
+				"23", 
+				"--config",
+				"Debug"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+
+		{
+			// when you want to just flash target without debugging
+			"label": "flash",
+			"dependsOn" : "build",
+			"type": "shell",
+			"command": "openocd -f openocd.cfg -c 'init; reset halt; program ${workspaceRoot}/build/project.elf verify; reset run; exit'",
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"presentation": {
+				"reveal": "silent",
+				"panel": "shared",
+				"clear": true
+			}
+		},
+	]
+}
