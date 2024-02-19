@@ -1,4 +1,4 @@
-#include "stm32h743xx.h"
+#include "stm32h753xx.h"
 #include "clock.hpp"
 
 namespace clock{
@@ -14,6 +14,9 @@ namespace clock{
         static constexpr int LATENCY_SET_MAXWAIT = 16000; // approx 1ms
         //Max number of cycles to be waited for the MCU to switch from HSI to the PLL (1 cycle ~ 62.5ns)
         static constexpr int SWS_LOCK_MAXWAIT = 16000; // approx 1ms
+
+        //Max number of cycles to be waited for the MCU to switch from HSI to the PLL (1 cycle ~ 62.5ns)
+        static constexpr int CSI_LOCK_MAXWAIT = 16000; // approx 1ms
 
         //Set the HSI divider to 4 -> HSI_CLKOUT = 16MHz
         RCC->CR |= RCC_CR_HSIDIV_4;
@@ -62,6 +65,25 @@ namespace clock{
             }
             waitcycles++;
         }
+
+        //Enable the CSI (for compensation cell)
+        RCC->CR |= RCC_CR_CSION;
+
+        waitcycles = 0;
+
+        //Wait for the CSI to become ready
+        while(!(RCC->CR & RCC_CR_CSION_Msk)){
+            //If the wait time was longer than expected
+            if(waitcycles >= CSI_LOCK_MAXWAIT){
+                //Shut down the CSI
+                RCC->CR &= ~(1 << RCC_CR_CSION_Pos);
+                //Signal an error
+                return 1;
+            }
+            waitcycles++;
+
+        };
+
 
         //Set up the flash latency
         constexpr std::uint32_t FLASH_ACR_CFG = (FLASH_ACR_LATENCY_2WS | (0b01 << FLASH_ACR_WRHIGHFREQ_Pos));

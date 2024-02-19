@@ -1,5 +1,5 @@
 #include "main.hpp"
-#include "stm32h743xx.h"
+#include "stm32h753xx.h"
 #include "core_cm7.h"
 #include "cmsis_compiler.h"
 
@@ -11,24 +11,26 @@
 extern "C" void SystemInit(void){
 	//Initialize the clock
 	if(clock::init() != 0) status::error::set();
+	RCC->APB4ENR |= (1 << RCC_APB4ENR_SYSCFGEN_Pos);
 
-	//For debugging purposes, output the PLL1/6 (80MHz) to the PA8 pin 
-	RCC->CFGR |= (3 << RCC_CFGR_MCO1_Pos);
-	RCC->CFGR |= (6 << RCC_CFGR_MCO1PRE_Pos);
-	GPIOA->MODER |= (0b10 << GPIO_MODER_MODE8_Pos);
-	GPIOA->OSPEEDR |= (0b11 << GPIO_OSPEEDR_OSPEED8_Pos);
+
+	//Enable the compensation cell
+	SYSCFG->CCCSR |= (1 << SYSCFG_CCCSR_EN_Pos);
+
+	while(!(SYSCFG->CCCSR & SYSCFG_CCCSR_READY_Msk)){};
 
 }
 
 extern "C" int main(void){
 
-	status::init();
+	//status::init();
 
 	timer::init();
+	//status::process();
 
 	while(1){
 		__ASM("nop");
-		status::process();
+		//status::process();
 	}
 	
 }

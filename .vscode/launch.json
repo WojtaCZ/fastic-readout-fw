@@ -22,7 +22,7 @@
 			"interface": "swd",
 			"cwd": "${workspaceRoot}",
 			"executable": "${workspaceRoot}/build/FASTIC.elf",
-			"svdFile": "${workspaceRoot}/STM32H743.svd",
+			"svdFile": "${workspaceRoot}/STM32H753.svd",
 			"configFiles": [
 				"${workspaceRoot}/openocd.cfg",
 			],
@@ -65,7 +65,7 @@
 			// ],
 			"cwd": "${workspaceRoot}",
 			"executable": "${workspaceRoot}/build/FASTIC.elf",
-			"svdFile": "${workspaceRoot}/STM32H743.svd"
+			"svdFile": "${workspaceRoot}/STM32H753.svd"
 		},
 
 	]

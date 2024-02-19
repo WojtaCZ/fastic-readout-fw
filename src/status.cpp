@@ -1,5 +1,5 @@
 #include "status.hpp"
-#include "stm32h743xx.h"
+#include "stm32h753xx.h"
 
 
 namespace status{
@@ -10,14 +10,17 @@ namespace status{
         //Enable gpio clock
         RCC->AHB4ENR |= RCC_AHB4ENR_GPIOBEN;
         //Setup led pins to be outputs
+        GPIOB->MODER &= ~((0b11 << GPIO_MODER_MODE0_Pos) | (0b11 << GPIO_MODER_MODE7_Pos) | (0b11 << GPIO_MODER_MODE14_Pos));
         GPIOB->MODER |= (1 << GPIO_MODER_MODE0_Pos) | (1 << GPIO_MODER_MODE7_Pos) | (1 << GPIO_MODER_MODE14_Pos);
     }
 
     void process(){
-        if(error_ & ((GPIOB->ODR & GPIO_ODR_OD14_Msk) == 0)){
+        if(error_){
             GPIOB->BSRR = GPIO_BSRR_BS14;
-        }else if(!error_ & ((GPIOB->ODR & GPIO_ODR_OD14_Msk) != 0)){
+            GPIOB->BSRR = GPIO_BSRR_BR0;
+        }else if(!error_){
             GPIOB->BSRR = GPIO_BSRR_BR14;
+            GPIOB->BSRR = GPIO_BSRR_BS0;
         }
     }
 

@@ -31,7 +31,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 #replace with appropriate linker script
-set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32H743ZITX_FLASH.ld)
+set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32H753ZITX_FLASH.ld)
 
 #base path for sources
 set(SOURCE_BASE ${CMAKE_SOURCE_DIR}/src)
@@ -48,7 +48,8 @@ set(SOURCES
 	${SOURCE_BASE}/clock.cpp
 	${SOURCE_BASE}/timer.cpp
 	${SOURCE_BASE}/status.cpp
-	startup/startup_stm32h743zitx.s
+	${SOURCE_BASE}/spi.cpp
+	startup/startup_stm32h753zitx.s
 )
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES})
@@ -89,7 +90,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lm -ffreestanding -fdiagn
 # set(DEVICE STM32F105)
 #set(DEVICE STM32F401)
 # set(DEVICE STM32F407)
- set(DEVICE STM32H743)
+ set(DEVICE STM32H753)
 # set(DEVICE STM32F446)
 #od any other...
 # set(DEVICE STM32G431)
