@@ -13,19 +13,19 @@ namespace timer{
         GPIOA->MODER &= ~(0b11 << GPIO_MODER_MODE8_Pos);
         GPIOA->MODER |= (0b10 << GPIO_MODER_MODE8_Pos);
         GPIOA->OSPEEDR |= (0b11 << GPIO_OSPEEDR_OSPEED8_Pos);
-        GPIOA->AFR[1] |= (1 << GPIO_AFRH_AFSEL8_Pos);
+        GPIOA->AFR[1] = (1 << GPIO_AFRH_AFSEL8_Pos);
 
         //Enable PA7 as TIM1_CH1N output 
         GPIOA->MODER &= ~(0b11 << GPIO_MODER_MODE7_Pos);
         GPIOA->MODER |= (0b10 << GPIO_MODER_MODE7_Pos);
         GPIOA->OSPEEDR |= (0b11 << GPIO_OSPEEDR_OSPEED7_Pos);
-        GPIOA->AFR[0] |= (1 << GPIO_AFRL_AFSEL7_Pos);
+        GPIOA->AFR[0] = (1 << GPIO_AFRL_AFSEL7_Pos);
 
         //Enable PA9 as TIM1_CH2 <- sync input
-        GPIOA->MODER &= ~(0b11 << GPIO_MODER_MODE9_Pos);
+       /* GPIOA->MODER &= ~(0b11 << GPIO_MODER_MODE9_Pos);
         GPIOA->MODER |= (0b10 << GPIO_MODER_MODE9_Pos);
         GPIOA->AFR[1] |= (1 << GPIO_AFRH_AFSEL9_Pos);
-        GPIOA->PUPDR |= (0b10 << GPIO_PUPDR_PUPD9_Pos);
+        GPIOA->PUPDR |= (0b10 << GPIO_PUPDR_PUPD9_Pos);*/
 
         //Counting at 80MHZ 50% duty
         TIM1->PSC = 0;
