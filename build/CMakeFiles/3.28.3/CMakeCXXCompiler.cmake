@@ -79,7 +79,7 @@ endif()
 
 
 
-set(CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/newlib-nano;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/backward;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include-fixed;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include")
+set(CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/arm-none-eabi;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/backward;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include-fixed;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include")
 set(CMAKE_CXX_IMPLICIT_LINK_LIBRARIES "")
 set(CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES "")
 set(CMAKE_CXX_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "")

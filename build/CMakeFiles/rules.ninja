@@ -35,7 +35,7 @@ rule CXX_COMPILER__FASTIC.2eelf_unscanned_Debug
 # Rule for linking CXX executable.
 
 rule CXX_EXECUTABLE_LINKER__FASTIC.2eelf_Debug
-  command = C:\Windows\system32\cmd.exe /C "$PRE_LINK && C:\PROGRA~2\GNUARM~1\10\bin\AR10B2~1.EXE $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && C:\PROGRA~2\GNUARM~1\10\bin\AR10B2~1.EXE $FLAGS $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
 
@@ -52,7 +52,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = "C:\Program Files\CMake\bin\cmake.exe" --regenerate-during-build -SC:\Users\vvosahlo\cernbox\Documents\STMWorkspace\fastic -BC:\Users\vvosahlo\cernbox\Documents\STMWorkspace\fastic\build
+  command = "C:\Program Files\CMake\bin\cmake.exe" --regenerate-during-build -SC:\Users\vvosahlo\cernbox\Documents\STMWorkspace\fastic-readout -BC:\Users\vvosahlo\cernbox\Documents\STMWorkspace\fastic-readout\build
   description = Re-running CMake...
   generator = 1
 
@@ -61,7 +61,7 @@ rule RERUN_CMAKE
 # Rule for cleaning all built files.
 
 rule CLEAN
-  command = C:\PROGRA~1\RASPBE~1\PICOSD~1.1\ninja\ninja.exe $FILE_ARG -t clean $TARGETS
+  command = C:\Users\vvosahlo\AppData\Local\Programs\Python\Python312\Scripts\ninja.exe $FILE_ARG -t clean $TARGETS
   description = Cleaning all built files...
 
 
@@ -69,6 +69,6 @@ rule CLEAN
 # Rule for printing all primary targets available.
 
 rule HELP
-  command = C:\PROGRA~1\RASPBE~1\PICOSD~1.1\ninja\ninja.exe -t targets
+  command = C:\Users\vvosahlo\AppData\Local\Programs\Python\Python312\Scripts\ninja.exe -t targets
   description = All primary targets available:
 

@@ -46,9 +46,11 @@ set(SOURCES
 
 	${SOURCE_BASE}/main.cpp
 	${SOURCE_BASE}/clock.cpp
-	${SOURCE_BASE}/timer.cpp
-	${SOURCE_BASE}/status.cpp
-	${SOURCE_BASE}/spi.cpp
+	#${SOURCE_BASE}/timer.cpp
+	#${SOURCE_BASE}/status.cpp
+	
+	#${SOURCE_BASE}/spi.cpp
+	#${SOURCE_BASE}/i2c.cpp
 	startup/startup_stm32h753zitx.s
 )
 

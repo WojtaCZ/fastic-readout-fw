@@ -41,5 +41,7 @@ namespace spi{
         //Enable the SPI peripherals
         SPI1->CR1 |= (1 << SPI_CR1_SPE_Pos);
         SPI2->CR1 |= (1 << SPI_CR1_SPE_Pos);
+
+        
     }
 }

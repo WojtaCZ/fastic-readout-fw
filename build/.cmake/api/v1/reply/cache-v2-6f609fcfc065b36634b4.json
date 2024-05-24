@@ -46,7 +46,7 @@
 					"value" : "ASM compiler"
 				}
 			],
-			"type" : "STRING",
+			"type" : "FILEPATH",
 			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc.exe"
 		},
 		{
@@ -107,7 +107,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "  -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs  -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs  -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs  -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
+			"value" : "  -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
 		},
 		{
 			"name" : "CMAKE_ASM_FLAGS_DEBUG",
@@ -195,7 +195,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build"
+			"value" : "c:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -279,10 +279,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "CXX compiler"
 				}
 			],
-			"type" : "FILEPATH",
+			"type" : "STRING",
 			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-g++.exe"
 		},
 		{
@@ -331,7 +331,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : " -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
+			"value" : " -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS_DEBUG",
@@ -407,10 +407,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "C compiler"
 				}
 			],
-			"type" : "FILEPATH",
+			"type" : "STRING",
 			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc.exe"
 		},
 		{
@@ -459,7 +459,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : " -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=implicit-function-declaration   -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=implicit-function-declaration   -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=implicit-function-declaration   -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=implicit-function-declaration   -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
+			"value" : " -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=implicit-function-declaration   -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS_DEBUG",
@@ -551,7 +551,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Program Files/Raspberry Pi/Pico SDK v1.5.1/cmake/bin/cmake-gui.exe"
+			"value" : "C:/Program Files/CMake/bin/cmake-gui.exe"
 		},
 		{
 			"name" : "CMAKE_EXECUTABLE_FORMAT",
@@ -579,7 +579,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : " -lm -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -TC:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/STM32H753ZITX_FLASH.ld -lm -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -TC:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/STM32H753ZITX_FLASH.ld -lm -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -TC:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/STM32H753ZITX_FLASH.ld -lm -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -TC:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/STM32H753ZITX_FLASH.ld"
+			"value" : " -lm -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -TC:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/STM32H753ZITX_FLASH.ld"
 		},
 		{
 			"name" : "CMAKE_EXE_LINKER_FLAGS_DEBUG",
@@ -679,7 +679,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/pkgRedirects"
+			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -739,7 +739,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic"
+			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -779,11 +779,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "make program"
+					"value" : "Program used to build from build.ninja files."
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/PROGRA~1/RASPBE~1/PICOSD~1.1/ninja/ninja.exe"
+			"value" : "C:/Users/vvosahlo/AppData/Local/Programs/Python/Python312/Scripts/ninja.exe"
 		},
 		{
 			"name" : "CMAKE_MODULE_LINKER_FLAGS",
@@ -1327,7 +1327,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build"
+			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build"
 		},
 		{
 			"name" : "FASTIC_IS_TOP_LEVEL",
@@ -1351,7 +1351,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic"
+			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout"
 		},
 		{
 			"name" : "LIBS",

@@ -4,14 +4,21 @@
 #include "cmsis_compiler.h"
 
 #include "clock.hpp"
-#include "timer.hpp"
-#include "status.hpp"
+#include "dma.hpp"
+#include "bdma.hpp"
+#include "gpio.hpp"
+#include "dmamux.hpp"
+
 
 
 extern "C" void SystemInit(void){
 	//Initialize the clock
-	if(clock::init() != 0) status::error::set();
+	if(clock::init() != 0) {
+		__ASM("nop");
+	};
 	RCC->APB4ENR |= (1 << RCC_APB4ENR_SYSCFGEN_Pos);
+
+	//reg::write<RCC_BASE + offsetof(RCC_TypeDef, APB4ENR)>(1 << RCC_APB4ENR_SYSCFGEN_Pos);
 
 
 	//Enable the compensation cell
@@ -22,15 +29,24 @@ extern "C" void SystemInit(void){
 }
 
 extern "C" int main(void){
+	
+	RCC->AHB4ENR |= RCC_AHB4ENR_GPIOBEN;
+	RCC->AHB4ENR |= RCC_AHB4ENR_GPIOEEN;
 
-	//status::init();
 
-	timer::init();
-	//status::process();
+	gpio::gpio<gpio::port::porte, 1, gpio::mode::pushpull, gpio::speed::low, gpio::pull::nopull> ledYellow;
+	gpio::gpio<gpio::port::portb, 14, gpio::mode::pushpull, gpio::speed::low, gpio::pull::nopull> ledRed;
+	
+	dma::dma<dma::peripheral::dma1, dma::stream::stream0, dma::mode::periph2mem, dma::datasize::word, true, 0x000000, dma::datasize::word, false, static_cast<uint32_t>(SPI1_BASE) + offsetof(SPI_TypeDef, RXDR), 10> spi1dma;
 
 	while(1){
-		__ASM("nop");
-		//status::process();
+		for (int i = 0; i < 3200000; i++){
+			__ASM("nop");
+		}
+		ledYellow.toggle();
+		ledRed.toggle();
+		
+		
 	}
 	
 }
@@ -58,8 +74,3 @@ extern "C" void HardFault_Handler(void){
 	*/
 	
 }
-
-
-
-
-

@@ -8,7 +8,27 @@ events:
       - "CMakeLists.txt:6 (project)"
     message: |
       The target system is: Generic -  - 
-      The host system is: Windows - 10.0.19045 - AMD64
+      The host system is: Windows - 10.0.22631 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:6 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-g++.exe 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      1
+      c:/program files (x86)/gnu arm embedded toolchain/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/ld.exe: c:/program files (x86)/gnu arm embedded toolchain/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib\\libc.a(lib_a-exit.o): in function `exit':
+      exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+      collect2.exe: error: ld returned 1 exit status
+      
+      
   -
     kind: "message-v1"
     backtrace:
@@ -19,17 +39,37 @@ events:
     message: |
       Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
       Compiler: C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-g++.exe 
-      Build flags: -Werror=switch;-Werror=return-type;-Werror=stringop-overflow;-Werror=parentheses;-Wfatal-errors;-Wno-unused-function;-Wall;-Wextra;-Wundef;-Wduplicated-cond;-Wduplicated-branches;-Wlogical-op;-Wnull-dereference;-Wcast-align;-Wvla;-Wmissing-format-attribute;-Wuninitialized;-Winit-self;-Wdouble-promotion;-Wstrict-aliasing;-Wno-unused-parameter;-pedantic;-funsigned-char;-funsigned-bitfields;-fdiagnostics-color=always;-fstack-protector-strong;-finline-small-functions;-findirect-inlining;-fno-exceptions;-fno-unwind-tables;-fno-asynchronous-unwind-tables;--specs=nano.specs;--specs=nosys.specs;-fno-use-cxa-atexit;-Wint-to-pointer-cast;-Wno-old-style-cast;-Wno-volatile;-Weffc++;-Wno-register;-fno-exceptions;-fno-threadsafe-statics;-mthumb;-mcpu=cortex-m7;-mfloat-abi=hard;-mfpu=fpv5-sp-d16;-mthumb;-mabi=aapcs
-      Id flags:  
+      Build flags: 
+      Id flags: -c 
       
       The output was:
       0
       
       
-      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
       
       The CXX compiler identification is GNU, found in:
-        C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/3.28.3/CompilerIdCXX/a.out
+        C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/3.28.3/CompilerIdCXX/CMakeCXXCompilerId.o
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:6 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+      Compiler: C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc.exe 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      1
+      c:/program files (x86)/gnu arm embedded toolchain/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/ld.exe: c:/program files (x86)/gnu arm embedded toolchain/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib\\libc.a(lib_a-exit.o): in function `exit':
+      exit.c:(.text.exit+0x2c): undefined reference to `_exit'
+      collect2.exe: error: ld returned 1 exit status
+      
       
   -
     kind: "message-v1"
@@ -41,17 +81,17 @@ events:
     message: |
       Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
       Compiler: C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc.exe 
-      Build flags: -Werror=switch;-Werror=return-type;-Werror=stringop-overflow;-Werror=parentheses;-Wfatal-errors;-Wno-unused-function;-Wall;-Wextra;-Wundef;-Wduplicated-cond;-Wduplicated-branches;-Wlogical-op;-Wnull-dereference;-Wcast-align;-Wvla;-Wmissing-format-attribute;-Wuninitialized;-Winit-self;-Wdouble-promotion;-Wstrict-aliasing;-Wno-unused-parameter;-pedantic;-funsigned-char;-funsigned-bitfields;-fdiagnostics-color=always;-fstack-protector-strong;-finline-small-functions;-findirect-inlining;-fno-exceptions;-fno-unwind-tables;-fno-asynchronous-unwind-tables;--specs=nano.specs;--specs=nosys.specs;-Werror=int-conversion;-Werror=incompatible-pointer-types;-Werror=implicit-function-declaration;-mthumb;-mcpu=cortex-m7;-mfloat-abi=hard;-mfpu=fpv5-sp-d16;-mthumb;-mabi=aapcs
-      Id flags:  
+      Build flags: 
+      Id flags: -c 
       
       The output was:
       0
       
       
-      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
       
       The C compiler identification is GNU, found in:
-        C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/3.28.3/CompilerIdC/a.out
+        C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/3.28.3/CompilerIdC/CMakeCCompilerId.o
       
   -
     kind: "message-v1"
@@ -75,40 +115,34 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/CMakeScratch/TryCompile-qhmlo8"
-      binary: "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/CMakeScratch/TryCompile-qhmlo8"
+      source: "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/CMakeScratch/TryCompile-bb347b"
+      binary: "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/CMakeScratch/TryCompile-bb347b"
     cmakeVariables:
-      CMAKE_CXX_FLAGS: "    -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
-      CMAKE_EXE_LINKER_FLAGS: " -lm -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -TC:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/STM32H753ZITX_FLASH.ld"
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_EXE_LINKER_FLAGS: ""
     buildResult:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/CMakeScratch/TryCompile-qhmlo8'
+        Change Dir: 'C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/CMakeScratch/TryCompile-bb347b'
         
-        Run Build Command(s): C:/PROGRA~1/RASPBE~1/PICOSD~1.1/ninja/ninja.exe -v cmTC_95533
-        [1/2] C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR10B2~1.EXE   -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs    -v -o CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj -c "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp"
+        Run Build Command(s): C:/Users/vvosahlo/AppData/Local/Programs/Python/Python312/Scripts/ninja.exe -v cmTC_b3e7d
+        [1/2] C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR10B2~1.EXE   -v -o CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj -c "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp"
         Using built-in specs.
-        Reading specs from c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/nano.specs
-        rename spec link to nano_link
-        rename spec link_gcc_c_sequence to nano_link_gcc_c_sequence
-        rename spec cpp_unique_options to nano_cpp_unique_options
-        Reading specs from c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/nosys.specs
-        rename spec link_gcc_c_sequence to nosys_link_gcc_c_sequence
         COLLECT_GCC=C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR10B2~1.EXE
         Target: arm-none-eabi
         Configured with: /mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/src/gcc/configure --build=x86_64-linux-gnu --host=i686-w64-mingw32 --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw --libexecdir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/lib --infodir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-mingw-wildcard --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-headers=yes --with-newlib --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/arm-none-eabi --with-libiconv-prefix=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-gmp=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 10.3-2021.10' --with-multilib-list=rmprofile,aprofile
         Thread model: single
         Supported LTO compression algorithms: zlib
         gcc version 10.3.1 20210824 (release) (GNU Arm Embedded Toolchain 10.3-2021.10) 
-        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-fno-use-cxa-atexit' '-Wint-to-pointer-cast' '-Wno-old-style-cast' '-Wno-volatile' '-Weffc++' '-Wno-register' '-fno-exceptions' '-fno-threadsafe-statics' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5'
-         c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/cc1plus.exe -isystem =/include/newlib-nano -quiet -v -imultilib thumb/v7e-m+fp/hard -iprefix c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/ -isysroot c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi -D__USES_INITFINI__ C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -mlibarch=armv7e-m+fpv5 -march=armv7e-m+fpv5 -auxbase-strip CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj -Wfatal-errors -Wno-unused-function -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wsuggest-attribute=format -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -Wpedantic -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -version -fdiagnostics-color=always -funsigned-char -funsigned-bitfields -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics -o C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc8mbxSJ.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t'
+         c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/cc1plus.exe -quiet -v -iprefix c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/ -isysroot c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi -D__USES_INITFINI__ C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -auxbase-strip CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj -version -o C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\ccRBBTba.s
         GNU C++14 (GNU Arm Embedded Toolchain 10.3-2021.10) version 10.3.1 20210824 (release) (arm-none-eabi)
         	compiled by GNU C version 7.3-win32 20180312, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
         
         GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
         ignoring duplicate directory "c:/progra~2/gnuarm~1/10/lib/gcc/../../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1"
-        ignoring duplicate directory "c:/progra~2/gnuarm~1/10/lib/gcc/../../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard"
+        ignoring duplicate directory "c:/progra~2/gnuarm~1/10/lib/gcc/../../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi"
         ignoring duplicate directory "c:/progra~2/gnuarm~1/10/lib/gcc/../../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/backward"
         ignoring duplicate directory "c:/progra~2/gnuarm~1/10/lib/gcc/../../lib/gcc/arm-none-eabi/10.3.1/include"
         ignoring nonexistent directory "c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/lib/gcc/arm-none-eabi/10.3.1/../../../../include"
@@ -117,9 +151,8 @@ events:
         ignoring nonexistent directory "c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi/usr/include"
         #include "..." search starts here:
         #include <...> search starts here:
-         c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi/include/newlib-nano
          c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1
-         c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard
+         c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi
          c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/backward
          c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/include
          c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/include-fixed
@@ -130,13 +163,13 @@ events:
         
         GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
         Compiler executable checksum: f8787892a7c5aa84cea58dce52be7118
-        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-fno-use-cxa-atexit' '-Wint-to-pointer-cast' '-Wno-old-style-cast' '-Wno-volatile' '-Weffc++' '-Wno-register' '-fno-exceptions' '-fno-threadsafe-statics' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5'
-         c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/as.exe -v -march=armv7e-m -mfloat-abi=hard -mfpu=fpv5-sp-d16 -meabi=5 -o CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc8mbxSJ.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t'
+         c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/as.exe -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\ccRBBTba.s
         GNU assembler version 2.36.1 (arm-none-eabi) using BFD version (GNU Arm Embedded Toolchain 10.3-2021.10) 2.36.1.20210621
         COMPILER_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/
-        LIBRARY_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/;c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/thumb/v7e-m+fp/hard/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/;c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/
-        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-fno-use-cxa-atexit' '-Wint-to-pointer-cast' '-Wno-old-style-cast' '-Wno-volatile' '-Weffc++' '-Wno-register' '-fno-exceptions' '-fno-threadsafe-statics' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5'\x0d
-        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f libcmTC_95533.a && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\ARM-NO~2.EXE qc libcmTC_95533.a  CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR17F9~1.EXE libcmTC_95533.a && cd ."
+        LIBRARY_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/;c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t'\x0d
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f libcmTC_b3e7d.a && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\ARM-NO~2.EXE qc libcmTC_b3e7d.a  CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR17F9~1.EXE libcmTC_b3e7d.a && cd ."
         
       exitCode: 0
   -
@@ -149,22 +182,20 @@ events:
       Parsed CXX implicit include dir info: rv=done
         found start of include info
         found start of implicit include info
-          add: [c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/include/newlib-nano]
           add: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1]
-          add: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard]
+          add: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi]
           add: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/backward]
           add: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/include]
           add: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/include-fixed]
           add: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include]
         end of search list found
-        collapse include dir [c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/include/newlib-nano] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/newlib-nano]
         collapse include dir [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1]
-        collapse include dir [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard]
+        collapse include dir [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/arm-none-eabi]
         collapse include dir [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/backward] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/backward]
         collapse include dir [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/include] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include]
         collapse include dir [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/include-fixed] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include-fixed]
         collapse include dir [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include]
-        implicit include dirs: [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/newlib-nano;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/backward;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include-fixed;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include]
+        implicit include dirs: [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/arm-none-eabi;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/c++/10.3.1/backward;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include-fixed;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include]
       
       
   -
@@ -176,31 +207,25 @@ events:
     message: |
       Parsed CXX implicit link information:
         link line regex: [^( *|.*[/\\])(arm-none-eabi-ld\\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
-        ignore line: [Change Dir: 'C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/CMakeScratch/TryCompile-qhmlo8']
+        ignore line: [Change Dir: 'C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/CMakeScratch/TryCompile-bb347b']
         ignore line: []
-        ignore line: [Run Build Command(s): C:/PROGRA~1/RASPBE~1/PICOSD~1.1/ninja/ninja.exe -v cmTC_95533]
-        ignore line: [[1/2] C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR10B2~1.EXE   -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs    -v -o CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj -c "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp"]
+        ignore line: [Run Build Command(s): C:/Users/vvosahlo/AppData/Local/Programs/Python/Python312/Scripts/ninja.exe -v cmTC_b3e7d]
+        ignore line: [[1/2] C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR10B2~1.EXE   -v -o CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj -c "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp"]
         ignore line: [Using built-in specs.]
-        ignore line: [Reading specs from c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/nano.specs]
-        ignore line: [rename spec link to nano_link]
-        ignore line: [rename spec link_gcc_c_sequence to nano_link_gcc_c_sequence]
-        ignore line: [rename spec cpp_unique_options to nano_cpp_unique_options]
-        ignore line: [Reading specs from c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/nosys.specs]
-        ignore line: [rename spec link_gcc_c_sequence to nosys_link_gcc_c_sequence]
         ignore line: [COLLECT_GCC=C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR10B2~1.EXE]
         ignore line: [Target: arm-none-eabi]
         ignore line: [Configured with: /mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/src/gcc/configure --build=x86_64-linux-gnu --host=i686-w64-mingw32 --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw --libexecdir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/lib --infodir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-mingw-wildcard --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-headers=yes --with-newlib --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/arm-none-eabi --with-libiconv-prefix=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-gmp=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 10.3-2021.10' --with-multilib-list=rmprofile,aprofile]
         ignore line: [Thread model: single]
         ignore line: [Supported LTO compression algorithms: zlib]
         ignore line: [gcc version 10.3.1 20210824 (release) (GNU Arm Embedded Toolchain 10.3-2021.10) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-fno-use-cxa-atexit' '-Wint-to-pointer-cast' '-Wno-old-style-cast' '-Wno-volatile' '-Weffc++' '-Wno-register' '-fno-exceptions' '-fno-threadsafe-statics' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5']
-        ignore line: [ c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/cc1plus.exe -isystem =/include/newlib-nano -quiet -v -imultilib thumb/v7e-m+fp/hard -iprefix c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/ -isysroot c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi -D__USES_INITFINI__ C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -mlibarch=armv7e-m+fpv5 -march=armv7e-m+fpv5 -auxbase-strip CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj -Wfatal-errors -Wno-unused-function -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wsuggest-attribute=format -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -Wpedantic -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -version -fdiagnostics-color=always -funsigned-char -funsigned-bitfields -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics -o C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc8mbxSJ.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t']
+        ignore line: [ c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/cc1plus.exe -quiet -v -iprefix c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/ -isysroot c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi -D__USES_INITFINI__ C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -auxbase-strip CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj -version -o C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\ccRBBTba.s]
         ignore line: [GNU C++14 (GNU Arm Embedded Toolchain 10.3-2021.10) version 10.3.1 20210824 (release) (arm-none-eabi)]
         ignore line: [	compiled by GNU C version 7.3-win32 20180312  GMP version 6.1.0  MPFR version 3.1.4  MPC version 1.0.3  isl version isl-0.18-GMP]
         ignore line: []
         ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
         ignore line: [ignoring duplicate directory "c:/progra~2/gnuarm~1/10/lib/gcc/../../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1"]
-        ignore line: [ignoring duplicate directory "c:/progra~2/gnuarm~1/10/lib/gcc/../../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard"]
+        ignore line: [ignoring duplicate directory "c:/progra~2/gnuarm~1/10/lib/gcc/../../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi"]
         ignore line: [ignoring duplicate directory "c:/progra~2/gnuarm~1/10/lib/gcc/../../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/backward"]
         ignore line: [ignoring duplicate directory "c:/progra~2/gnuarm~1/10/lib/gcc/../../lib/gcc/arm-none-eabi/10.3.1/include"]
         ignore line: [ignoring nonexistent directory "c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/lib/gcc/arm-none-eabi/10.3.1/../../../../include"]
@@ -209,9 +234,8 @@ events:
         ignore line: [ignoring nonexistent directory "c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi/usr/include"]
         ignore line: [#include "..." search starts here:]
         ignore line: [#include <...> search starts here:]
-        ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi/include/newlib-nano]
         ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1]
-        ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard]
+        ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi]
         ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include/c++/10.3.1/backward]
         ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/include]
         ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/include-fixed]
@@ -222,21 +246,18 @@ events:
         ignore line: []
         ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
         ignore line: [Compiler executable checksum: f8787892a7c5aa84cea58dce52be7118]
-        ignore line: [COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-fno-use-cxa-atexit' '-Wint-to-pointer-cast' '-Wno-old-style-cast' '-Wno-volatile' '-Weffc++' '-Wno-register' '-fno-exceptions' '-fno-threadsafe-statics' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5']
-        ignore line: [ c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/as.exe -v -march=armv7e-m -mfloat-abi=hard -mfpu=fpv5-sp-d16 -meabi=5 -o CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc8mbxSJ.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t']
+        ignore line: [ c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/as.exe -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\ccRBBTba.s]
         ignore line: [GNU assembler version 2.36.1 (arm-none-eabi) using BFD version (GNU Arm Embedded Toolchain 10.3-2021.10) 2.36.1.20210621]
         ignore line: [COMPILER_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/]
         ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/]
         ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/]
-        ignore line: [LIBRARY_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/]
-        ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/]
-        ignore line: [c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/thumb/v7e-m+fp/hard/]
-        ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/]
+        ignore line: [LIBRARY_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/]
         ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/]
         ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/]
         ignore line: [c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-fno-use-cxa-atexit' '-Wint-to-pointer-cast' '-Wno-old-style-cast' '-Wno-volatile' '-Weffc++' '-Wno-register' '-fno-exceptions' '-fno-threadsafe-statics' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5'\x0d]
-        ignore line: [[2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f libcmTC_95533.a && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\ARM-NO~2.EXE qc libcmTC_95533.a  CMakeFiles/cmTC_95533.dir/CMakeCXXCompilerABI.cpp.obj && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR17F9~1.EXE libcmTC_95533.a && cd ."]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t'\x0d]
+        ignore line: [[2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f libcmTC_b3e7d.a && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\ARM-NO~2.EXE qc libcmTC_b3e7d.a  CMakeFiles/cmTC_b3e7d.dir/CMakeCXXCompilerABI.cpp.obj && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR17F9~1.EXE libcmTC_b3e7d.a && cd ."]
         ignore line: []
         ignore line: []
         implicit libs: []
@@ -254,34 +275,28 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/CMakeScratch/TryCompile-tzik8h"
-      binary: "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/CMakeScratch/TryCompile-tzik8h"
+      source: "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/CMakeScratch/TryCompile-xvpcsa"
+      binary: "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/CMakeScratch/TryCompile-xvpcsa"
     cmakeVariables:
-      CMAKE_C_FLAGS: "    -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs     -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
-      CMAKE_EXE_LINKER_FLAGS: " -lm -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -TC:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/STM32H753ZITX_FLASH.ld"
+      CMAKE_C_FLAGS: ""
+      CMAKE_EXE_LINKER_FLAGS: ""
     buildResult:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/CMakeScratch/TryCompile-tzik8h'
+        Change Dir: 'C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/CMakeScratch/TryCompile-xvpcsa'
         
-        Run Build Command(s): C:/PROGRA~1/RASPBE~1/PICOSD~1.1/ninja/ninja.exe -v cmTC_36d2e
-        [1/2] C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR19DD~1.EXE   -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs     -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs    -v -o CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj -c "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCCompilerABI.c"
+        Run Build Command(s): C:/Users/vvosahlo/AppData/Local/Programs/Python/Python312/Scripts/ninja.exe -v cmTC_11b91
+        [1/2] C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR19DD~1.EXE   -v -o CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj -c "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCCompilerABI.c"
         Using built-in specs.
-        Reading specs from c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/nano.specs
-        rename spec link to nano_link
-        rename spec link_gcc_c_sequence to nano_link_gcc_c_sequence
-        rename spec cpp_unique_options to nano_cpp_unique_options
-        Reading specs from c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/nosys.specs
-        rename spec link_gcc_c_sequence to nosys_link_gcc_c_sequence
         COLLECT_GCC=C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR19DD~1.EXE
         Target: arm-none-eabi
         Configured with: /mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/src/gcc/configure --build=x86_64-linux-gnu --host=i686-w64-mingw32 --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw --libexecdir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/lib --infodir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-mingw-wildcard --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-headers=yes --with-newlib --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/arm-none-eabi --with-libiconv-prefix=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-gmp=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 10.3-2021.10' --with-multilib-list=rmprofile,aprofile
         Thread model: single
         Supported LTO compression algorithms: zlib
         gcc version 10.3.1 20210824 (release) (GNU Arm Embedded Toolchain 10.3-2021.10) 
-        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-exceptions' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5'
-         c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/cc1.exe -isystem =/include/newlib-nano -quiet -v -imultilib thumb/v7e-m+fp/hard -iprefix c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/ -isysroot c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi -D__USES_INITFINI__ C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -mlibarch=armv7e-m+fpv5 -march=armv7e-m+fpv5 -auxbase-strip CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj -Wfatal-errors -Wno-unused-function -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wsuggest-attribute=format -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -Wpedantic -version -fdiagnostics-color=always -funsigned-char -funsigned-bitfields -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables -o C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc4S2Tz8.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t'
+         c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/cc1.exe -quiet -v -iprefix c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/ -isysroot c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi -D__USES_INITFINI__ C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -auxbase-strip CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj -version -o C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc31t8DW.s
         GNU C17 (GNU Arm Embedded Toolchain 10.3-2021.10) version 10.3.1 20210824 (release) (arm-none-eabi)
         	compiled by GNU C version 7.3-win32 20180312, GMP version 6.1.0, MPFR version 3.1.4, MPC version 1.0.3, isl version isl-0.18-GMP
         
@@ -293,7 +308,6 @@ events:
         ignoring nonexistent directory "c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi/usr/include"
         #include "..." search starts here:
         #include <...> search starts here:
-         c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi/include/newlib-nano
          c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/include
          c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/include-fixed
          c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include
@@ -303,13 +317,13 @@ events:
         
         GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
         Compiler executable checksum: f3937ce18b4177bfd408ca565336596a
-        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-exceptions' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5'
-         c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/as.exe -v -march=armv7e-m -mfloat-abi=hard -mfpu=fpv5-sp-d16 -meabi=5 -o CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc4S2Tz8.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t'
+         c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/as.exe -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc31t8DW.s
         GNU assembler version 2.36.1 (arm-none-eabi) using BFD version (GNU Arm Embedded Toolchain 10.3-2021.10) 2.36.1.20210621
         COMPILER_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/
-        LIBRARY_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/;c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/thumb/v7e-m+fp/hard/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/;c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/
-        COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-exceptions' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5'\x0d
-        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f libcmTC_36d2e.a && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\ARM-NO~2.EXE qc libcmTC_36d2e.a  CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR17F9~1.EXE libcmTC_36d2e.a && cd ."
+        LIBRARY_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/;c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/;c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/\x0d
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t'\x0d
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f libcmTC_11b91.a && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\ARM-NO~2.EXE qc libcmTC_11b91.a  CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR17F9~1.EXE libcmTC_11b91.a && cd ."
         
       exitCode: 0
   -
@@ -322,16 +336,14 @@ events:
       Parsed C implicit include dir info: rv=done
         found start of include info
         found start of implicit include info
-          add: [c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/include/newlib-nano]
           add: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/include]
           add: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/include-fixed]
           add: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include]
         end of search list found
-        collapse include dir [c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/include/newlib-nano] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/newlib-nano]
         collapse include dir [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/include] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include]
         collapse include dir [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/include-fixed] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include-fixed]
         collapse include dir [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include] ==> [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include]
-        implicit include dirs: [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include/newlib-nano;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include-fixed;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include]
+        implicit include dirs: [C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/lib/gcc/arm-none-eabi/10.3.1/include-fixed;C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/arm-none-eabi/include]
       
       
   -
@@ -343,25 +355,19 @@ events:
     message: |
       Parsed C implicit link information:
         link line regex: [^( *|.*[/\\])(arm-none-eabi-ld\\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
-        ignore line: [Change Dir: 'C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic/build/CMakeFiles/CMakeScratch/TryCompile-tzik8h']
+        ignore line: [Change Dir: 'C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/CMakeScratch/TryCompile-xvpcsa']
         ignore line: []
-        ignore line: [Run Build Command(s): C:/PROGRA~1/RASPBE~1/PICOSD~1.1/ninja/ninja.exe -v cmTC_36d2e]
-        ignore line: [[1/2] C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR19DD~1.EXE   -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs     -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs    -v -o CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj -c "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCCompilerABI.c"]
+        ignore line: [Run Build Command(s): C:/Users/vvosahlo/AppData/Local/Programs/Python/Python312/Scripts/ninja.exe -v cmTC_11b91]
+        ignore line: [[1/2] C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR19DD~1.EXE   -v -o CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj -c "C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCCompilerABI.c"]
         ignore line: [Using built-in specs.]
-        ignore line: [Reading specs from c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/nano.specs]
-        ignore line: [rename spec link to nano_link]
-        ignore line: [rename spec link_gcc_c_sequence to nano_link_gcc_c_sequence]
-        ignore line: [rename spec cpp_unique_options to nano_cpp_unique_options]
-        ignore line: [Reading specs from c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/nosys.specs]
-        ignore line: [rename spec link_gcc_c_sequence to nosys_link_gcc_c_sequence]
         ignore line: [COLLECT_GCC=C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR19DD~1.EXE]
         ignore line: [Target: arm-none-eabi]
         ignore line: [Configured with: /mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/src/gcc/configure --build=x86_64-linux-gnu --host=i686-w64-mingw32 --target=arm-none-eabi --prefix=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw --libexecdir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/lib --infodir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/info --mandir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/man --htmldir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/html --pdfdir=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/share/doc/gcc-arm-none-eabi/pdf --enable-languages=c,c++ --enable-mingw-wildcard --disable-decimal-float --disable-libffi --disable-libgomp --disable-libmudflap --disable-libquadmath --disable-libssp --disable-libstdcxx-pch --disable-nls --disable-shared --disable-threads --disable-tls --with-gnu-as --with-gnu-ld --with-headers=yes --with-newlib --with-python-dir=share/gcc-arm-none-eabi --with-sysroot=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/install-mingw/arm-none-eabi --with-libiconv-prefix=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-gmp=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-mpfr=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-mpc=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-isl=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-libelf=/mnt/workspace/workspace/GCC-10-pipeline/jenkins-GCC-10-pipeline-338_20211018_1634516203/build-mingw/host-libs/usr --with-host-libstdcxx='-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm' --with-pkgversion='GNU Arm Embedded Toolchain 10.3-2021.10' --with-multilib-list=rmprofile,aprofile]
         ignore line: [Thread model: single]
         ignore line: [Supported LTO compression algorithms: zlib]
         ignore line: [gcc version 10.3.1 20210824 (release) (GNU Arm Embedded Toolchain 10.3-2021.10) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-exceptions' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5']
-        ignore line: [ c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/cc1.exe -isystem =/include/newlib-nano -quiet -v -imultilib thumb/v7e-m+fp/hard -iprefix c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/ -isysroot c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi -D__USES_INITFINI__ C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -mlibarch=armv7e-m+fpv5 -march=armv7e-m+fpv5 -auxbase-strip CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj -Wfatal-errors -Wno-unused-function -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wsuggest-attribute=format -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -Wpedantic -version -fdiagnostics-color=always -funsigned-char -funsigned-bitfields -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables -o C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc4S2Tz8.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t']
+        ignore line: [ c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/cc1.exe -quiet -v -iprefix c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/ -isysroot c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi -D__USES_INITFINI__ C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -auxbase-strip CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj -version -o C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc31t8DW.s]
         ignore line: [GNU C17 (GNU Arm Embedded Toolchain 10.3-2021.10) version 10.3.1 20210824 (release) (arm-none-eabi)]
         ignore line: [	compiled by GNU C version 7.3-win32 20180312  GMP version 6.1.0  MPFR version 3.1.4  MPC version 1.0.3  isl version isl-0.18-GMP]
         ignore line: []
@@ -373,7 +379,6 @@ events:
         ignore line: [ignoring nonexistent directory "c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi/usr/include"]
         ignore line: [#include "..." search starts here:]
         ignore line: [#include <...> search starts here:]
-        ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../arm-none-eabi/include/newlib-nano]
         ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/include]
         ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/include-fixed]
         ignore line: [ c:\\progra~2\\gnuarm~1\\10\\bin\\../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/include]
@@ -383,21 +388,18 @@ events:
         ignore line: []
         ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
         ignore line: [Compiler executable checksum: f3937ce18b4177bfd408ca565336596a]
-        ignore line: [COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-exceptions' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5']
-        ignore line: [ c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/as.exe -v -march=armv7e-m -mfloat-abi=hard -mfpu=fpv5-sp-d16 -meabi=5 -o CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc4S2Tz8.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t']
+        ignore line: [ c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/as.exe -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj C:\\Users\\vvosahlo\\AppData\\Local\\Temp\\cc31t8DW.s]
         ignore line: [GNU assembler version 2.36.1 (arm-none-eabi) using BFD version (GNU Arm Embedded Toolchain 10.3-2021.10) 2.36.1.20210621]
         ignore line: [COMPILER_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/]
         ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/]
         ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/bin/]
-        ignore line: [LIBRARY_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/hard/]
-        ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/]
-        ignore line: [c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/thumb/v7e-m+fp/hard/]
-        ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/]
+        ignore line: [LIBRARY_PATH=c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/]
         ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/]
         ignore line: [c:/progra~2/gnuarm~1/10/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/]
-        ignore line: [c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-Wfatal-errors' '-Wno-unused-function' '-Wall' '-Wextra' '-Wundef' '-Wduplicated-cond' '-Wduplicated-branches' '-Wlogical-op' '-Wnull-dereference' '-Wcast-align' '-Wvla' '-Wsuggest-attribute=format' '-Wuninitialized' '-Winit-self' '-Wdouble-promotion' '-Wstrict-aliasing' '-Wno-unused-parameter' '-Wpedantic' '-funsigned-char' '-funsigned-bitfields' '-fstack-protector-strong' '-finline-small-functions' '-findirect-inlining' '-fno-exceptions' '-fno-unwind-tables' '-fno-asynchronous-unwind-tables' '-specs=nano.specs' '-specs=nosys.specs' '-mcpu=cortex-m7' '-mfloat-abi=hard' '-mfpu=fpv5-sp-d16' '-mthumb' '-mabi=aapcs' '-v' '-o' 'CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj' '-c' '-mlibarch=armv7e-m+fpv5' '-march=armv7e-m+fpv5'\x0d]
-        ignore line: [[2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f libcmTC_36d2e.a && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\ARM-NO~2.EXE qc libcmTC_36d2e.a  CMakeFiles/cmTC_36d2e.dir/CMakeCCompilerABI.c.obj && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR17F9~1.EXE libcmTC_36d2e.a && cd ."]
+        ignore line: [c:/progra~2/gnuarm~1/10/bin/../arm-none-eabi/lib/\x0d]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t'\x0d]
+        ignore line: [[2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f libcmTC_11b91.a && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\ARM-NO~2.EXE qc libcmTC_11b91.a  CMakeFiles/cmTC_11b91.dir/CMakeCCompilerABI.c.obj && C:\\PROGRA~2\\GNUARM~1\\10\\bin\\AR17F9~1.EXE libcmTC_11b91.a && cd ."]
         ignore line: []
         ignore line: []
         implicit libs: []
