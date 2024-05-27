@@ -129,7 +129,7 @@ namespace dma{
                 reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, CR)>((mem_ & 0b1) << DMA_SxCR_CT_Pos);
             }
 
-            void enableInterruptFlag(std::vector<interrupt> int_){
+            void enableInterrupt(std::vector<interrupt> int_){
                 uint8_t mask_ = 0;
 
                 for(auto i : int_){
@@ -161,7 +161,7 @@ namespace dma{
                 reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, CR)>(mask_);
             }
 
-            void enableInterruptFlag(interrupt int_){
+            void enableInterrupt(interrupt int_){
                 if(i == interrupt::fifoError){
                     //If the fifo interrupt should be enabled, set it
                     reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, FCR)>(int_);
@@ -187,7 +187,7 @@ namespace dma{
                 }
             }
 
-            void disableInterruptFlag(std::vector<interrupt> int_){
+            void disableInterrupt(std::vector<interrupt> int_){
                 uint8_t mask_ = 0;
 
                 for(auto i : int_){
@@ -219,7 +219,7 @@ namespace dma{
                 reg::clear<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, CR)>(mask_);
             }
 
-            void disableInterruptFlag(interrupt int_){
+            void disableInterrupt(interrupt int_){
                 if(i == interrupt::fifoError){
                     //If the fifo interrupt should be enabled, set it
                     reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, FCR)>(int_);

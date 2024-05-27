@@ -96,7 +96,7 @@ namespace bdma{
                 reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(channel_) + offsetof(BDMA_Channel_TypeDef, CCR)>((mem_ & 0b1) << BDMA_CCR_CT_Pos);
             }
 
-            void enableInterruptFlag(std::vector<interrupt> int_){
+            void enableInterrupt(std::vector<interrupt> int_){
 
                 static_assert(int_ != interrupt::global, "Global interrupt cannot be enabled!");
 
@@ -125,7 +125,7 @@ namespace bdma{
                 reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(channel_) + offsetof(BDMA_Channel_TypeDef, CCR)>(mask_);
             }
 
-            void enableInterruptFlag(interrupt int_){
+            void enableInterrupt(interrupt int_){
 
                 static_assert(int_ != interrupt::global, "Global interrupt cannot be enabled!");
 
@@ -143,7 +143,7 @@ namespace bdma{
                 }
             }
 
-            void disableInterruptFlag(std::vector<interrupt> int_){
+            void disableInterrupt(std::vector<interrupt> int_){
 
                 static_assert(int_ != interrupt::global, "Global interrupt cannot be disabled!");
 
@@ -171,7 +171,7 @@ namespace bdma{
                 reg::clear<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(channel_) + offsetof(BDMA_Channel_TypeDef, CCR)>(mask_);
             }
 
-            void disableInterruptFlag(interrupt int_){
+            void disableInterrupt(interrupt int_){
 
                 static_assert(int_ != interrupt::global, "Global interrupt cannot be disabled!");
 

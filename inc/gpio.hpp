@@ -49,8 +49,7 @@ namespace gpio{
 
     enum class mode{
         input     = 0b00000000,
-        pushpull  = 0b00000001,
-        opendrain = 0b00000101,
+        output    = 0b00000001,
         af0       = 0b00000010,
         af1       = 0b00010010,
         af2       = 0b00100010,
@@ -83,20 +82,25 @@ namespace gpio{
         pulldown  = 0b10
     };
 
+    enum class otype{
+        pushpull  = 0b0,
+        opendrain = 0b1
+    };
+
     /// @brief GPIO pin class
     /// @param port GPIO_TypeDef of the port
     /// @param pin Pin number
     /// @param m GPIO Mode
     /// @param s GPIO Speed
     /// @param p GPIO Pullup/Pulldown
-    template<port port_, uint8_t pin_, mode mode_, speed speed_, pull pull_>
+    template<port port_, uint8_t pin_, mode mode_, otype otype_ = otype::pushpull, pull pull_ = pull::nopull, speed speed_ = speed::low>
     class gpio{
         public:
             gpio(){
-                static_assert(pin_ < 15, "The pin number cannot be greater than 15!");
+                static_assert(pin_ < 16, "The pin number cannot be greater than 15!");
                 reg::clear<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, MODER)>(0b11 << (pin_ * 2));
                 reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, MODER)>((static_cast<uint8_t>(mode_) & 0b00000011) << (pin_ * 2));
-                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OTYPER)>(((static_cast<uint8_t>(mode_) & 0b00000100) >> 2) << pin_);
+                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OTYPER)>((static_cast<uint8_t>(otype_) & 0b1) << pin_);
                 reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, AFR[static_cast<uint8_t>(pin_ / 8)])>(((static_cast<uint8_t>(mode_) & 0b11110000) >> 4) << ((pin_ % 8) * 4));
                 reg::clear<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OSPEEDR)>(0b11 << (pin_ * 2));
                 reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OSPEEDR)>(static_cast<uint8_t>(speed_) << (pin_ * 2));
@@ -112,8 +116,8 @@ namespace gpio{
                 reg::write<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, BSRR)>(1 << (pin_ + 16));
             }
 
-            void write(bool state){
-                state ? set() : clear();
+            void write(bool state_){
+                state_ ? set() : clear();
             }
 
             void toggle(){
@@ -124,24 +128,27 @@ namespace gpio{
                 return static_cast<bool>(reg::read<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, IDR)>(1 << pin_));
             }
 
-            void setMode(mode m){
+            void setMode(mode m_){
                 reg::clear<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, MODER)>(0b0011 << (pin_ * 2));
-                reg::clear<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OTYPER)>(0b0001 << pin_);
                 reg::clear<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, AFR[static_cast<uint8_t>(pin_ / 8)])>(0b1111 << ((pin_ % 8) * 4));
 
-                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, MODER)>((static_cast<uint8_t>(m) & 0b00000011) << (pin_ * 2));
-                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OTYPER)>(((static_cast<uint8_t>(m) & 0b00000100) >> 2) << pin_);
-                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, AFR[static_cast<uint8_t>(pin_ / 8)])>(((static_cast<uint8_t>(m) & 0b11110000) >> 4) << ((pin_ % 8) * 4));
+                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, MODER)>((static_cast<uint8_t>(m_) & 0b00000011) << (pin_ * 2));
+                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, AFR[static_cast<uint8_t>(pin_ / 8)])>(((static_cast<uint8_t>(m_) & 0b11110000) >> 4) << ((pin_ % 8) * 4));
             }
 
-            void setSpeed(speed s){
+            void setSpeed(speed s_){
                 reg::clear<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OSPEEDR)>(0b11 << (pin_ * 2));
-                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OSPEEDR)>(static_cast<uint8_t>(s) << (pin_ * 2));
+                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OSPEEDR)>(static_cast<uint8_t>(s_) << (pin_ * 2));
             }
 
-            void setPull(pull p){
+            void setPull(pull p_){
                 reg::clear<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, PUPDR)>(0b11 << (pin_ * 2));
-                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, PUPDR)>(static_cast<uint8_t>(p) << (pin_ * 2));
+                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, PUPDR)>(static_cast<uint8_t>(p_) << (pin_ * 2));
+            }
+
+            void setOtype(otype t_){
+                reg::clear<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OTYPER)>(0b1 << pin_);
+                reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OTYPER)>(static_cast<uint8_t>(t_) << pin_);
             }
     };
     

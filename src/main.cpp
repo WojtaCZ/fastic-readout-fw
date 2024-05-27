@@ -9,7 +9,7 @@
 #include "gpio.hpp"
 #include "dmamux.hpp"
 
-
+uint8_t databuff[] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
 
 extern "C" void SystemInit(void){
 	//Initialize the clock
@@ -33,11 +33,23 @@ extern "C" int main(void){
 	RCC->AHB4ENR |= RCC_AHB4ENR_GPIOBEN;
 	RCC->AHB4ENR |= RCC_AHB4ENR_GPIOEEN;
 
+	gpio::gpio<gpio::port::porte, 1, gpio::mode::output> ledYellow;
+	gpio::gpio<gpio::port::portb, 14, gpio::mode::output> ledRed;
 
-	gpio::gpio<gpio::port::porte, 1, gpio::mode::pushpull, gpio::speed::low, gpio::pull::nopull> ledYellow;
-	gpio::gpio<gpio::port::portb, 14, gpio::mode::pushpull, gpio::speed::low, gpio::pull::nopull> ledRed;
-	
-	dma::dma<dma::peripheral::dma1, dma::stream::stream0, dma::mode::periph2mem, dma::datasize::word, true, 0x000000, dma::datasize::word, false, static_cast<uint32_t>(SPI1_BASE) + offsetof(SPI_TypeDef, RXDR), 10> spi1dma;
+
+	//Configure SPI GPIO
+	gpio::gpio<gpio::port::portb, 5, gpio::mode::af5, gpio::otype::pushpull, gpio::pull::nopull, gpio::speed::high> spi1mosi;
+	gpio::gpio<gpio::port::portb, 4, gpio::mode::af5, gpio::otype::pushpull, gpio::pull::nopull, gpio::speed::high> spi1miso;
+	gpio::gpio<gpio::port::portb, 3, gpio::mode::af5, gpio::otype::pushpull, gpio::pull::nopull, gpio::speed::high> spi1sck;
+
+	//SPI1 TX DMA request routed to channel 0 of the MUX
+	dmamux1::dmamux<dmamux1::channel::channel0, dmamux1::request::spi1_tx_dma> dmamux1ch0;
+	//DMA1 stream 0 used for the transfers from buffer to SPI
+	dma::dma<dma::peripheral::dma1, dma::stream::stream0, dma::mode::mem2periph, dma::datasize::byte, true, /*/**/, dma::datasize::byte, false, static_cast<uint32_t>(SPI1_BASE) + offsetof(SPI_TypeDef, TXDR), 10> dma1s0;
+	//Enable the stream
+	dma1s0.enable();
+
+
 
 	while(1){
 		for (int i = 0; i < 3200000; i++){
