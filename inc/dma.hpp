@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <cstddef>
+#include <vector>
 #include "register.hpp"
 #include "stm32h753xx.h"
 
@@ -88,11 +89,11 @@ namespace dma{
         full = 0b11
     };
 
-    template<peripheral peripheral_, stream stream_, mode mode_, datasize msize_, bool mincrement_, uint32_t m0address_, datasize psize_, bool pincrement_, uint32_t paddress_, uint16_t numofdata_,
-             priority priority_ = priority::low, bool circular_ = false, pincoffset pincoffset_ = pincoffset::psize, bool doublebuffer_ = false, uint32_t m1address_ = 0, bool bufferedtransfers_ = false, flowcontroller flowcontroller_ = flowcontroller::dma, burstsize pburst_ = burstsize::single, burstsize mburst_ = burstsize::single>
+    template<peripheral peripheral_, stream stream_, mode mode_, datasize psize_, bool pincrement_, datasize msize_, bool mincrement_, uint16_t numofdata_,
+             priority priority_ = priority::low, bool circular_ = false, pincoffset pincoffset_ = pincoffset::psize, bool doublebuffer_ = false, bool bufferedtransfers_ = false, flowcontroller flowcontroller_ = flowcontroller::dma, burstsize pburst_ = burstsize::single, burstsize mburst_ = burstsize::single>
     class dma{
         public:
-            dma(){
+            dma(uint32_t paddress_, uint32_t m0address_, uint32_t m1address_ = 0){
                 reg::write<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, CR)>( 
                     //Interrupts are not enabled here and the channel is not yet being enabled
                     ((static_cast<uint8_t>(flowcontroller_) & 0b1) << DMA_SxCR_PFCTRL_Pos) |
@@ -113,8 +114,8 @@ namespace dma{
 
                 reg::write<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, PAR)>(paddress_);
                 reg::write<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, M0AR)>(m0address_);
-                reg::write<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_)  + offsetof(DMA_Stream_TypeDef, M1AR)>(m1address_);
-                reg::write<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) +  offsetof(DMA_Stream_TypeDef, NDTR)>(numofdata_);
+                reg::write<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, M1AR)>(m1address_);
+                reg::write<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, NDTR)>(numofdata_);
             }
 
             void enable(){
@@ -125,8 +126,12 @@ namespace dma{
                 reg::clear<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, CR)>(0b1 << DMA_SxCR_EN_Pos);
             }
 
+            void setPeriphAddress(uint32_t add_){
+
+            }
+
             void setTargetMemory(targetmem mem_){
-                reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, CR)>((mem_ & 0b1) << DMA_SxCR_CT_Pos);
+                reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, CR)>((static_cast<uint32_t>(mem_) & 0b1) << DMA_SxCR_CT_Pos);
             }
 
             void enableInterrupt(std::vector<interrupt> int_){
@@ -162,7 +167,7 @@ namespace dma{
             }
 
             void enableInterrupt(interrupt int_){
-                if(i == interrupt::fifoError){
+                if(int_ == interrupt::fifoError){
                     //If the fifo interrupt should be enabled, set it
                     reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, FCR)>(int_);
                 }else{
@@ -220,9 +225,9 @@ namespace dma{
             }
 
             void disableInterrupt(interrupt int_){
-                if(i == interrupt::fifoError){
+                if(int_ == interrupt::fifoError){
                     //If the fifo interrupt should be enabled, set it
-                    reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, FCR)>(int_);
+                    reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(stream_) + offsetof(DMA_Stream_TypeDef, FCR)>(static_cast<uint32_t>(int_));
                 }else{
                     //If the interrupt in the CR should be set, set it
                      switch(int_){
@@ -249,28 +254,28 @@ namespace dma{
             void clearInterruptFlag(interrupt int_){
                 switch (stream_){
                     case stream::stream0:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LIFCR)>(int_);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LIFCR)>(static_cast<uint32_t>(int_));
                         break;
                     case stream::stream1:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LIFCR)>(int_ << 5);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LIFCR)>(static_cast<uint32_t>(int_) << 5);
                         break;
                     case stream::stream2:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LIFCR)>(int_ << 10);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LIFCR)>(static_cast<uint32_t>(int_) << 10);
                         break;
                     case stream::stream3:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LIFCR)>(int_ << 15);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LIFCR)>(static_cast<uint32_t>(int_) << 15);
                         break;
                     case stream::stream4:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HIFCR)>(int_);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HIFCR)>(static_cast<uint32_t>(int_));
                         break;
                     case stream::stream5:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HIFCR)>(int_ << 5);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HIFCR)>(static_cast<uint32_t>(int_) << 5);
                         break;
                     case stream::stream6:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HIFCR)>(int_ << 10);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HIFCR)>(static_cast<uint32_t>(int_) << 10);
                         break;
                     case stream::stream7:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HIFCR)>(int_ << 15);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HIFCR)>(static_cast<uint32_t>(int_) << 15);
                         break;
                     
                     default:
@@ -278,31 +283,31 @@ namespace dma{
                 }
             }
 
-            bool getInterruptFlag(){
+            bool getInterruptFlag(interrupt int_){
                 switch (stream_){
                     case stream::stream0:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LISR)>(int_));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LISR)>(static_cast<uint32_t>(int_)));
                         break;
                     case stream::stream1:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LISR)>(int_ << 5));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LISR)>(static_cast<uint32_t>(int_) << 5));
                         break;
                     case stream::stream2:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LISR)>(int_ << 10));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LISR)>(static_cast<uint32_t>(int_) << 10));
                         break;
                     case stream::stream3:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LISR)>(int_ << 15));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, LISR)>(static_cast<uint32_t>(int_) << 15));
                         break;
                     case stream::stream4:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HISR)>(int_));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HISR)>(static_cast<uint32_t>(int_)));
                         break;
                     case stream::stream5:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HISR)>(int_ << 5));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HISR)>(static_cast<uint32_t>(int_) << 5));
                         break;
                     case stream::stream6:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HISR)>(int_ << 10));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HISR)>(static_cast<uint32_t>(int_) << 10));
                         break;
                     case stream::stream7:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HISR)>(int_ << 15));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(DMA_TypeDef, HISR)>(static_cast<uint32_t>(int_) << 15));
                         break;
                     
                     default:

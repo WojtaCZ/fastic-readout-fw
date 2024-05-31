@@ -59,12 +59,12 @@ namespace bdma{
     };
 
 
-    template<peripheral peripheral_, channel channel_, mode mode_, datasize msize_, bool mincrement_, uint32_t m0address_, datasize psize_, bool pincrement_, uint32_t paddress_, uint16_t numofdata_,
-             priority priority_ = priority::low, bool circular_ = false, pincoffset pincoffset_ = pincoffset::psize, bool doublebuffer_ = false, uint32_t m1address_ = 0>
+    template<peripheral peripheral_, channel channel_, mode mode_, datasize psize_, bool pincrement_, datasize msize_, bool mincrement_, uint16_t numofdata_,
+             priority priority_ = priority::low, bool circular_ = false, pincoffset pincoffset_ = pincoffset::psize, bool doublebuffer_ = false>
     class bdma{
         public:
-            bdma(){
-                reg::write<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(channel_) + offsetof(BDMA_Channel_TypeDef, CR)>( 
+            bdma(uint32_t paddress_, uint32_t m0address_, uint32_t m1address_ = 0){
+                reg::write<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(channel_) + offsetof(BDMA_Channel_TypeDef, CCR)>( 
                     //Interrupts are not enabled here and the channel is not yet being enabled
                     ((static_cast<uint8_t>(mode_) & 0b01) << BDMA_CCR_DIR_Pos) |
                     ((static_cast<uint8_t>(circular_) & 0b1) << BDMA_CCR_CIRC_Pos) |
@@ -74,7 +74,7 @@ namespace bdma{
                     ((static_cast<uint8_t>(msize_) & 0b11) << BDMA_CCR_MSIZE_Pos) | 
                     ((static_cast<uint8_t>(priority_) & 0b11) << BDMA_CCR_PL_Pos) | 
                     ((static_cast<uint8_t>(mode_) & 0b10) << BDMA_CCR_MEM2MEM_Pos - 1) | 
-                    ((static_cast<uint8_t>(doublebuffer_) & 0b1) << BDMA_CCR_DBM_Pos) |
+                    ((static_cast<uint8_t>(doublebuffer_) & 0b1) << BDMA_CCR_DBM_Pos) 
                     //Current target is not set here
                 );
 
@@ -93,12 +93,10 @@ namespace bdma{
             }
 
             void setTargetMemory(targetmem mem_){
-                reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(channel_) + offsetof(BDMA_Channel_TypeDef, CCR)>((mem_ & 0b1) << BDMA_CCR_CT_Pos);
+                reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(channel_) + offsetof(BDMA_Channel_TypeDef, CCR)>((static_cast<uint32_t>(mem_) & 0b1) << BDMA_CCR_CT_Pos);
             }
 
             void enableInterrupt(std::vector<interrupt> int_){
-
-                static_assert(int_ != interrupt::global, "Global interrupt cannot be enabled!");
 
                 uint8_t mask_ = 0;
 
@@ -125,10 +123,7 @@ namespace bdma{
                 reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(channel_) + offsetof(BDMA_Channel_TypeDef, CCR)>(mask_);
             }
 
-            void enableInterrupt(interrupt int_){
-
-                static_assert(int_ != interrupt::global, "Global interrupt cannot be enabled!");
-
+            void enableInterrupt(const interrupt int_){
                 switch(int_){
                 case interrupt::transferHalfComplete:
                     reg::set<static_cast<uint32_t>(peripheral_) + static_cast<uint32_t>(channel_) + offsetof(BDMA_Channel_TypeDef, CCR)>(0b1 << BDMA_CCR_HTIE_Pos);
@@ -145,7 +140,7 @@ namespace bdma{
 
             void disableInterrupt(std::vector<interrupt> int_){
 
-                static_assert(int_ != interrupt::global, "Global interrupt cannot be disabled!");
+                //static_assert(int_ != interrupt::global, "Global interrupt cannot be disabled!");
 
                 uint8_t mask_ = 0;
 
@@ -173,7 +168,7 @@ namespace bdma{
 
             void disableInterrupt(interrupt int_){
 
-                static_assert(int_ != interrupt::global, "Global interrupt cannot be disabled!");
+                //static_assert(int_ != interrupt::global, "Global interrupt cannot be disabled!");
 
                 switch(int_){
                 case interrupt::transferHalfComplete:
@@ -192,45 +187,45 @@ namespace bdma{
             void clearInterruptFlag(interrupt int_){
                 switch (channel_){
                     case channel::channel0:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(int_);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(static_cast<uint32_t>(int_));
                     case channel::channel1:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(int_ << 4);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(static_cast<uint32_t>(int_) << 4);
                     case channel::channel2:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(int_ << 8);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(static_cast<uint32_t>(int_) << 8);
                     case channel::channel3:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(int_ << 12);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(static_cast<uint32_t>(int_) << 12);
                     case channel::channel4:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(int_ << 16);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(static_cast<uint32_t>(int_) << 16);
                     case channel::channel5:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(int_ << 20);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(static_cast<uint32_t>(int_) << 20);
                     case channel::channel6:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(int_ << 24);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(static_cast<uint32_t>(int_) << 24);
                     case channel::channel7:
-                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(int_ << 28);
+                        reg::write<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, IFCR)>(static_cast<uint32_t>(int_) << 28);
                     
                     default:
                         break;
                 }
             }
 
-            bool getInterruptFlag(){
+            bool getInterruptFlag(interrupt int_){
                 switch (channel_){
                     case channel::channel0:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(int_));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(static_cast<uint32_t>(int_)));
                     case channel::channel1:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(int_ << 4));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(static_cast<uint32_t>(int_) << 4));
                     case channel::channel2:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(int_ << 8));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(static_cast<uint32_t>(int_) << 8));
                     case channel::channel3:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(int_ << 12));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(static_cast<uint32_t>(int_) << 12));
                     case channel::channel4:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(int_ << 16));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(static_cast<uint32_t>(int_) << 16));
                     case channel::channel5:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(int_ << 20));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(static_cast<uint32_t>(int_) << 20));
                     case channel::channel6:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(int_ << 24));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(static_cast<uint32_t>(int_) << 24));
                     case channel::channel7:
-                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(int_ << 28));
+                        return static_cast<bool>(reg::read<static_cast<uint32_t>(peripheral_) + offsetof(BDMA_TypeDef, ISR)>(static_cast<uint32_t>(int_) << 28));
                     
                     default:
                         break;

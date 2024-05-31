@@ -286,11 +286,11 @@ namespace dmamux1{
                 }
 
                 bool getInterruptFlag(){
-                    return static_cast<bool>(reg::read<static_cast<uint32_t>(DMAMUX1_RequestGenStatus_BASE) + offsetof(DMAMUX_RequestGenStatus_TypeDef, RGSR)>(0b1 << (static_cast<uint32_t>(generator_ - 0x100UL)/4)));
+                    return static_cast<bool>(reg::read<static_cast<uint32_t>(DMAMUX1_RequestGenStatus_BASE) + offsetof(DMAMUX_RequestGenStatus_TypeDef, RGSR)>(0b1 << ((static_cast<uint32_t>(generator_) - 0x100UL)/4)));
                 }
 
                 void clearInterruptFlag(){
-                    reg::write<static_cast<uint32_t>(DMAMUX1_RequestGenStatus_BASE) + offsetof(DMAMUX_RequestGenStatus_TypeDef, RGCFR)>(0b1 << (static_cast<uint32_t>(generator_ - 0x100UL)/4));
+                    reg::write<static_cast<uint32_t>(DMAMUX1_RequestGenStatus_BASE) + offsetof(DMAMUX_RequestGenStatus_TypeDef, RGCFR)>(0b1 << ((static_cast<uint32_t>(generator_) - 0x100UL)/4));
                 }
     };
 
@@ -502,11 +502,11 @@ namespace dmamux2{
             }
 
             bool getInterruptFlag(){
-                return static_cast<bool>(reg::read<static_cast<uint32_t>(DMAMUX2_RequestGenStatus_BASE) + offsetof(DMAMUX_RequestGenStatus_TypeDef, RGSR)>(0b1 << (static_cast<uint32_t>(generator_ - 0x100UL)/4)));
+                return static_cast<bool>(reg::read<static_cast<uint32_t>(DMAMUX2_RequestGenStatus_BASE) + offsetof(DMAMUX_RequestGenStatus_TypeDef, RGSR)>(0b1 << ((static_cast<uint32_t>(generator_) - 0x100UL)/4)));
             }
 
             void clearInterruptFlag(){
-                reg::write<static_cast<uint32_t>(DMAMUX2_RequestGenStatus_BASE) + offsetof(DMAMUX_RequestGenStatus_TypeDef, RGCFR)>(0b1 << (static_cast<uint32_t>(generator_ - 0x100UL)/4));
+                reg::write<static_cast<uint32_t>(DMAMUX2_RequestGenStatus_BASE) + offsetof(DMAMUX_RequestGenStatus_TypeDef, RGCFR)>(0b1 << ((static_cast<uint32_t>(generator_) - 0x100UL)/4));
             }
     };
 

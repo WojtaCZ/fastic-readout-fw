@@ -87,6 +87,12 @@ namespace gpio{
         opendrain = 0b1
     };
 
+    enum class edge {
+        rising,
+        falling,
+        both
+    };
+
     /// @brief GPIO pin class
     /// @param port GPIO_TypeDef of the port
     /// @param pin Pin number
@@ -146,9 +152,59 @@ namespace gpio{
                 reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, PUPDR)>(static_cast<uint8_t>(p_) << (pin_ * 2));
             }
 
-            void setOtype(otype t_){
+            void setOutputType(otype t_){
                 reg::clear<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OTYPER)>(0b1 << pin_);
                 reg::set<static_cast<uint32_t>(port_) + offsetof(GPIO_TypeDef, OTYPER)>(static_cast<uint8_t>(t_) << pin_);
+            }
+
+            void enableInterrupt(edge edg_){
+                reg::set<static_cast<uint32_t>(SYSCFG_BASE) + offsetof(SYSCFG_TypeDef, EXTICR[1])>(0b1 << ((static_cast<uint32_t>(port_) - GPIOA_BASE)/0x0400UL));
+
+                switch(edg_){
+                case edge::rising:
+                    reg::set<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, RTSR1)>(0b1 << pin_);
+                    break;
+                case edge::falling:
+                    reg::set<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, FTSR1)>(0b1 << pin_);
+                    break;
+                case edge::both:
+                    reg::set<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, RTSR1)>(0b1 << pin_);
+                    reg::set<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, FTSR1)>(0b1 << pin_);
+                default:
+
+                    break;
+                }
+
+                reg::set<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, IMR1)>(0b1 << pin_);
+            }
+
+            void disableInterrupt(){
+                reg::clear<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, IMR1)>(0b1 << pin_);
+                reg::clear<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, RTSR1)>(0b1 << pin_);
+                reg::clear<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, FTSR1)>(0b1 << pin_);
+            }
+
+            void clearInterruptFlag(){
+                reg::set<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, PR1)>(0b1 << pin_);
+            }
+
+            void setInterruptEdge(edge edg_){
+               switch(edg_){
+                case edge::rising:
+                    reg::set<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, RTSR1)>(0b1 << pin_);
+                    reg::clear<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, FTSR1)>(0b1 << pin_);
+                    break;
+                case edge::falling:
+                    reg::set<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, FTSR1)>(0b1 << pin_);
+                    reg::clear<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, RTSR1)>(0b1 << pin_);
+                    break;
+                case edge::both:
+                    reg::set<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, RTSR1)>(0b1 << pin_);
+                    reg::set<static_cast<uint32_t>(EXTI_BASE) + offsetof(EXTI_TypeDef, FTSR1)>(0b1 << pin_);
+                default:
+
+                    break;
+                }
             }
     };
     
