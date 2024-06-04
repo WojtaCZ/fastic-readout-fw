@@ -46,8 +46,8 @@ namespace clock{
         RCC->PLLCFGR |= RCC_PLLCFGR_DIVP1EN | RCC_PLLCFGR_PLL1RGE_3;
         //Set the M1 clock divisor to 1
         RCC->PLLCKSELR = (1 << RCC_PLLCKSELR_DIVM1_Pos);
-        //Set up PLL divider P = 2, N = 40, Q = 2, R = 2
-        RCC->PLL1DIVR = (1 << RCC_PLL1DIVR_P1_Pos) | (39 << RCC_PLL1DIVR_N1_Pos) | (1 << RCC_PLL1DIVR_Q1_Pos) | (1 << RCC_PLL1DIVR_R1_Pos);
+        //Set up PLL divider P = 2, N = 40, Q = 4, R = 2
+        RCC->PLL1DIVR = (1 << RCC_PLL1DIVR_P1_Pos) | (39 << RCC_PLL1DIVR_N1_Pos) | (79 << RCC_PLL1DIVR_Q1_Pos) | (1 << RCC_PLL1DIVR_R1_Pos);
 
         //Enable the PLL
         RCC->CR |= (1 << RCC_CR_PLL1ON_Pos);

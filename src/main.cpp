@@ -35,7 +35,6 @@ extern "C" void SystemInit(void){
 
 }
 
-gpio::gpio<gpio::port::porta, 7, gpio::mode::input, gpio::otype::opendrain, gpio::pull::pullup> in;
 
 extern "C" int main(void){
 	
@@ -43,23 +42,23 @@ extern "C" int main(void){
 	//RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
 
 
-
-	gpio::gpio<gpio::port::porte, 1, gpio::mode::output> ledYellow;
-	gpio::gpio<gpio::port::portb, 14, gpio::mode::output> ledRed;
+	//gpio::gpio<gpio::port::porte, 1, gpio::mode::output> ledYellow;
+	//gpio::gpio<gpio::port::portb, 14, gpio::mode::output> ledRed;
 
 	
-	NVIC_EnableIRQ(EXTI9_5_IRQn);
-	in.enableInterrupt(gpio::edge::falling);
+	//NVIC_EnableIRQ(EXTI9_5_IRQn);
+	//in.enableInterrupt(gpio::edge::falling);
 	
 	//Configure SPI GPIO
-	//gpio::gpio<gpio::port::portb, 5, gpio::mode::af5, gpio::otype::pushpull, gpio::pull::nopull, gpio::speed::high> spi1mosi;
-	//gpio::gpio<gpio::port::portb, 4, gpio::mode::af5, gpio::otype::pushpull, gpio::pull::nopull, gpio::speed::high> spi1miso;
-	//gpio::gpio<gpio::port::portb, 3, gpio::mode::af5, gpio::otype::pushpull, gpio::pull::nopull, gpio::speed::high> spi1sck;
+	gpio::gpio<gpio::port::portb, 5, gpio::mode::af5, gpio::otype::pushpull, gpio::pull::nopull, gpio::speed::high> spi1mosi;
+	gpio::gpio<gpio::port::portb, 4, gpio::mode::af5, gpio::otype::pushpull, gpio::pull::nopull, gpio::speed::high> spi1miso;
+	gpio::gpio<gpio::port::portb, 3, gpio::mode::af5, gpio::otype::pushpull, gpio::pull::nopull, gpio::speed::high> spi1sck;
 
 	//Enable SPI clock
-	//RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
-	//spi::spi<spi::peripheral::spi1, spi::role::master, spi::mode::txsimplex, spi::protocol::motorola, spi::bitorder::msbfirst, spi::clockpol::idlelow, spi::clockphase::firsttransition, spi::ssorigin::sspad, spi::sspol::activelow, false, spi::ssbehavior::endoftransfer, 8, 0, spi::masterdivider::div128> spi1;
-	//spi1.enable();
+	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+	spi::spi<spi::peripheral::spi1, spi::role::master, spi::mode::txsimplex, spi::protocol::motorola, spi::bitorder::msbfirst, spi::clockpol::idlelow, spi::clockphase::firsttransition, spi::ssorigin::sspad, spi::sspol::activelow, true, spi::ssbehavior::endoftransfer, 8, 0, spi::masterdivider::div2> spi1;
+	spi1.enable();
+
 
 	//SPI1 TX DMA request routed to channel 0 of the MUX
 	//dmamux1::dmamux<dmamux1::channel::channel0, dmamux1::request::spi1_tx_dma> dmamux1ch0;
@@ -75,18 +74,15 @@ extern "C" int main(void){
 			__ASM("nop");
 		}
 
-		ledRed.write(in.read());
-		//SPI1->TXDR = 0xAB;
+		//ledRed.write(in.read());
+		SPI1->TXDR = 0xAB;
 		
 		
 	}
 	
 }
 
-extern "C" void EXTI9_5_IRQHandler(){
-	__ASM("nop");
-	in.clearInterruptFlag();
-} 
+
 
 extern "C" void HardFault_Handler(void){
 	//Ooops, hard fault!

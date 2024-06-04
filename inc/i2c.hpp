@@ -43,3 +43,8 @@ namespace i2c{
 }
 
 #endif
+
+
+class spi{
+    
+}
