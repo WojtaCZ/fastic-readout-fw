@@ -1,0 +1,3 @@
+[submodule "lib/stm-cpp"]
+	path = lib/stm-cpp
+	url = git@github.com:WojtaCZ/stm-cpp.git

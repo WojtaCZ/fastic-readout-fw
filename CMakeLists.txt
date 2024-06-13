@@ -15,7 +15,7 @@ set(CMAKE_COLOR_DIAGNOSTICS FALSE)
 
 
 # Set a default build type if none was specified
-set(default_build_type "Debug")
+set(default_build_type "Release")
 
 # if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
 #   set(default_build_type "Debug")
@@ -56,13 +56,14 @@ set(SOURCES
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES})
 
-
 set_target_properties(${PROJECT_NAME}.elf PROPERTIES CXX_STANDARD 23)
 set_target_properties(${PROJECT_NAME}.elf PROPERTIES C_STANDARD 11)
+set_target_properties(${PROJECT_NAME}.elf PROPERTIES COMPILE_FLAGS "-save-temps") 
 
 target_include_directories(${PROJECT_NAME}.elf PRIVATE
 	${SOURCE_BASE}
 	${CMAKE_SOURCE_DIR}/inc
+	${CMAKE_SOURCE_DIR}/lib/stm-cpp
 	${CMAKE_SOURCE_DIR}/lib/CMSIS/Include
 	${CMAKE_SOURCE_DIR}/lib/CMSIS/Device/ST/STM32H7xx/Include
 
@@ -92,7 +93,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lm -ffreestanding -fdiagn
 # set(DEVICE STM32F105)
 #set(DEVICE STM32F401)
 # set(DEVICE STM32F407)
- set(DEVICE STM32H753)
+set(DEVICE STM32H753)
 # set(DEVICE STM32F446)
 #od any other...
 # set(DEVICE STM32G431)

@@ -32,7 +32,7 @@ namespace i2c{
         busy        = (0b1 << I2C_ISR_BUSY_Pos)  ///< Communication on the bus is in progress
     };
 
-    template<peripheral peripheral_, uint8_t prescaler_, uint8_t setuptime_, uint8_t holdtime_, uint8_t highperiod_, uint8_t lowperiod_>
+    template<peripheral Peripheral>
     class i2c{
         public:
             i2c(){

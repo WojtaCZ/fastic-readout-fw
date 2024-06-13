@@ -33,7 +33,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 74,
+				"line" : 75,
 				"parent" : 0
 			},
 			{
@@ -45,7 +45,7 @@
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 60,
+				"line" : 59,
 				"parent" : 0
 			}
 		]
@@ -57,6 +57,9 @@
 			[
 				{
 					"fragment" : " -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -g -std=gnu++2a -fno-diagnostics-color"
+				},
+				{
+					"fragment" : "-save-temps"
 				}
 			],
 			"defines" : 
@@ -75,6 +78,10 @@
 				{
 					"backtrace" : 3,
 					"path" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/inc"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/lib/stm-cpp"
 				},
 				{
 					"backtrace" : 3,
@@ -105,6 +112,9 @@
 			[
 				{
 					"fragment" : "  -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -g"
+				},
+				{
+					"fragment" : "-save-temps"
 				}
 			],
 			"defines" : 
@@ -123,6 +133,10 @@
 				{
 					"backtrace" : 3,
 					"path" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/inc"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/lib/stm-cpp"
 				},
 				{
 					"backtrace" : 3,
