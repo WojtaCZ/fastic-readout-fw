@@ -35,7 +35,7 @@ namespace i2c{
     template<peripheral Peripheral>
     class i2c{
         public:
-            i2c(){
+            constexpr i2c(uint8_t prescaler, uint8_t setuptime, uint8_t holdtime, uint8_t highperiod, uint8_t lowperiod){
                 
             }
 
