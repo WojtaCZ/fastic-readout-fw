@@ -3,80 +3,77 @@
 #include "core_cm7.h"
 #include "cmsis_compiler.h"
 
+#include <stmcpp/register.hpp>
+#include <stmcpp/units.hpp>
+#include <stmcpp/clock.hpp>
+#include <stmcpp/gpio.hpp>
+#include <stmcpp/usart.hpp>
+#include <stmcpp/spi.hpp>
+#include <stmcpp/dma.hpp>
+#include <stmcpp/bdma.hpp>
+#include <stmcpp/dmamux.hpp>
+
 #include "clock.hpp"
-#include "register.hpp"
 
-#include "gpio.hpp"
-#include "usart.hpp"
-#include "spi.hpp"
-#include "dma.hpp"
-#include "dmamux.hpp"
+using namespace stmcpp::units;
 
-uint8_t databuff[] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
 
+stmcpp::gpio::pin<stmcpp::gpio::port::porte, 10> led0(stmcpp::gpio::mode::output);
+stmcpp::gpio::pin<stmcpp::gpio::port::porte, 12> led1(stmcpp::gpio::mode::output);
+stmcpp::gpio::pin<stmcpp::gpio::port::porte, 14> led2(stmcpp::gpio::mode::output);
+stmcpp::gpio::pin<stmcpp::gpio::port::porte, 15> led3(stmcpp::gpio::mode::output);
 
 
 extern "C" void SystemInit(void){
-	//Initialize the clock
+	// Enable the FPU if needed
+	#if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
+		stmcpp::reg::set(std::ref(SCB->CPACR), (3UL << 20U)|(3UL << 22U));
+    #endif
+
+	// Initialize the system clock
 	clock::init();
 
-	RCC->APB4ENR |= (1 << RCC_APB4ENR_SYSCFGEN_Pos);
-
-	//reg::write<RCC_BASE + offsetof(RCC_TypeDef, APB4ENR)>(1 << RCC_APB4ENR_SYSCFGEN_Pos);
-
-
-	//Enable the compensation cell
-	//SYSCFG->CCCSR |= (1 << SYSCFG_CCCSR_EN_Pos);
-
-	//while(!(SYSCFG->CCCSR & SYSCFG_CCCSR_READY_Msk)){};
-
-	clock::enablePeripherals(
-		clock::peripheral::gpiob,
-	 	clock::peripheral::gpiod,
-		clock::peripheral::gpioa,
-		clock::peripheral::gpiod,
-		clock::peripheral::spi1,
-		clock::peripheral::dma1
+	// Enable the necessary peripheral clocks
+	stmcpp::clock::enablePeripherals(
+		stmcpp::clock::peripheral::gpioc,
+		stmcpp::clock::peripheral::gpioe
 	);
-
-	
 }
 
-
-gpio::pin<gpio::port::portb, 14> ledRed(gpio::mode::output);
-
-// USART2
-gpio::pin<gpio::port::porta, 5> spiSck(gpio::mode::af5);
-gpio::pin<gpio::port::portb, 5> spiMosi(gpio::mode::af5);
-gpio::pin<gpio::port::porta, 6> spiMiso(gpio::mode::af5);
-
 extern "C" int main(void){
-
-	dmamux1::dmamux<dmamux1::channel::channel0> dmamux1ch0(dmamux1::request::spi1_tx_dma);
-
-	dma::dma<dma::peripheral::dma1, dma::stream::stream0> dma1s0(dma::mode::mem2periph, dma::datasize::byte, false, (std::uint32_t)(&SPI1->TXDR), dma::datasize::byte, true, (std::uint32_t)(&databuff[0]), (std::uint32_t)(&databuff[0]), 8);
-
-	spi::spi<spi::peripheral::spi1> spi1(spi::role::master, spi::mode::txsimplex, 8, spi::masterdivider::div256);
-	spi1.setNumberOfData(8);
-	spi1.enableTxDma();
-	spi1.enable();
-
-	dma1s0.enable();
-	spi1.startTransfer();
+	// Setup the systick timer to count with resolution of 1ms
+	stmcpp::clock::systick::init(1_ms);
 
 	while(1){
-		for (int i = 0; i < 320000; i++){
-			__ASM("nop");
-		}
-		
-		
+		stmcpp::clock::systick::waitBlocking(100_ms);
+		led0.toggle();
 	}
 	
 }
 
+// Increment the systick timer
+extern "C" void SysTick_Handler(){
+    stmcpp::clock::systick::increment();
+}
+
+extern "C" void NMI_Handler(void) {
+	// If the interrupt was triggered by HSE clock 
+	if (stmcpp::reg::read(std::ref(RCC->CIFR), RCC_CIFR_HSECSSF)) {
+
+		// Deal with it later, just loop endlessly for now
+		while (true) {;}
+	}
+}
+
+extern "C" int _write(int file, char* ptr, int len){
+	// Implement for printf redirection
+	return 0;
+}
 
 extern "C" void HardFault_Handler(void){
-	//Ooops, hard fault!
+	//Ooops, hard fault! Disable interrupts
+	__disable_irq();
+
 	__ASM("bkpt");
 
 	/*
@@ -98,3 +95,4 @@ extern "C" void HardFault_Handler(void){
 	*/
 	
 }
+

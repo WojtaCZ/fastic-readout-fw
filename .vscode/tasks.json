@@ -32,7 +32,8 @@
 			"label": "flash",
 			"dependsOn" : "build",
 			"type": "shell",
-			"command": "openocd -f openocd.cfg -c 'init; reset halt; program ${workspaceRoot}/build/project.elf verify; reset run; exit'",
+			//"command": "openocd -f openocd.cfg -c 'init; reset halt; program ${workspaceRoot}/build/project.elf verify; reset run; exit'",
+			"command": "arm-none-eabi-gdb -nx --batch -ex 'target extended-remote COM5' -ex 'monitor swdp_scan' -ex 'attach 1' -ex 'load' -ex 'compare-sections' -ex 'kill' ${workspaceRoot}/build/FASTIC.elf",
 			"options": {
 				"cwd": "${workspaceRoot}"
 			},

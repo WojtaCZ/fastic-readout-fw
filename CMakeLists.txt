@@ -46,7 +46,6 @@ set(SOURCES
 
 	${SOURCE_BASE}/main.cpp
 	${SOURCE_BASE}/clock.cpp
-	#${SOURCE_BASE}/timer.cpp
 	#${SOURCE_BASE}/status.cpp
 	
 	#${SOURCE_BASE}/spi.cpp
@@ -63,7 +62,7 @@ set_target_properties(${PROJECT_NAME}.elf PROPERTIES COMPILE_FLAGS "-save-temps"
 target_include_directories(${PROJECT_NAME}.elf PRIVATE
 	${SOURCE_BASE}
 	${CMAKE_SOURCE_DIR}/inc
-	${CMAKE_SOURCE_DIR}/lib/stm-cpp
+	${CMAKE_SOURCE_DIR}/lib/
 	${CMAKE_SOURCE_DIR}/lib/CMSIS/Include
 	${CMAKE_SOURCE_DIR}/lib/CMSIS/Device/ST/STM32H7xx/Include
 
