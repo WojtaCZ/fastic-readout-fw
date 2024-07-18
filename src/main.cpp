@@ -70,29 +70,52 @@ extern "C" int _write(int file, char* ptr, int len){
 	return 0;
 }
 
+
+
+
+
 extern "C" void HardFault_Handler(void){
 	//Ooops, hard fault! Disable interrupts
 	__disable_irq();
 
-	__ASM("bkpt");
+	std::uint32_t hfsr = stmcpp::reg::read(std::ref(SCB->HFSR));
 
-	/*
-	What now?
-	Check the CFSR
-		DIVBYZERO - division by zero
-		UNALIGNED - access of unaligned word
-		NOCP - disabled coprocessor (is the FPU enabled?)
-		INVPC
-		INVSTATE - can occur 99% only if writing hand assembly
-		UNDEFINSTR - undefined instruction (corrupted stack, wrong code path)
+	if (hfsr & SCB_HFSR_FORCED_Msk) {
+		// The hardfault has been forced because of other fault (Mem, Usage or Bus), skip to the other breakpoints
+		__ASM volatile("bkpt");
+	} else if  (hfsr & SCB_HFSR_VECTTBL_Msk) {
+		// The hardfault has been caused 
+		__ASM volatile("bkpt");
+	}
 
-	Check the BFSR
-		BFARVALID - indicates that BFAR holds the address causing the fault
-		LSPERR & STKERR - might occur in case of stack overflow
-		UNSTKERR - fault while returning from except (corrupted stack)
-		IMPRECISERR - was the MCU able to determine the exact fault location?
-		PRECISERR - instruction executed befor exception caused the fault
-	*/
-	
+	std::uint32_t cfsr = stmcpp::reg::read(std::ref(SCB->CFSR));
+
+	if (cfsr & SCB_CFSR_DIVBYZERO_Msk) {
+		// You have tried to divide by zero
+		__ASM volatile("bkpt");
+	} else if (cfsr & SCB_CFSR_UNALIGNED_Msk) {
+		// Unaligned access to memory
+		__ASM volatile("bkpt");
+	} else if (cfsr & SCB_CFSR_NOCP_Msk) {
+		// You are trying to use a disabled coprocessor, is the FPU enabled?
+		__ASM volatile("bkpt");
+	} else if (cfsr & SCB_CFSR_UNDEFINSTR_Pos) {
+		// Woah, undefined instruction, isn't the stack corrupted?
+		__ASM volatile("bkpt");
+	} else {
+		/*
+		Hmmm, something else went wrong... What now?
+		Check the other CFSR bits
+			INVPC
+			INVSTATE - can occur 99% only if writing hand assembly
+			BFARVALID - indicates that BFAR holds the address causing the fault
+			LSPERR & STKERR - might occur in case of stack overflow
+			UNSTKERR - fault while returning from except (corrupted stack)
+			IMPRECISERR - was the MCU able to determine the exact fault location?
+			PRECISERR - instruction executed befor exception caused the fault
+		*/
+
+		__ASM volatile("bkpt");
+	}
 }
 
