@@ -1,3 +1,0 @@
-/home/vosahlov/Documents/programovani/fastic-readout/build/CMakeFiles/FASTIC.elf.dir
-/home/vosahlov/Documents/programovani/fastic-readout/build/CMakeFiles/edit_cache.dir
-/home/vosahlov/Documents/programovani/fastic-readout/build/CMakeFiles/rebuild_cache.dir
