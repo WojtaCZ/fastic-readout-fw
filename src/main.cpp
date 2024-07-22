@@ -12,6 +12,9 @@
 #include <stmcpp/dma.hpp>
 #include <stmcpp/bdma.hpp>
 #include <stmcpp/dmamux.hpp>
+#include <string>
+
+#include "git.hpp"
 
 #include "clock.hpp"
 
@@ -39,6 +42,8 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::gpioe
 	);
 }
+
+static constexpr std::string a = git::branch;
 
 extern "C" int main(void){
 	// Setup the systick timer to count with resolution of 1ms
