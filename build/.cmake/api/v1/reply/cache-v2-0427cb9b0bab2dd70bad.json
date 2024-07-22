@@ -15,7 +15,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-addr2line.exe"
+			"value" : "/usr/bin/arm-none-eabi-addr2line"
 		},
 		{
 			"name" : "CMAKE_AR",
@@ -31,7 +31,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-ar.exe"
+			"value" : "/usr/bin/arm-none-eabi-ar"
 		},
 		{
 			"name" : "CMAKE_ASM_COMPILER",
@@ -43,11 +43,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "ASM compiler"
+					"value" : "ASM Compiler"
 				}
 			],
-			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc.exe"
+			"type" : "INTERNAL",
+			"value" : "/usr/bin/arm-none-eabi-gcc"
 		},
 		{
 			"name" : "CMAKE_ASM_COMPILER_AR",
@@ -63,7 +63,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc-ar.exe"
+			"value" : "/usr/bin/arm-none-eabi-gcc-ar"
 		},
 		{
 			"name" : "CMAKE_ASM_COMPILER_RANLIB",
@@ -79,7 +79,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc-ranlib.exe"
+			"value" : "/usr/bin/arm-none-eabi-gcc-ranlib"
 		},
 		{
 			"name" : "CMAKE_ASM_COMPILER_WORKS",
@@ -107,7 +107,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "  -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
+			"value" : "-ffunction-sections -fdata-sections  -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mabi=aapcs"
 		},
 		{
 			"name" : "CMAKE_ASM_FLAGS_DEBUG",
@@ -119,11 +119,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the ASM compiler during DEBUG builds."
+					"value" : "ASM Compiler options for debug build type"
 				}
 			],
-			"type" : "STRING",
-			"value" : "-g"
+			"type" : "INTERNAL",
+			"value" : "-Og -g"
 		},
 		{
 			"name" : "CMAKE_ASM_FLAGS_MINSIZEREL",
@@ -151,11 +151,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the ASM compiler during RELEASE builds."
+					"value" : "ASM Compiler options for release build type"
 				}
 			],
-			"type" : "STRING",
-			"value" : "-O3 -DNDEBUG"
+			"type" : "INTERNAL",
+			"value" : "-O2"
 		},
 		{
 			"name" : "CMAKE_ASM_FLAGS_RELWITHDEBINFO",
@@ -195,7 +195,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build"
+			"value" : "/home/vosahlov/Documents/programovani/fastic-readout/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -219,7 +219,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "28"
+			"value" : "30"
 		},
 		{
 			"name" : "CMAKE_CACHE_PATCH_VERSION",
@@ -231,7 +231,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "3"
+			"value" : "0"
 		},
 		{
 			"name" : "CMAKE_COMMAND",
@@ -243,7 +243,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Program Files/CMake/bin/cmake.exe"
+			"value" : "/usr/bin/cmake"
 		},
 		{
 			"name" : "CMAKE_CPACK_COMMAND",
@@ -255,7 +255,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Program Files/CMake/bin/cpack.exe"
+			"value" : "/usr/bin/cpack"
 		},
 		{
 			"name" : "CMAKE_CTEST_COMMAND",
@@ -267,7 +267,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Program Files/CMake/bin/ctest.exe"
+			"value" : "/usr/bin/ctest"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER",
@@ -279,11 +279,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "CXX compiler"
+					"value" : "C++ Compiler"
 				}
 			],
-			"type" : "STRING",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-g++.exe"
+			"type" : "INTERNAL",
+			"value" : "/usr/bin/arm-none-eabi-g++"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER_AR",
@@ -299,7 +299,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc-ar.exe"
+			"value" : "/usr/bin/arm-none-eabi-gcc-ar"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER_RANLIB",
@@ -315,7 +315,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc-ranlib.exe"
+			"value" : "/usr/bin/arm-none-eabi-gcc-ranlib"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS",
@@ -331,7 +331,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : " -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
+			"value" : "-ffunction-sections -fdata-sections -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables  -fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wno-volatile -Weffc++ -Wno-register -fno-exceptions -fno-threadsafe-statics -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mabi=aapcs"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS_DEBUG",
@@ -343,11 +343,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the CXX compiler during DEBUG builds."
+					"value" : "C++ Compiler options for debug build type"
 				}
 			],
-			"type" : "STRING",
-			"value" : "-g"
+			"type" : "INTERNAL",
+			"value" : "-Og -g"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS_MINSIZEREL",
@@ -375,11 +375,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the CXX compiler during RELEASE builds."
+					"value" : "C++ Compiler options for release build type"
 				}
 			],
-			"type" : "STRING",
-			"value" : "-O3 -DNDEBUG"
+			"type" : "INTERNAL",
+			"value" : "-O2"
 		},
 		{
 			"name" : "CMAKE_CXX_FLAGS_RELWITHDEBINFO",
@@ -407,11 +407,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "C compiler"
+					"value" : "C Compiler"
 				}
 			],
-			"type" : "STRING",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc.exe"
+			"type" : "INTERNAL",
+			"value" : "/usr/bin/arm-none-eabi-gcc"
 		},
 		{
 			"name" : "CMAKE_C_COMPILER_AR",
@@ -427,7 +427,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc-ar.exe"
+			"value" : "/usr/bin/arm-none-eabi-gcc-ar"
 		},
 		{
 			"name" : "CMAKE_C_COMPILER_RANLIB",
@@ -443,7 +443,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-gcc-ranlib.exe"
+			"value" : "/usr/bin/arm-none-eabi-gcc-ranlib"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS",
@@ -459,7 +459,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : " -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables --specs=nano.specs --specs=nosys.specs -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=implicit-function-declaration   -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
+			"value" : "-ffunction-sections -fdata-sections -Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses -Wfatal-errors -Wno-unused-function  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-parameter -pedantic -funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables  -Werror=int-conversion -Werror=incompatible-pointer-types -Werror=implicit-function-declaration   -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mabi=aapcs"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS_DEBUG",
@@ -471,11 +471,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the C compiler during DEBUG builds."
+					"value" : "C Compiler options for debug build type"
 				}
 			],
-			"type" : "STRING",
-			"value" : "-g"
+			"type" : "INTERNAL",
+			"value" : "-Og -g"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS_MINSIZEREL",
@@ -503,11 +503,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the C compiler during RELEASE builds."
+					"value" : "C Compiler options for release build type"
 				}
 			],
-			"type" : "STRING",
-			"value" : "-O3 -DNDEBUG"
+			"type" : "INTERNAL",
+			"value" : "-O2"
 		},
 		{
 			"name" : "CMAKE_C_FLAGS_RELWITHDEBINFO",
@@ -539,7 +539,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Strawberry/c/bin/dlltool.exe"
+			"value" : "CMAKE_DLLTOOL-NOTFOUND"
 		},
 		{
 			"name" : "CMAKE_EDIT_COMMAND",
@@ -551,7 +551,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Program Files/CMake/bin/cmake-gui.exe"
+			"value" : "/usr/bin/ccmake"
 		},
 		{
 			"name" : "CMAKE_EXECUTABLE_FORMAT",
@@ -579,7 +579,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : " -lm -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs -TC:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/STM32H753ZITX_FLASH.ld"
+			"value" : "-Wl,--gc-sections -ffunction-sections -fdata-sections -Wl,-Map=FASTIC.map -lm -specs=nosys.specs -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mabi=aapcs -T/home/vosahlov/Documents/programovani/fastic-readout/STM32H753ZITX_FLASH.ld"
 		},
 		{
 			"name" : "CMAKE_EXE_LINKER_FLAGS_DEBUG",
@@ -591,11 +591,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the linker during DEBUG builds."
+					"value" : "Linker options for debug build type"
 				}
 			],
-			"type" : "STRING",
-			"value" : ""
+			"type" : "INTERNAL",
+			"value" : "-Og -g"
 		},
 		{
 			"name" : "CMAKE_EXE_LINKER_FLAGS_MINSIZEREL",
@@ -623,10 +623,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Flags used by the linker during RELEASE builds."
+					"value" : "Linker options for release build type"
 				}
 			],
-			"type" : "STRING",
+			"type" : "INTERNAL",
 			"value" : ""
 		},
 		{
@@ -679,7 +679,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build/CMakeFiles/pkgRedirects"
+			"value" : "/home/vosahlov/Documents/programovani/fastic-readout/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -739,7 +739,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout"
+			"value" : "/home/vosahlov/Documents/programovani/fastic-readout"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -751,7 +751,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "C:/Program Files (x86)/FASTIC"
+			"value" : "/usr/local"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -767,7 +767,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-ld.exe"
+			"value" : "/usr/bin/arm-none-eabi-ld"
 		},
 		{
 			"name" : "CMAKE_MAKE_PROGRAM",
@@ -783,7 +783,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Strawberry/c/bin/ninja.exe"
+			"value" : "/usr/bin/ninja"
 		},
 		{
 			"name" : "CMAKE_MODULE_LINKER_FLAGS",
@@ -879,7 +879,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-nm.exe"
+			"value" : "/usr/bin/arm-none-eabi-nm"
 		},
 		{
 			"name" : "CMAKE_NUMBER_OF_MAKEFILES",
@@ -903,11 +903,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Path to a program."
+					"value" : "Objcopy"
 				}
 			],
-			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-objcopy.exe"
+			"type" : "INTERNAL",
+			"value" : "/usr/bin/arm-none-eabi-objcopy"
 		},
 		{
 			"name" : "CMAKE_OBJDUMP",
@@ -923,7 +923,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-objdump.exe"
+			"value" : "/usr/bin/arm-none-eabi-objdump"
 		},
 		{
 			"name" : "CMAKE_PLATFORM_INFO_INITIALIZED",
@@ -1047,7 +1047,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-ranlib.exe"
+			"value" : "/usr/bin/arm-none-eabi-ranlib"
 		},
 		{
 			"name" : "CMAKE_READELF",
@@ -1063,7 +1063,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-readelf.exe"
+			"value" : "/usr/bin/arm-none-eabi-readelf"
 		},
 		{
 			"name" : "CMAKE_ROOT",
@@ -1075,7 +1075,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Program Files/CMake/share/cmake-3.28"
+			"value" : "/usr/share/cmake"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1156,6 +1156,18 @@
 			],
 			"type" : "STRING",
 			"value" : ""
+		},
+		{
+			"name" : "CMAKE_SIZE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Size"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "/usr/bin/arm-none-eabi-size"
 		},
 		{
 			"name" : "CMAKE_SKIP_INSTALL_RPATH",
@@ -1283,7 +1295,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/bin/arm-none-eabi-strip.exe"
+			"value" : "/usr/bin/arm-none-eabi-strip"
 		},
 		{
 			"name" : "CMAKE_TAPI",
@@ -1300,6 +1312,18 @@
 			],
 			"type" : "FILEPATH",
 			"value" : "CMAKE_TAPI-NOTFOUND"
+		},
+		{
+			"name" : "CMAKE_UNAME",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "uname command"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "/usr/bin/uname"
 		},
 		{
 			"name" : "CMAKE_VERBOSE_MAKEFILE",
@@ -1327,7 +1351,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build"
+			"value" : "/home/vosahlov/Documents/programovani/fastic-readout/build"
 		},
 		{
 			"name" : "FASTIC_IS_TOP_LEVEL",
@@ -1351,7 +1375,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout"
+			"value" : "/home/vosahlov/Documents/programovani/fastic-readout"
 		},
 		{
 			"name" : "LIBS",
@@ -1363,7 +1387,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "--specs=nano.specs --specs=nosys.specs"
+			"value" : ""
 		},
 		{
 			"name" : "MCU_OPTS",
@@ -1375,7 +1399,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "-mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mthumb -mabi=aapcs"
+			"value" : "-mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -mabi=aapcs"
 		},
 		{
 			"name" : "OPTIMIZATIONS",

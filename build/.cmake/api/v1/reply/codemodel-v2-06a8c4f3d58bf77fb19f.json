@@ -6,7 +6,7 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.6.0"
@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "FASTIC.elf::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-FASTIC.elf-Debug-c9440afa9013eb8de226.json",
+					"jsonFile" : "target-FASTIC.elf-Debug-8047fa869a9c33183652.json",
 					"name" : "FASTIC.elf",
 					"projectIndex" : 0
 				}
@@ -49,12 +49,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout/build",
-		"source" : "C:/Users/vvosahlo/cernbox/Documents/STMWorkspace/fastic-readout"
+		"build" : "/home/vosahlov/Documents/programovani/fastic-readout/build",
+		"source" : "/home/vosahlov/Documents/programovani/fastic-readout"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 6
+		"minor" : 7
 	}
 }

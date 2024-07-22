@@ -1,6 +1,10 @@
-# ninja log v5
-2	47	0	clean	a3f0aa62412f55b6
-11	520	7429286532491884	CMakeFiles/FASTIC.elf.dir/src/main.cpp.obj	ce02d523abebd88
-520	684	7429286533134051	FASTIC.elf	e52607a27269d308
-16	42	7429286527611973	CMakeFiles/FASTIC.elf.dir/startup/startup_stm32h753zitx.s.obj	804a4ef566584980
-14	484	7429286531998255	CMakeFiles/FASTIC.elf.dir/src/clock.cpp.obj	b03919da03342848
+# ninja log v6
+1	42	1721632505692866643	build.ninja	732eb1b1324e3b70
+1	658	1721632487462177351	CMakeFiles/FASTIC.elf.dir/src/main.cpp.obj	e16df63df3024f55
+2	613	1721632487462177351	CMakeFiles/FASTIC.elf.dir/src/clock.cpp.obj	39309189aaee64e9
+2	8	1721632487462177351	CMakeFiles/FASTIC.elf.dir/startup/startup_stm32h753zitx.s.obj	9e0bf4f43ccddf8a
+658	683	1721632488115535476	FASTIC.elf	9cee296e2d3f880d
+2	8	1721632508006287093	CMakeFiles/FASTIC.elf.dir/startup/startup_stm32h753zitx.s.obj	9e0bf4f43ccddf8a
+2	749	1721632508006287093	CMakeFiles/FASTIC.elf.dir/src/clock.cpp.obj	39309189aaee64e9
+1	818	1721632508002953635	CMakeFiles/FASTIC.elf.dir/src/main.cpp.obj	e16df63df3024f55
+818	847	1721632508819651035	FASTIC.elf	4b93911cb019925b
