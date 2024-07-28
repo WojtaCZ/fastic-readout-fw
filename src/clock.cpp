@@ -22,14 +22,14 @@ void clock::init(){
 	stmcpp::reg::write(std::ref(FLASH->ACR), FLASH_ACR_CFG);
 	while(stmcpp::reg::read(std::ref(FLASH->ACR)) != FLASH_ACR_CFG){}
 
-	//Setup the PLL (M=3 N=50 P=2 Q=16 R=2) -> sysclock = 400MHz
+	//Setup the PLL (M=4 N=48 P=2 Q=16 R=2) -> sysclock = 384MHz
 	stmcpp::clock::pll::setSource(stmcpp::clock::pll::clkSource::hse);
-	stmcpp::clock::pll::pll<stmcpp::clock::pll::peripheral::pll1, 3, 50, 2, 16, 2> pll1(stmcpp::clock::pll::inputRange::f8_16MHz);
+	stmcpp::clock::pll::pll<stmcpp::clock::pll::peripheral::pll1, 4, 48, 2, 16, 2> pll1(stmcpp::clock::pll::inputRange::f8_16MHz);
 	pll1.enable();
 	while(!pll1.isLocked()){;}
 
 	//Setup the domain dividers
-	stmcpp::clock::domain::domain domain(stmcpp::clock::domain::d1cpre::div1, stmcpp::clock::domain::d1ppre::div2, stmcpp::clock::domain::hpre::div2, stmcpp::clock::domain::d2ppre1::div2, stmcpp::clock::domain::d2ppre2::div2, stmcpp::clock::domain::d3ppre::div2, stmcpp::clock::domain::source::pll1);
+	stmcpp::clock::domain::domain domain(stmcpp::clock::domain::d1cpre::div1, stmcpp::clock::domain::d1ppre::div2, stmcpp::clock::domain::hpre::div2, stmcpp::clock::domain::d2ppre1::div4, stmcpp::clock::domain::d2ppre2::div2, stmcpp::clock::domain::d3ppre::div2, stmcpp::clock::domain::source::pll1);
 
 	//Wait for the MCU to switch to PLL1 as the clock source
 	while(domain.sourceStatus() != stmcpp::clock::domain::source::pll1){;}
