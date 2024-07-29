@@ -21,7 +21,7 @@
 			"interface": "swd",
 			"cwd": "${workspaceFolder}",
 			"executable": "${workspaceFolder}/build/${command:cmake.getLaunchTargetFilename}",
-			"svdFile": "${workspaceFolder}/${command:extension.commandvariable.remember}",
+			"svdFile": "${workspaceFolder}/STM32H753.svd",
 			"configFiles": [
 				"${workspaceFolder}/openocd.cfg",
 			],
@@ -52,7 +52,7 @@
             "type": "cortex-debug",
             "servertype": "bmp",
             "interface": "swd",
-            "BMPGDBSerialPort": "/dev/ttyBmpGdb",  // Use whatever serial port makes sense for your OS and BMP setup
+            "BMPGDBSerialPort": "COM8",  // Use whatever serial port makes sense for your OS and BMP setup
             "runToEntryPoint": "main",
 			"svdFile": "${workspaceFolder}/STM32H753.svd",
         },

@@ -14,8 +14,7 @@
 				"-j",
 				"23", 
 				"--config",
-				"Debug",
-				"--verbose"
+				"Debug"
 			],
 			"options": {
 				"cwd": "${workspaceFolder}"

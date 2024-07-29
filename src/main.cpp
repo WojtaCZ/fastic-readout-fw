@@ -19,6 +19,7 @@
 #include "git.hpp"
 
 #include "clock.hpp"
+#include "si5340.hpp"
 
 using namespace stmcpp::units;
 
@@ -27,6 +28,7 @@ stmcpp::gpio::pin<stmcpp::gpio::port::porte, 10> led0(stmcpp::gpio::mode::output
 stmcpp::gpio::pin<stmcpp::gpio::port::porte, 12> led1(stmcpp::gpio::mode::output);
 stmcpp::gpio::pin<stmcpp::gpio::port::porte, 14> led2(stmcpp::gpio::mode::output);
 stmcpp::gpio::pin<stmcpp::gpio::port::porte, 15> led3(stmcpp::gpio::mode::output);
+
 
 extern "C" void SystemInit(void){
 	// Enable the FPU if needed
@@ -42,7 +44,8 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::gpioc,
 		stmcpp::clock::peripheral::gpioe,
 		stmcpp::clock::peripheral::gpiob,
-		stmcpp::clock::peripheral::i2c1
+        stmcpp::clock::peripheral::gpiod,
+        stmcpp::clock::peripheral::i2c1
 	);
 }
 
@@ -52,15 +55,7 @@ extern "C" int main(void){
 	// Setup the systick timer to count with resolution of 1ms
 	stmcpp::clock::systick::init(1_ms);
 
-	// Configure the Si5340 i2c interface
-	stmcpp::gpio::pin<stmcpp::gpio::port::portb, 6> si5340_scl(stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::pull::noPull, stmcpp::gpio::speed::high);
-	stmcpp::gpio::pin<stmcpp::gpio::port::portb, 7> si5340_sda(stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::pull::noPull, stmcpp::gpio::speed::high);
-	stmcpp::i2c::i2c<stmcpp::i2c::peripheral::i2c1> si5340_i2c(0x0B, 4, 2, 0x0F, 0x13);
-
-	si5340_i2c.enable();
-	std::uint8_t data = si5340_i2c.read8bitAddress(0x0B, 0x77);
-
-	if(data == 0x77) led1.set();
+	si5340::init();
 
 	while(1){
 		stmcpp::clock::systick::waitBlocking(100_ms);
@@ -86,6 +81,12 @@ extern "C" void NMI_Handler(void) {
 extern "C" int _write(int file, char* ptr, int len){
 	// Implement for printf redirection
 	return 0;
+}
+
+void stmcpp::error::globalFaultHandler(code errorCode) {
+	//There has been an error somewhere in the stmcpp libraries, try to figure out what happened
+	__disable_irq();
+	__ASM volatile("bkpt");
 }
 
 
