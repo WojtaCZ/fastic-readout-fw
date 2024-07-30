@@ -20,6 +20,7 @@
 
 #include "clock.hpp"
 #include "si5340.hpp"
+#include "ad9510.hpp"
 
 using namespace stmcpp::units;
 
@@ -55,7 +56,8 @@ extern "C" int main(void){
 	// Setup the systick timer to count with resolution of 1ms
 	stmcpp::clock::systick::init(1_ms);
 
-	si5340::init();
+	//si5340::init();
+	ad9510::init();
 
 	while(1){
 		stmcpp::clock::systick::waitBlocking(100_ms);

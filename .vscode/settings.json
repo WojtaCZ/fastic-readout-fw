@@ -55,5 +55,6 @@
         "text_encoding": "cpp",
         "variant": "cpp",
         "cstring": "cpp"
-    }
+    },
+    "cortex-debug.variableUseNaturalFormat": false
 }

@@ -1,6 +1,6 @@
 [submodule "lib/stm-cpp"]
 	path = lib/stm-cpp
-	url = git@github.com:WojtaCZ/stm-cpp.git
+	url = git@github.com:WojtaCZ/stmcpp.git
 [submodule "lib/stmcpp"]
 	path = lib/stmcpp
 	url = git@github.com:WojtaCZ/stmcpp.git

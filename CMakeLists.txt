@@ -23,6 +23,7 @@ set(SOURCES
 	${SOURCE_BASE}/main.cpp
 	${SOURCE_BASE}/clock.cpp
 	${SOURCE_BASE}/si5340.cpp
+	${SOURCE_BASE}/ad9510.cpp
 	#${SOURCE_BASE}/status.cpp
 	
 	#${SOURCE_BASE}/spi.cpp
