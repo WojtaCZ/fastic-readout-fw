@@ -46,7 +46,8 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::gpioe,
 		stmcpp::clock::peripheral::gpiob,
         stmcpp::clock::peripheral::gpiod,
-        stmcpp::clock::peripheral::i2c1
+        stmcpp::clock::peripheral::i2c1,
+		stmcpp::clock::peripheral::syscfg
 	);
 }
 
@@ -105,6 +106,13 @@ void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
 		case stmcpp::error::moduleHash("ad9510"):
 				{
 				ad9510::error err = static_cast<ad9510::error>(code);
+				__ASM volatile("bkpt");
+				}
+			break;
+		
+		case stmcpp::error::moduleHash("si5340"):
+				{
+				si5340::error err = static_cast<si5340::error>(code);
 				__ASM volatile("bkpt");
 				}
 			break;

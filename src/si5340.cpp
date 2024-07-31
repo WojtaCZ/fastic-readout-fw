@@ -1,23 +1,18 @@
 #include "si5340.hpp"
-#include "Si5340_config.h"
-
+#include "si5340_config.h"
 
 #include "stm32h753xx.h"
 #include "core_cm7.h"
 #include "cmsis_compiler.h"
-#include <stmcpp/gpio.hpp>
-#include <stmcpp/i2c.hpp>
-#include <stmcpp/clock.hpp>
-#include <stmcpp/units.hpp>
 
-std::uint8_t opreg;
+bool lol, los;
 
 namespace si5340 {
     using namespace stmcpp::units;
     // Loss of signal, loss of lock and interrupt status pins
-    /*stmcpp::gpio::pin<stmcpp::gpio::port::portd, 0> los_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 0> los_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);
     stmcpp::gpio::pin<stmcpp::gpio::port::portd, 1> lol_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 2> int_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);*/
+    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 2> int_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);
     // Reset and output enable pins
     stmcpp::gpio::pin<stmcpp::gpio::port::portd, 3> oe_n (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull, stmcpp::gpio::pull::pullUp);
     stmcpp::gpio::pin<stmcpp::gpio::port::portd, 4> rst_n (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull, stmcpp::gpio::pull::pullUp);
@@ -34,7 +29,7 @@ namespace si5340 {
 
         // Wait for the chip to wake up
         stmcpp::clock::systick::waitBlocking(300_ms);
-        
+
         // Enable I2C
         i2c.enable();
         // Select the configuration page 0
@@ -65,7 +60,7 @@ namespace si5340 {
 
         sendMagicPostamble();
 
-        stmcpp::clock::systick::waitBlocking(300_ms);
+        stmcpp::clock::systick::waitBlocking(100_ms);
 
         
         oe_n.clear();
@@ -73,8 +68,29 @@ namespace si5340 {
         i2c.writeRegister(0x01, 0x00, address);
         i2c.writeRegister(0x1C, 0x01, address);
 
-        
         stmcpp::clock::systick::waitBlocking(300_ms);
+
+        // Enable interrupt on the INT pin of the clock generator
+        int_n.enableInterrupt(stmcpp::gpio::interrupt::edge::falling);
+        NVIC_EnableIRQ(EXTI2_IRQn);
+
+        // Select page 0
+        i2c.writeRegister(0x01, 0x00, address);
+        std::uint8_t status = i2c.readRegister(0x0C, address);
+
+        if (status & 0x01) {
+            errorHandler.hardThrow(error::calibrating);
+        } else if (status & 0x02) {
+            errorHandler.hardThrow(error::losxtal);
+        } else if (status & 0x04) {
+            errorHandler.hardThrow(error::losref);
+        } else if (status & 0x08) {
+            errorHandler.hardThrow(error::lol);
+        }
+
+        // If no error is active, clean the flags that might have occured during setup
+        i2c.writeRegister(0x11, 0x00, address);
+        i2c.writeRegister(0x12, 0x00, address);
     }
 
     void sendMagicPreamble() {
@@ -117,5 +133,22 @@ namespace si5340 {
 
         // Wait for the config to be applied
         stmcpp::clock::systick::waitBlocking(300_ms);
+    }
+
+    extern "C" void EXTI2_IRQHandler(void) {
+        __ASM volatile("bkpt");
+        if (int_n.getInterruptFlag()) {
+
+            if (!lol_n.read()) {
+                errorHandler.hardThrow(error::lol);
+            } else if (!los_n.read()){
+                errorHandler.hardThrow(error::losxtal);
+            } else {
+                errorHandler.hardThrow(error::other); 
+            }
+
+            int_n.clearInterruptFlag();
+            NVIC_ClearPendingIRQ(EXTI2_IRQn);
+        }
     }
 }
