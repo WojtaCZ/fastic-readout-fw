@@ -69,42 +69,12 @@ namespace si5340 {
 
         
         oe_n.clear();
-        
+
         i2c.writeRegister(0x01, 0x00, address);
         i2c.writeRegister(0x1C, 0x01, address);
 
         
         stmcpp::clock::systick::waitBlocking(300_ms);
-
-
-        // Select the configuration page 0
-        i2c.writeRegister(0x01, 0x00, address);
-        opreg = i2c.readRegister(0x0c, address);
-
-
-
-        /*// Write a magic config preamble needed for the config
-        sendMagicPreamble();
-
-        // Select the configuration page 0
-        i2c.writeRegister(0x01, 0x00, address);
-
-        // Enable SYSINCAL, LOSXAXB, LOSREF and LOL interrupts
-        i2c.writeRegister(0x17, 0xF0, address);
-        // Mask LOS_IN interrupts
-        i2c.writeRegister(0x18, 0xFF, address);
-        // Select the XTAL as clock input
-        i2c.writeRegister(0x21, 0x0F, address);
-        // Disable LOS for all inputs
-        i2c.writeRegister(0x2C, 0x20, address);
-
-        // Select the configuration page 1
-        i2c.writeRegister(0x01, 0x01, address);
-
-
-
-        // Write a magic config postamble
-        sendMagicPostamble();*/
     }
 
     void sendMagicPreamble() {

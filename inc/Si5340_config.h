@@ -10,7 +10,7 @@
  * Design ID:                                          
  * Includes Pre/Post Download Control Register Writes: No
  * Created By:                                         ClockBuilder Pro v4.13.0.2 [2024-06-10]
- * Timestamp:                                          2024-07-30 13:27:14 GMT+02:00
+ * Timestamp:                                          2024-07-31 10:25:14 GMT+02:00
  *
  * A complete design report corresponding to this export is included at the end 
  * of this header file.
@@ -361,7 +361,7 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * Project File:       C:\Users\vvosahlo\cernbox\Documents\Si5340-RevD-Project.slabtimeproj
  * Design ID:          <none>
  * Created By:         ClockBuilder Pro v4.13.0.2 [2024-06-10]
- * Timestamp:          2024-07-30 13:27:14 GMT+02:00
+ * Timestamp:          2024-07-31 10:25:14 GMT+02:00
  * 
  * Design Rule Check
  * =================

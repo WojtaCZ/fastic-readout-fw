@@ -28,7 +28,7 @@ using namespace stmcpp::units;
 stmcpp::gpio::pin<stmcpp::gpio::port::porte, 10> led0(stmcpp::gpio::mode::output);
 stmcpp::gpio::pin<stmcpp::gpio::port::porte, 12> led1(stmcpp::gpio::mode::output);
 stmcpp::gpio::pin<stmcpp::gpio::port::porte, 14> led2(stmcpp::gpio::mode::output);
-stmcpp::gpio::pin<stmcpp::gpio::port::porte, 15> led3(stmcpp::gpio::mode::output);
+stmcpp::gpio::pin<stmcpp::gpio::port::porte, 15> ledClkStat(stmcpp::gpio::mode::output);
 
 
 extern "C" void SystemInit(void){
@@ -56,7 +56,7 @@ extern "C" int main(void){
 	// Setup the systick timer to count with resolution of 1ms
 	stmcpp::clock::systick::init(1_ms);
 
-	//si5340::init();
+	si5340::init();
 	ad9510::init();
 
 	while(1){
@@ -85,10 +85,33 @@ extern "C" int _write(int file, char* ptr, int len){
 	return 0;
 }
 
-void stmcpp::error::globalFaultHandler(code errorCode) {
-	//There has been an error somewhere in the stmcpp libraries, try to figure out what happened
-	__disable_irq();
-	__ASM volatile("bkpt");
+void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
+	//There has been an error caused by the handler, try to figure out what happened
+	switch (hash) {
+		case stmcpp::error::moduleHash("stmcpp::clock"):
+				{
+				stmcpp::clock::error err = static_cast<stmcpp::clock::error>(code);
+				__ASM volatile("bkpt");
+				}
+			break;
+
+		case stmcpp::error::moduleHash("stmcpp::i2c"):
+				{
+				stmcpp::i2c::error err = static_cast<stmcpp::i2c::error>(code);
+				__ASM volatile("bkpt");
+				}
+			break;
+
+		case stmcpp::error::moduleHash("ad9510"):
+				{
+				ad9510::error err = static_cast<ad9510::error>(code);
+				__ASM volatile("bkpt");
+				}
+			break;
+		
+		default:
+			break;
+	}
 }
 
 
