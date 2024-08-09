@@ -21,15 +21,24 @@
 #include "clock.hpp"
 #include "si5340.hpp"
 #include "ad9510.hpp"
+#include "usb.hpp"
+
+#include <tusb_config.h>
+#include <tinyusb/src/tusb.h>
+#include <tinyusb/src/device/usbd.h>
 
 using namespace stmcpp::units;
-
 
 stmcpp::gpio::pin<stmcpp::gpio::port::porte, 10> led0(stmcpp::gpio::mode::output);
 stmcpp::gpio::pin<stmcpp::gpio::port::porte, 12> led1(stmcpp::gpio::mode::output);
 stmcpp::gpio::pin<stmcpp::gpio::port::porte, 14> led2(stmcpp::gpio::mode::output);
-stmcpp::gpio::pin<stmcpp::gpio::port::porte, 15> ledClkStat(stmcpp::gpio::mode::output);
 
+
+std::uint32_t reg;
+int errorHits[256];
+
+stmcpp::gpio::pin<stmcpp::gpio::port::portd, 8> usart3_tx(stmcpp::gpio::mode::af7);
+stmcpp::usart::uart<stmcpp::usart::peripheral::usart3> usart3(120_MHz, stmcpp::usart::divider::noDivide, 1000000_Bd);
 
 extern "C" void SystemInit(void){
 	// Enable the FPU if needed
@@ -42,12 +51,15 @@ extern "C" void SystemInit(void){
 
 	// Enable the necessary peripheral clocks
 	stmcpp::clock::enablePeripherals(
-		stmcpp::clock::peripheral::gpioc,
-		stmcpp::clock::peripheral::gpioe,
+		stmcpp::clock::peripheral::gpioa,
 		stmcpp::clock::peripheral::gpiob,
+		stmcpp::clock::peripheral::gpioc,
         stmcpp::clock::peripheral::gpiod,
+		stmcpp::clock::peripheral::gpioe,
         stmcpp::clock::peripheral::i2c1,
-		stmcpp::clock::peripheral::syscfg
+		stmcpp::clock::peripheral::usart3,
+		stmcpp::clock::peripheral::tim1
+
 	);
 }
 
@@ -57,12 +69,107 @@ extern "C" int main(void){
 	// Setup the systick timer to count with resolution of 1ms
 	stmcpp::clock::systick::init(1_ms);
 
-	si5340::init();
-	ad9510::init();
+	usart3.enableTx();
 
+	usart3.enable();
+
+	led0.set();
+	/*si5340::init();
+	ad9510::init();*/
+
+	usb::init();
+	//usb::coreInit();
+
+	tud_init(1);
+
+	//usb::rst();
+	volatile unsigned read = 0;
+	char * str;
+
+	stmcpp::clock::systick::waitBlocking(100_ms);
+
+	
 	while(1){
-		stmcpp::clock::systick::waitBlocking(100_ms);
-		led0.toggle();
+		
+		//tud_task();
+		//cdc_task();
+		/*stmcpp::clock::systick::waitBlocking(100_ms);
+		led0.toggle();*/
+		//for(int j = 0; j < 5; j++){
+			/*for(int i = 0; i <= 0xFF; i++){
+				USB_ULPI_Write(0x16, i);
+				stmcpp::clock::systick::waitBlocking(1_ms);
+				read = USB_ULPI_Read(0x16);
+
+				errorHits[i] = read;
+
+				usb::rst();
+			
+				stmcpp::clock::systick::waitBlocking(1_ms);
+			}*/
+		//}
+
+		/*for(int i = 0; i < 0x55; i++){
+			sprintf(str, "%02x ", errorHits[i]);
+			printf(str);
+		}
+
+		printf("\r\n\r\n");
+
+		for(int i = 0; i < 0x55; i++){
+			sprintf(str, "%02x ", i);
+			printf(str);
+		}
+
+		printf("\r\n\r\n");
+		printf("\r\n\r\n");
+
+		for(int i = 0x55; i < 0xAA; i++){
+			sprintf(str, "%02x ", errorHits[i]);
+			printf(str);
+		}
+
+		printf("\r\n\r\n");
+
+		for(int i = 0x55; i < 0xAA; i++){
+			sprintf(str, "%02x ", i);
+			printf(str);
+		}
+
+		printf("\r\n\r\n");
+		printf("\r\n\r\n");
+
+		for(int i = 0xAA; i <= 0xFF; i++){
+			sprintf(str, "%02x ", errorHits[i]);
+			printf(str);
+		}
+
+		printf("\r\n\r\n");
+
+		for(int i = 0xAA; i <= 0xFF; i++){
+			sprintf(str, "%02x ", i);
+			printf(str);
+		}
+
+		printf("\r\n\r\n");
+		printf("\r\n\r\n");
+		printf("\r\n\r\n");
+		printf("\r\n\r\n");*/
+
+		for(int i = 0; i < 0x0A; i++){
+			sprintf(str, "Reg %02x Val %02x\r\n", i, USB_ULPI_Read(i));
+			printf(str);
+			stmcpp::clock::systick::waitBlocking(10_ms);
+		}
+		printf("\r\n\r\n");
+		printf("\r\n\r\n");
+
+		//usb::rst();
+		stmcpp::clock::systick::waitBlocking(1000_ms);
+
+
+
+
 	}
 	
 }
@@ -82,9 +189,26 @@ extern "C" void NMI_Handler(void) {
 }
 
 extern "C" int _write(int file, char* ptr, int len){
+
+	for(int i = 0; i < len; i++){
+		usart3.transmit(ptr[i]);
+
+		duration timestamp_ = stmcpp::clock::systick::getDuration();
+
+		while (!usart3.getStatusFlag(stmcpp::usart::flag::txFree)) {
+			if(stmcpp::clock::systick::getDuration() > (timestamp_ + 500_ms)) {
+				stmcpp::error::globalFaultHandler(0,0);
+			}
+		}
+	}
+
 	// Implement for printf redirection
 	return 0;
 }
+
+extern "C" void __wrap_printf(char *format) {
+    _write(0, format, strlen(format));
+}    
 
 void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
 	//There has been an error caused by the handler, try to figure out what happened

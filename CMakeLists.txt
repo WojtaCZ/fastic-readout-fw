@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.6.0)
 #set (PROJECT "yournamehere")
 
 # Set the device type
-set(DEVICE STM32H753)
+set(DEVICE STM32H753xx)
 
 set(TOOLCHAIN_PREFIX "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/")
 
@@ -24,6 +24,53 @@ set(SOURCES
 	${SOURCE_BASE}/clock.cpp
 	${SOURCE_BASE}/si5340.cpp
 	${SOURCE_BASE}/ad9510.cpp
+	${SOURCE_BASE}/usb.cpp
+
+	${SOURCE_BASE}/usb_descriptors.c
+	
+
+	# common
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/tusb.c
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/common/tusb_fifo.c
+	# device
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/device/usbd.c
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/device/usbd_control.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/audio/audio_device.c
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/cdc/cdc_device.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/dfu/dfu_device.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/dfu/dfu_rt_device.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/hid/hid_device.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/midi/midi_device.c
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/msc/msc_device.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/net/ecm_rndis_device.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/net/ncm_device.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/usbtmc/usbtmc_device.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/vendor/vendor_device.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/video/video_device.c
+	# host
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/host/usbh.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/host/hub.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/cdc/cdc_host.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/hid/hid_host.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/msc/msc_host.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/vendor/vendor_host.c
+	# typec
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/typec/usbc.c
+
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/portable/synopsys/dwc2/dcd_dwc2.c
+
+	
+
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/tusb.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/common/tusb_fifo.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/device/usbd.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/device/usbd_control.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/portable/st/stm32_fsdev/dcd_stm32_fsdev.c
+
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/host/hub.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/host/usbh.c
+
+
 	#${SOURCE_BASE}/status.cpp
 	
 	#${SOURCE_BASE}/spi.cpp
@@ -76,10 +123,10 @@ set(OTHER_CPP "-fno-use-cxa-atexit -Wint-to-pointer-cast -Wno-old-style-cast -Wn
 set(OPTIMIZATIONS "-funsigned-char -funsigned-bitfields -fdiagnostics-color=always -fstack-protector-strong -finline-small-functions -findirect-inlining -fno-exceptions -fno-unwind-tables -fno-asynchronous-unwind-tables" CACHE INTERNAL "Optimizations options")
 set(LIBS "" CACHE INTERNAL "which libs to use")
 
-set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} ${VALIDATION_OPTS} ${OPTIMIZATIONS} ${LIBS} ${OTHER_C}" CACHE INTERNAL "(Project) C Compiler options")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VALIDATION_OPTS} ${OPTIMIZATIONS} ${LIBS} ${OTHER_CPP}" CACHE INTERNAL "(Project) C++ Compiler options")
-set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} " CACHE INTERNAL "(Project) ASM Compiler options")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lm -specs=nosys.specs -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf" CACHE INTERNAL "(Project) Project linker options")
+set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} ${VALIDATION_OPTS} ${OPTIMIZATIONS} ${LIBS} ${OTHER_C} -D${DEVICE}" CACHE INTERNAL "(Project) C Compiler options")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VALIDATION_OPTS} ${OPTIMIZATIONS} ${LIBS} ${OTHER_CPP} -D${DEVICE}" CACHE INTERNAL "(Project) C++ Compiler options")
+set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -D${DEVICE}" CACHE INTERNAL "(Project) ASM Compiler options")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -D${DEVICE} -lm -specs=nosys.specs -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf" CACHE INTERNAL "(Project) Project linker options")
 
 
 
@@ -89,8 +136,11 @@ target_include_directories(${PROJECT_NAME}.elf PRIVATE
 	${CMAKE_SOURCE_DIR}/lib/
 	${CMAKE_SOURCE_DIR}/lib/CMSIS/Include
 	${CMAKE_SOURCE_DIR}/lib/CMSIS/Device/ST/STM32H7xx/Include
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/
+
 )
 
+#set(TINYUSB_TARGET ${PROJECT})
 # custom definitions
 #add_definitions(-Dabc=123)
 

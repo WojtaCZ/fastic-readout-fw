@@ -54,7 +54,21 @@
         "span": "cpp",
         "text_encoding": "cpp",
         "variant": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "stm32h750xx.h": "c",
+        "stm32h7xx_hal_conf.h": "c",
+        "stm32h7xx_hal_pcd_ex.h": "c",
+        "stm32h7xx_hal_def.h": "c",
+        "stm32_hal_legacy.h": "c",
+        "stm32h7xx.h": "c",
+        "usbd_cdc.h": "c",
+        "stm32h7xx_hal.h": "c",
+        "usbd_conf.h": "c",
+        "core_cm7.h": "c",
+        "tusb_option.h": "c",
+        "tusb_compiler.h": "c",
+        "iostream": "cpp",
+        "istream": "cpp"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

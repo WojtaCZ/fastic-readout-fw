@@ -22,7 +22,7 @@ namespace stmcpp::config{
     static constexpr auto lsi = 32_kHz;
 
     //System clock
-    static constexpr auto sysclock = 400_MHz;
+    static constexpr auto sysclock = 480_MHz;
 
 
 
