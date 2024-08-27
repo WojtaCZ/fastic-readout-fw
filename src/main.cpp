@@ -12,6 +12,7 @@
 #include <stmcpp/dma.hpp>
 #include <stmcpp/bdma.hpp>
 #include <stmcpp/dmamux.hpp>
+#include <stmcpp/adc.hpp>
 #include <string>
 
 #include <stmcpp/i2c.hpp>
@@ -77,99 +78,13 @@ extern "C" int main(void){
 	/*si5340::init();
 	ad9510::init();*/
 
-	usb::init();
-	//usb::coreInit();
-
-	tud_init(1);
-
-	//usb::rst();
-	volatile unsigned read = 0;
-	char * str;
 
 	stmcpp::clock::systick::waitBlocking(100_ms);
 
 	
 	while(1){
 		
-		//tud_task();
-		//cdc_task();
-		/*stmcpp::clock::systick::waitBlocking(100_ms);
-		led0.toggle();*/
-		//for(int j = 0; j < 5; j++){
-			/*for(int i = 0; i <= 0xFF; i++){
-				USB_ULPI_Write(0x16, i);
-				stmcpp::clock::systick::waitBlocking(1_ms);
-				read = USB_ULPI_Read(0x16);
-
-				errorHits[i] = read;
-
-				usb::rst();
-			
-				stmcpp::clock::systick::waitBlocking(1_ms);
-			}*/
-		//}
-
-		/*for(int i = 0; i < 0x55; i++){
-			sprintf(str, "%02x ", errorHits[i]);
-			printf(str);
-		}
-
-		printf("\r\n\r\n");
-
-		for(int i = 0; i < 0x55; i++){
-			sprintf(str, "%02x ", i);
-			printf(str);
-		}
-
-		printf("\r\n\r\n");
-		printf("\r\n\r\n");
-
-		for(int i = 0x55; i < 0xAA; i++){
-			sprintf(str, "%02x ", errorHits[i]);
-			printf(str);
-		}
-
-		printf("\r\n\r\n");
-
-		for(int i = 0x55; i < 0xAA; i++){
-			sprintf(str, "%02x ", i);
-			printf(str);
-		}
-
-		printf("\r\n\r\n");
-		printf("\r\n\r\n");
-
-		for(int i = 0xAA; i <= 0xFF; i++){
-			sprintf(str, "%02x ", errorHits[i]);
-			printf(str);
-		}
-
-		printf("\r\n\r\n");
-
-		for(int i = 0xAA; i <= 0xFF; i++){
-			sprintf(str, "%02x ", i);
-			printf(str);
-		}
-
-		printf("\r\n\r\n");
-		printf("\r\n\r\n");
-		printf("\r\n\r\n");
-		printf("\r\n\r\n");*/
-
-		for(int i = 0; i < 0x0A; i++){
-			sprintf(str, "Reg %02x Val %02x\r\n", i, USB_ULPI_Read(i));
-			printf(str);
-			stmcpp::clock::systick::waitBlocking(10_ms);
-		}
-		printf("\r\n\r\n");
-		printf("\r\n\r\n");
-
-		//usb::rst();
 		stmcpp::clock::systick::waitBlocking(1000_ms);
-
-
-
-
 	}
 	
 }
