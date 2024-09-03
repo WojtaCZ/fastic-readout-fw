@@ -13,6 +13,7 @@
 #include <stmcpp/bdma.hpp>
 #include <stmcpp/dmamux.hpp>
 #include <stmcpp/adc.hpp>
+#include <stmcpp/dac.hpp>
 #include <string>
 
 #include <stmcpp/i2c.hpp>

@@ -25,6 +25,7 @@ set(SOURCES
 	${SOURCE_BASE}/si5340.cpp
 	${SOURCE_BASE}/ad9510.cpp
 	${SOURCE_BASE}/usb.cpp
+	${SOURCE_BASE}/fastic.cpp
 
 	${SOURCE_BASE}/usb_descriptors.c
 	
