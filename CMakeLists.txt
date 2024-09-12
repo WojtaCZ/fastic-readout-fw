@@ -15,7 +15,7 @@ set(DEVICE STM32H753xx)
 set(TOOLCHAIN_PREFIX "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/")
 
 # Replace with appropriate linker script
-set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32H753ZITX_FLASH.ld)
+set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32H753VITX_FLASH.ld)
 
 # List the source files to be compiled
 set(SOURCE_BASE ${CMAKE_SOURCE_DIR}/src)
