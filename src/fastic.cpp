@@ -39,7 +39,7 @@ namespace fastic {
 
     //SPI2 and 3 RX DMA requests reouted to channels 0 and 1
     stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel0> dmamux1ch0(stmcpp::dmamux1::request::spi2_rx_dma);
-    stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel1> dmamux1ch0(stmcpp::dmamux1::request::spi3_rx_dma);
+    stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel1> dmamux1ch1(stmcpp::dmamux1::request::spi3_rx_dma);
     //DMA1 stream 0 used for the transfers from FastIC1 SPI A
     stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream0> fastic1_dma_a(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::word, false, static_cast<uint32_t>(SPI2_BASE) + offsetof(SPI_TypeDef, RXDR), stmcpp::dma::datasize::word, true, fastic1_buffers_a[0], fastic1_buffers_a[1], bufferSize, stmcpp::dma::priority::veryHigh, false, stmcpp::dma::pincOffset::psize, true);
     //DMA1 stream 1 used for the transfers from FastIC1 SPI B

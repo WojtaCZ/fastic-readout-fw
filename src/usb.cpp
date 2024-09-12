@@ -8,8 +8,7 @@
 //#include "usb_device.h"
 std::uint32_t data = 0;
 
-stmcpp::gpio::pin<stmcpp::gpio::port::porte, 15> led3(stmcpp::gpio::mode::output);
-
+extern void ledSetNumber(uint8_t number);
 
 // Here is some magic that should allow us to read / write ulpi directly
 #define USBULPI_PHYCR     ((uint32_t)(0x40040000 + 0x034))
@@ -90,17 +89,17 @@ namespace usb {
     stmcpp::gpio::pin<stmcpp::gpio::port::portc, 3>  ulpi_nxt (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
     stmcpp::gpio::pin<stmcpp::gpio::port::porta, 5>  ulpi_clk (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
 
-    stmcpp::gpio::pin<stmcpp::gpio::port::porta, 2>  ulpi_rst (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porta, 2>  ulpi_rst (stmcpp::gpio::mode::output, stmcpp::gpio::otype::openDrain);
 
     void init() {
-
-        
         // Make sure that the analog switches for PC2 and PC3 are closedput
         stmcpp::reg::clear(std::ref(SYSCFG->PMCR), SYSCFG_PMCR_PC2SO); 
         stmcpp::reg::clear(std::ref(SYSCFG->PMCR), SYSCFG_PMCR_PC3SO); 
 
+        stmcpp::reg::set(std::ref(RCC->AHB1ENR), RCC_AHB1ENR_USB1OTGHSEN | RCC_AHB1ENR_USB1OTGHSULPIEN);
+
+        stmcpp::reg::set(std::ref(PWR->CR3), PWR_CR3_USB33DEN);
         stmcpp::reg::set(std::ref(PWR->CR3), PWR_CR3_USBREGEN);
-        while (!stmcpp::reg::read(std::ref(PWR->CR3), PWR_CR3_USB33RDY_Msk)) {;}
 
         ulpi_rst.clear();
 
@@ -111,9 +110,9 @@ namespace usb {
     
         
         // Set up the timer frequency
-        stmcpp::reg::write(std::ref(TIM1->PSC), 0);   
-        stmcpp::reg::write(std::ref(TIM1->ARR), 19);
-        stmcpp::reg::write(std::ref(TIM1->CCR1), 10);
+        /*stmcpp::reg::write(std::ref(TIM1->PSC), 0);   
+        stmcpp::reg::write(std::ref(TIM1->ARR), 19); 
+        stmcpp::reg::write(std::ref(TIM1->CCR1), 10); 
 
         // Set OC mode and enable preload
         stmcpp::reg::set(std::ref(TIM1->CCMR1), TIM_CCMR1_OC1M | TIM_CCMR1_OC1PE);
@@ -123,13 +122,19 @@ namespace usb {
         stmcpp::reg::set(std::ref(TIM1->EGR), TIM_EGR_UG);
         //Enable the timer and its output
         stmcpp::reg::set(std::ref(TIM1->CR1), TIM_CR1_CEN);
-        stmcpp::reg::set(std::ref(TIM1->BDTR), TIM_BDTR_MOE);
+        stmcpp::reg::set(std::ref(TIM1->BDTR), TIM_BDTR_MOE);*/
+
+        stmcpp::clock::systick::waitBlocking(1000_ms);
 
         ulpi_rst.set();
 
-        stmcpp::reg::set(std::ref(RCC->AHB1ENR), RCC_AHB1ENR_USB1OTGHSEN | RCC_AHB1ENR_USB1OTGHSULPIEN);
+        stmcpp::clock::systick::waitBlocking(1000_ms);
+        
 
-        stmcpp::clock::systick::waitBlocking(100_ms);
+        
+
+        
+        //while (!stmcpp::reg::read(std::ref(PWR->CR3), PWR_CR3_USB33RDY_Msk)) {;}
 
        /* stmcpp::reg::set(std::ref(PWR->CR3), PWR_CR3_USB33DEN);
 
@@ -161,7 +166,7 @@ namespace usb {
         // Configure the basics
         stmcpp::reg::write(std::ref(USB1_OTG_HS->GUSBCFG), (0 << USB_OTG_GUSBCFG_HNPCAP_Pos) |  // Not HNP capable
                                                            (0 << USB_OTG_GUSBCFG_SRPCAP_Pos) |  // Not SRP capable
-                                                           (6 << USB_OTG_GUSBCFG_TRDT_Pos) |    // Turnaround time
+                                                           (6 << USB_OTG_GUSBCFG_TRDT_Pos) |    // Turnaround time6
                                                            (7 << USB_OTG_GUSBCFG_TOCAL_Pos));   // Timeout calibration
 
         // Unmask global and mode mismatch interrupt
@@ -186,12 +191,12 @@ extern "C" void OTG_HS_IRQHandler(void) {
 
 // Invoked when device is mounted
 extern "C" void tud_mount_cb(void) {
-  led3.set();
+
 }
 
 // Invoked when device is unmounted
 extern "C" void tud_umount_cb(void) {
-  led3.clear();
+
 }
 
 
