@@ -24,6 +24,7 @@
 #include "si5340.hpp"
 #include "ad9510.hpp"
 #include "usb.hpp"
+#include "fastic.hpp"
 
 #include <tusb_config.h>
 #include <tinyusb/src/tusb.h>
@@ -59,8 +60,12 @@ extern "C" void SystemInit(void){
         stmcpp::clock::peripheral::gpiod,
 		stmcpp::clock::peripheral::gpioe,
         stmcpp::clock::peripheral::i2c1,
+		stmcpp::clock::peripheral::i2c3,
+		stmcpp::clock::peripheral::i2c4,
 		stmcpp::clock::peripheral::usart3,
-		stmcpp::clock::peripheral::tim1
+		stmcpp::clock::peripheral::tim1,
+		stmcpp::clock::peripheral::spi1,
+		stmcpp::clock::peripheral::dma1
 
 	);
 }
@@ -75,19 +80,22 @@ extern "C" int main(void){
 
 	usart3.enable();
 
-	led0.set();
-	/*si5340::init();
-	ad9510::init();*/
+	
+	si5340::init();
+	ad9510::init();
+	fastic::init();
 
-
-	stmcpp::clock::systick::waitBlocking(100_ms);
 
 	
 	while(1){
 		
-		stmcpp::clock::systick::waitBlocking(1000_ms);
+		stmcpp::clock::systick::waitBlocking(100_ms);
 	}
 	
+}
+
+extern "C" void DMA_STR0_IRQHandler(){
+    __ASM volatile("bkpt");
 }
 
 // Increment the systick timer

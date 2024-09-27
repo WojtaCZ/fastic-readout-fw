@@ -47,7 +47,7 @@ void clock::init(){
 	while(!pll1.isLocked()){;}
 
 	//Setup the PLL for the USB
-	stmcpp::clock::pll::pll<stmcpp::clock::pll::peripheral::pll1, 4, 16, 2, 4, 2> pll3(stmcpp::clock::pll::inputRange::f8_16MHz);
+	stmcpp::clock::pll::pll<stmcpp::clock::pll::peripheral::pll3, 8, 32, 2, 4, 12> pll3(stmcpp::clock::pll::inputRange::f8_16MHz);
 	pll3.enable();
 	while(!pll3.isLocked()){;}
 
@@ -68,5 +68,11 @@ void clock::init(){
 	// Select PLL3Q as clock for the usb peripheral
     stmcpp::reg::set(std::ref(RCC->D2CCIP2R), 0b10, RCC_D2CCIP2R_USBSEL_Pos);
 	while(stmcpp::reg::read(std::ref(RCC->D2CCIP2R), 0b11, RCC_D2CCIP2R_USBSEL_Pos) != 0b10){;}
+
+	//Select PLL3R as clock for I2C peripherals
+	stmcpp::reg::set(std::ref(RCC->D2CCIP2R), 0b01, RCC_D2CCIP2R_I2C123SEL_Pos);
+	while(stmcpp::reg::read(std::ref(RCC->D2CCIP2R), 0b11, RCC_D2CCIP2R_I2C123SEL_Pos) != 0b01){;}
+	stmcpp::reg::set(std::ref(RCC->D3CCIPR), 0b01, RCC_D3CCIPR_I2C4SEL_Pos);
+	while(stmcpp::reg::read(std::ref(RCC->D3CCIPR), 0b11, RCC_D3CCIPR_I2C4SEL_Pos) != 0b01){;}
 	
 }

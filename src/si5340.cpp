@@ -19,7 +19,9 @@ namespace si5340 {
     // Configure the i2c pins and interface
     stmcpp::gpio::pin<stmcpp::gpio::port::portb, 6> scl (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::high);
     stmcpp::gpio::pin<stmcpp::gpio::port::portb, 7> sda (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::high);
-    stmcpp::i2c::i2c<stmcpp::i2c::peripheral::i2c1> i2c (0x0B, 4, 2, 0x0F, 0x13);
+    stmcpp::i2c::i2c<stmcpp::i2c::peripheral::i2c1> i2c (0x3, 0x4, 0x2, 0xF, 0x13);
+    //setup=scldel hold=(sdadel) high low
+
     stmcpp::i2c::address address (0x77);
 
     void init () {

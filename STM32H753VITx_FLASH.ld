@@ -177,6 +177,12 @@ SECTIONS
     . = ALIGN(8);
   } >DTCMRAM
 
+    /* DMA BUFFERS */
+  .dma_buffer :
+  {
+    *(.dma_buffer)
+  } >RAM_D2
+
   
 
   /* Remove information from the standard libraries */
