@@ -5,6 +5,7 @@
 
 namespace fastic {
     void init();
+    void syncClock();
 }
 
 

@@ -65,7 +65,8 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::usart3,
 		stmcpp::clock::peripheral::tim1,
 		stmcpp::clock::peripheral::spi1,
-		stmcpp::clock::peripheral::dma1
+		stmcpp::clock::peripheral::dma1,
+		stmcpp::clock::peripheral::rng
 
 	);
 }

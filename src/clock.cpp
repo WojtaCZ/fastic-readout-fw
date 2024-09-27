@@ -31,8 +31,8 @@ void clock::init(){
 	while(!(stmcpp::reg::read(std::ref(RCC->CR)) & RCC_CR_HSERDY_Msk)){;}
 
 	//Set the HSI48 on and wait for it to be ready
-	//stmcpp::reg::set(std::ref(RCC->CR), RCC_CR_HSI48ON);
-	//while(!(stmcpp::reg::read(std::ref(RCC->CR)) & RCC_CR_HSI48RDY_Msk)){;}
+	stmcpp::reg::set(std::ref(RCC->CR), RCC_CR_HSI48ON);
+	while(!(stmcpp::reg::read(std::ref(RCC->CR)) & RCC_CR_HSI48RDY_Msk)){;}
 
 	//Set up the flash latency
 	constexpr std::uint32_t FLASH_ACR_CFG = (FLASH_ACR_LATENCY_4WS | (0b11 << FLASH_ACR_WRHIGHFREQ_Pos));
@@ -45,6 +45,11 @@ void clock::init(){
 	stmcpp::clock::pll::pll<stmcpp::clock::pll::peripheral::pll1, 3, 60, 2, 4, 2> pll1(stmcpp::clock::pll::inputRange::f8_16MHz);
 	pll1.enable();
 	while(!pll1.isLocked()){;}
+
+
+	stmcpp::clock::pll::pll<stmcpp::clock::pll::peripheral::pll2, 3, 50, 4, 4, 4> pll2(stmcpp::clock::pll::inputRange::f8_16MHz);
+	pll2.enable();
+	while(!pll2.isLocked()){;}
 
 	//Setup the PLL for the USB
 	stmcpp::clock::pll::pll<stmcpp::clock::pll::peripheral::pll3, 8, 32, 2, 4, 12> pll3(stmcpp::clock::pll::inputRange::f8_16MHz);
@@ -68,6 +73,10 @@ void clock::init(){
 	// Select PLL3Q as clock for the usb peripheral
     stmcpp::reg::set(std::ref(RCC->D2CCIP2R), 0b10, RCC_D2CCIP2R_USBSEL_Pos);
 	while(stmcpp::reg::read(std::ref(RCC->D2CCIP2R), 0b11, RCC_D2CCIP2R_USBSEL_Pos) != 0b10){;}
+
+	// Select PLL2P as clock for the SPI1, 2 and 3
+    stmcpp::reg::set(std::ref(RCC->D2CCIP1R), 0b001, RCC_D2CCIP1R_SPI123SEL_Pos);
+	while(stmcpp::reg::read(std::ref(RCC->D2CCIP1R), 0b11, RCC_D2CCIP1R_SPI123SEL_Pos) != 0b001){;}
 
 	//Select PLL3R as clock for I2C peripherals
 	stmcpp::reg::set(std::ref(RCC->D2CCIP2R), 0b01, RCC_D2CCIP2R_I2C123SEL_Pos);

@@ -3,6 +3,8 @@
 namespace ad9510 {
     using namespace stmcpp::units;
 
+    uint8_t reg = 0;
+
     // Control interface pins, the communication needs to be bitbanged due to not having enough SPIs :( 
     stmcpp::gpio::pin<stmcpp::gpio::port::portc, 13> cs  (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
     stmcpp::gpio::pin<stmcpp::gpio::port::portc, 8>  clk (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
@@ -34,8 +36,8 @@ namespace ad9510 {
     static constexpr std::uint8_t PLL_REG_ADD = 0x0A;
     static constexpr std::uint8_t SRC_REG_ADD = 0x45;
 
-    static constexpr std::uint8_t OUT4_DIV_VAL = 0x11;   // Divide by 4, 50% duty cycle
-    static constexpr std::uint8_t OUT5_DIV_VAL = 0x11;   // Divide by 4, 50% duty cycle
+    static constexpr std::uint8_t OUT4_DIV_VAL = 0x11;   // Divide by 4, 50% duty cycle //11
+    static constexpr std::uint8_t OUT5_DIV_VAL = 0x11;   // Divide by 4, 50% duty cycle //11
     static constexpr std::uint8_t OUT6_DIV_VAL = 0x33;   // Divide by 8, 50% duty cycle
     static constexpr std::uint8_t OUT7_DIV_VAL = 0x33;   // Divide by 8, 50% duty cycle
 
@@ -206,5 +208,37 @@ void init() {
 
     std::uint8_t write(std::uint8_t address, std::uint8_t data) {
         return transfer(false, address, data);
+    }
+
+    void enableChannelDelay(channel ch){
+        write(static_cast<uint8_t>(ch) - 1, 0x00);
+        write(UPD_REG_ADD, 0x01);
+    }
+
+    void disableChannelDelay(channel ch){
+        write(static_cast<uint8_t>(ch) - 1, 0x01);
+        write(UPD_REG_ADD, 0x01);
+    }
+
+    void setChannelDelayCoarse(channel ch, rampCaps caps, rampCurrent curr){
+        write(static_cast<uint8_t>(ch), static_cast<uint8_t>(curr) | (static_cast<uint8_t>(caps) << 3));
+
+        //Update the config
+        write(UPD_REG_ADD, 0x01);
+
+        //Sync the clocks
+      //  write(SYNC_REG_ADD, 0x04);
+       // write(SYNC_REG_ADD, 0x00);
+    }
+
+    void setChannelDelayFine(channel ch, uint8_t fineAdjust){
+        write(static_cast<uint8_t>(ch) + 1, (fineAdjust & 0b11111) << 1);
+        //Update the config
+        write(UPD_REG_ADD, 0x01);
+
+        //Sync the clocks
+       // write(SYNC_REG_ADD, 0x04);
+       // write(SYNC_REG_ADD, 0x00);
+
     }
 }
