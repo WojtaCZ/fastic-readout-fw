@@ -28,6 +28,8 @@ set(SOURCES
 	${SOURCE_BASE}/fastic.cpp
 
 	${SOURCE_BASE}/usb_descriptors.c
+
+	${CMAKE_SOURCE_DIR}/lib/aurora/src/aurora.cpp
 	
 
 	# common
@@ -138,6 +140,7 @@ target_include_directories(${PROJECT_NAME}.elf PRIVATE
 	${CMAKE_SOURCE_DIR}/lib/CMSIS/Include
 	${CMAKE_SOURCE_DIR}/lib/CMSIS/Device/ST/STM32H7xx/Include
 	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/
+	${CMAKE_SOURCE_DIR}/lib/aurora/inc/
 
 )
 

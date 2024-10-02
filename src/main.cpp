@@ -95,10 +95,6 @@ extern "C" int main(void){
 	
 }
 
-extern "C" void DMA_STR0_IRQHandler(){
-    __ASM volatile("bkpt");
-}
-
 // Increment the systick timer
 extern "C" void SysTick_Handler(){
     stmcpp::clock::systick::increment();
