@@ -70,9 +70,9 @@ void clock::init(){
 	stmcpp::reg::set(std::ref(SYSCFG->CCCSR), SYSCFG_CCCSR_EN);
 	while(!(stmcpp::reg::read(std::ref(SYSCFG->CCCSR)) & SYSCFG_CCCSR_READY_Msk)){;}
 
-	// Select PLL3Q as clock for the usb peripheral
-    stmcpp::reg::set(std::ref(RCC->D2CCIP2R), 0b10, RCC_D2CCIP2R_USBSEL_Pos);
-	while(stmcpp::reg::read(std::ref(RCC->D2CCIP2R), 0b11, RCC_D2CCIP2R_USBSEL_Pos) != 0b10){;}
+	// Select HSI48 as clock for the usb peripheral
+    stmcpp::reg::set(std::ref(RCC->D2CCIP2R), 0b11, RCC_D2CCIP2R_USBSEL_Pos);
+	while(stmcpp::reg::read(std::ref(RCC->D2CCIP2R), 0b11, RCC_D2CCIP2R_USBSEL_Pos) != 0b11){;}
 
 	// Select PLL2P as clock for the SPI1, 2 and 3
     stmcpp::reg::set(std::ref(RCC->D2CCIP1R), 0b001, RCC_D2CCIP1R_SPI123SEL_Pos);

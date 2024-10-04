@@ -106,13 +106,14 @@ namespace fastic {
 
         // Read out the ASIC version to check communication
         tmpReg = fastic2_i2c.readRegister(0x7f, fastic2_address);
-     
+
         // Reduce the serializer speed to the minimum
         static constexpr uint8_t speed = 0x04;
         static constexpr uint8_t spReg = 0x02 | (speed << 3); 
         fastic2_i2c.writeRegister(0xb9, spReg , fastic2_address);
         // Disable scrambling on the aurora bus
-        fastic2_i2c.writeRegister(0x89, 0x00, fastic2_address);
+        //fastic2_i2c.writeRegister(0x89, 0x00, fastic2_address);
+
 
         syncClock();
         

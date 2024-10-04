@@ -65,9 +65,7 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::usart3,
 		stmcpp::clock::peripheral::tim1,
 		stmcpp::clock::peripheral::spi1,
-		stmcpp::clock::peripheral::dma1,
-		stmcpp::clock::peripheral::rng
-
+		stmcpp::clock::peripheral::dma1
 	);
 }
 
@@ -81,16 +79,20 @@ extern "C" int main(void){
 
 	usart3.enable();
 
+	usb::init();
+	usb::coreInit();
+	usb::rst();
 	
-	si5340::init();
-	ad9510::init();
-	fastic::init();
+	//si5340::init();
+	//ad9510::init();
+	//fastic::init();
 
 
 	
 	while(1){
 		
 		stmcpp::clock::systick::waitBlocking(100_ms);
+		reg = USB_ULPI_Read(0x00);
 	}
 	
 }

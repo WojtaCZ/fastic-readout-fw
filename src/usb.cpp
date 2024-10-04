@@ -73,34 +73,30 @@ namespace usb {
     stmcpp::gpio::pin<stmcpp::gpio::port::portc, 5> refsel2 (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
 
     // We need to generate 12MHz on this pin
-    stmcpp::gpio::pin<stmcpp::gpio::port::porte, 9> refclk (stmcpp::gpio::mode::af1, stmcpp::gpio::otype::pushPull, stmcpp::gpio::speed::veryHigh);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porte, 9> refclk (stmcpp::gpio::mode::af1, stmcpp::gpio::otype::pushPull, stmcpp::gpio::speed::medium);
 
 
-    stmcpp::gpio::pin<stmcpp::gpio::port::porta, 3>  ulpi_d0 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 0>  ulpi_d1 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 1>  ulpi_d2 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 10> ulpi_d3 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 11> ulpi_d4 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 12> ulpi_d5 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 13> ulpi_d6 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 5>  ulpi_d7 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porta, 3>  ulpi_d0 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 0>  ulpi_d1 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 1>  ulpi_d2 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 10> ulpi_d3 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 11> ulpi_d4 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 12> ulpi_d5 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 13> ulpi_d6 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 5>  ulpi_d7 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
 
-    stmcpp::gpio::pin<stmcpp::gpio::port::portc, 0>  ulpi_stp (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portc, 2>  ulpi_dir (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portc, 3>  ulpi_nxt (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
-    stmcpp::gpio::pin<stmcpp::gpio::port::porta, 5>  ulpi_clk (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::veryHigh);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portc, 0>  ulpi_stp (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portc, 2>  ulpi_dir (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portc, 3>  ulpi_nxt (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porta, 5>  ulpi_clk (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
 
     stmcpp::gpio::pin<stmcpp::gpio::port::porta, 2>  ulpi_rst (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
 
     void init() {
 
-        
-        // Make sure that the analog switches for PC2 and PC3 are closedput
+        // Make sure that the analog switches for PC2 and PC3 are closed
         stmcpp::reg::clear(std::ref(SYSCFG->PMCR), SYSCFG_PMCR_PC2SO); 
         stmcpp::reg::clear(std::ref(SYSCFG->PMCR), SYSCFG_PMCR_PC3SO); 
-
-        stmcpp::reg::set(std::ref(PWR->CR3), PWR_CR3_USBREGEN);
-        while (!stmcpp::reg::read(std::ref(PWR->CR3), PWR_CR3_USB33RDY_Msk)) {;}
 
         ulpi_rst.clear();
 
@@ -108,7 +104,6 @@ namespace usb {
         refsel0.clear();
         refsel1.set();
         refsel2.clear();
-    
         
         // Set up the timer frequency
         stmcpp::reg::write(std::ref(TIM1->PSC), 0);   
@@ -125,33 +120,29 @@ namespace usb {
         stmcpp::reg::set(std::ref(TIM1->CR1), TIM_CR1_CEN);
         stmcpp::reg::set(std::ref(TIM1->BDTR), TIM_BDTR_MOE);
 
+        stmcpp::clock::systick::waitBlocking(20_ms);
+
         ulpi_rst.set();
 
+        // Enable USB peripheral clock 
         stmcpp::reg::set(std::ref(RCC->AHB1ENR), RCC_AHB1ENR_USB1OTGHSEN | RCC_AHB1ENR_USB1OTGHSULPIEN);
 
         stmcpp::clock::systick::waitBlocking(100_ms);
-
-       /* stmcpp::reg::set(std::ref(PWR->CR3), PWR_CR3_USB33DEN);
-
-        stmcpp::clock::systick::waitBlocking(40_ms);*/
-        
-
     }
 
     void rst(){
-         stmcpp::clock::systick::waitBlocking(1_ms);
-
         ulpi_rst.clear();
 
-        stmcpp::clock::systick::waitBlocking(10_ms);
+        stmcpp::clock::systick::waitBlocking(20_ms);
 
         ulpi_rst.set();
 
-        stmcpp::clock::systick::waitBlocking(1_ms);
+        stmcpp::clock::systick::waitBlocking(100_ms);
 
     }
 
     void coreInit(){
+        stmcpp::reg::set(std::ref(PWR->CR3), PWR_CR3_USB33DEN);
         // Perform the core init according to the datasheet
         // Unmask global interrupt and indicate that periodic fifo is empty
         stmcpp::reg::set(std::ref(USB1_OTG_HS->GAHBCFG), USB_OTG_GAHBCFG_GINT | USB_OTG_GAHBCFG_PTXFELVL);
@@ -159,16 +150,22 @@ namespace usb {
         stmcpp::reg::set(std::ref(USB1_OTG_HS->GINTSTS), USB_OTG_GINTSTS_RXFLVL);
       
         // Configure the basics
-        stmcpp::reg::write(std::ref(USB1_OTG_HS->GUSBCFG), (0 << USB_OTG_GUSBCFG_HNPCAP_Pos) |  // Not HNP capable
+        stmcpp::reg::write(std::ref(USB1_OTG_HS->GUSBCFG), (1 << USB_OTG_GUSBCFG_ULPIAR_Pos) |
+                                                           (0 << USB_OTG_GUSBCFG_HNPCAP_Pos) |  // Not HNP capable
                                                            (0 << USB_OTG_GUSBCFG_SRPCAP_Pos) |  // Not SRP capable
-                                                           (6 << USB_OTG_GUSBCFG_TRDT_Pos) |    // Turnaround time
+                                                           (9 << USB_OTG_GUSBCFG_TRDT_Pos) |    // Turnaround time
                                                            (7 << USB_OTG_GUSBCFG_TOCAL_Pos));   // Timeout calibration
 
         // Unmask global and mode mismatch interrupt
         stmcpp::reg::set(std::ref(USB1_OTG_HS->GINTMSK), USB_OTG_GINTMSK_OTGINT | USB_OTG_GINTMSK_MMISM);
 
         // Force device mode 
-        stmcpp::reg::set(std::ref(USB1_OTG_HS->GUSBCFG), USB_OTG_GUSBCFG_FDMOD/* | USB_OTG_GUSBCFG_ULPIIPD*/ | USB_OTG_GUSBCFG_ULPICSM | USB_OTG_GUSBCFG_ULPIAR);
+        //stmcpp::reg::set(std::ref(USB1_OTG_HS->GUSBCFG), USB_OTG_GUSBCFG_FDMOD/* | USB_OTG_GUSBCFG_ULPIIPD*/ | USB_OTG_GUSBCFG_ULPICSM | USB_OTG_GUSBCFG_ULPIAR);
+        // Reset the core to clean interrupt flags
+        while (!(USB1_OTG_HS->GRSTCTL & USB_OTG_GRSTCTL_AHBIDL)) {}
+        USB1_OTG_HS->GRSTCTL |= USB_OTG_GRSTCTL_CSRST;
+        while ((USB1_OTG_HS->GRSTCTL & USB_OTG_GRSTCTL_CSRST) == USB_OTG_GRSTCTL_CSRST) {}
+
     }
 
    
