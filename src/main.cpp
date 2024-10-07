@@ -140,6 +140,7 @@ extern "C" void SystemInit(void){
 	// Enable the necessary GPIO and USB clocks
 	RCC->AHB4ENR |= RCC_AHB4ENR_GPIOAEN | RCC_AHB4ENR_GPIOBEN | RCC_AHB4ENR_GPIOCEN | RCC_AHB4ENR_GPIODEN | RCC_AHB4ENR_GPIOEEN;
 	RCC->AHB1ENR |= RCC_AHB1ENR_USB1OTGHSEN | RCC_AHB1ENR_USB1OTGHSULPIEN;
+	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
 
 	__ASM volatile("dsb");
 
@@ -173,15 +174,36 @@ extern "C" int main(void){
 	stmcpp::gpio::pin<stmcpp::gpio::port::portc, 3>  ulpi_nxt (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
 	stmcpp::gpio::pin<stmcpp::gpio::port::porta, 5>  ulpi_clk (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
 
+	// We need to generate 12MHz on this pin
+    stmcpp::gpio::pin<stmcpp::gpio::port::porte, 9> refclk (stmcpp::gpio::mode::af1, stmcpp::gpio::otype::pushPull, stmcpp::gpio::speed::medium);
+
+
+
+	//Run the timer
+	// Set up the timer frequency
+	stmcpp::reg::write(std::ref(TIM1->PSC), 0);   
+	stmcpp::reg::write(std::ref(TIM1->ARR), 19);
+	stmcpp::reg::write(std::ref(TIM1->CCR1), 10);
+
+	// Set OC mode and enable preload
+	stmcpp::reg::set(std::ref(TIM1->CCMR1), TIM_CCMR1_OC1M | TIM_CCMR1_OC1PE);
+	// Enable positive output
+	stmcpp::reg::set(std::ref(TIM1->CCER), TIM_CCER_CC1E);
+	// Load all the registers
+	stmcpp::reg::set(std::ref(TIM1->EGR), TIM_EGR_UG);
+	//Enable the timer and its output
+	stmcpp::reg::set(std::ref(TIM1->CR1), TIM_CR1_CEN);
+	stmcpp::reg::set(std::ref(TIM1->BDTR), TIM_BDTR_MOE);
+
 	// Make sure that the PC2 and PC3 analog switches are closed
 	SYSCFG->PMCR &= ~SYSCFG_PMCR_PC2SO; 
     SYSCFG->PMCR &= ~SYSCFG_PMCR_PC3SO; 
 
 	// Set up the reference clock to 24MHz (all refsel pins high)
 	ulpi_rst.clear();
-	refsel0.set();
+	refsel0.clear();
 	refsel1.set(); 
-	refsel2.set();
+	refsel2.clear();
 	stmcpp::clock::systick::waitBlocking(20_ms);
 	ulpi_rst.set();
 	stmcpp::clock::systick::waitBlocking(100_ms);
