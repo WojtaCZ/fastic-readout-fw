@@ -6,19 +6,28 @@
 #include <stmcpp/clock.hpp>
 #include <stmcpp/units.hpp>
 
-extern "C" uint32_t USB_ULPI_Read(uint32_t Addr);
-extern "C" uint32_t USB_ULPI_Write(uint32_t Addr, uint32_t Data);
 
 namespace usb {
     enum class error {
+        ulpi_timeout,
+        ahb_idle_timeout,
+        core_reset_timeout,
         other
     };
 
     static stmcpp::error::handler<error, "usb"> errorHandler;
 
-    void init();
-    void coreInit();
-    void rst();
+    namespace interface {
+      void init();
+      void reset();
+      std::uint8_t readRegister(std::uint8_t address);
+      void writeRegister(std::uint8_t address, std::uint8_t data);
+    }
+
+    namespace core {
+        void init();
+        void softReset();
+    }
 }
 
 #endif
