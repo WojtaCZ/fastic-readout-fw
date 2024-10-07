@@ -1,9 +1,15 @@
 #include "clock.hpp"
 #include <stmcpp/register.hpp>
+#include <stmcpp/units.hpp>
 #include <stmcpp/clock.hpp>
+
+using namespace stmcpp::units;
 
 namespace clock {
 	void init(){
+		// We are running at 64MHz from HSI, setup systick to run at 1ms from that 
+		stmcpp::clock::systick::enable(64_MHz, 1_ms);
+
 		// Enable the LDO and check that the voltage levels are valid
 		stmcpp::reg::set(std::ref(PWR->CR3), 1, PWR_CR3_LDOEN);
 		stmcpp::reg::waitForBitSet(std::ref(PWR->CSR1), PWR_CSR1_ACTVOSRDY_Msk, []() { errorHandler.hardThrow(clock::error::ldo_timeout); });
@@ -40,13 +46,20 @@ namespace clock {
 		stmcpp::clock::pll::setSource(stmcpp::clock::pll::clkSource::hse);
 		stmcpp::clock::pll::pll<stmcpp::clock::pll::peripheral::pll1, 3, 60, 2, 6, 0> pll1(stmcpp::clock::pll::inputRange::f8_16MHz);
 		pll1.enable();
-		stmcpp::clock::systick::waitForTrue(pll1.isLocked(), []() { errorHandler.hardThrow(clock::error::pll1_timeout); });
+		duration timestamp_ = stmcpp::clock::systick::getDuration(); 
+		while (!pll1.isLocked()) {
+			if(stmcpp::clock::systick::getDuration() > (timestamp_ + 2000_ms)) errorHandler.hardThrow(clock::error::pll1_timeout);
+		}
 
-		//Setup the domain dividers
+		//Setup the domain dividers and wait for the MCU to switch to PLL1 as the clock source
 		stmcpp::clock::domain::domain domain(stmcpp::clock::domain::d1cpre::div1, stmcpp::clock::domain::d1ppre::div2, stmcpp::clock::domain::hpre::div2, stmcpp::clock::domain::d2ppre1::div2, stmcpp::clock::domain::d2ppre2::div2, stmcpp::clock::domain::d3ppre::div2, stmcpp::clock::domain::source::pll1);
+		timestamp_ = stmcpp::clock::systick::getDuration(); 
+		while (domain.sourceStatus() != stmcpp::clock::domain::source::pll1) {
+			if(stmcpp::clock::systick::getDuration() > timestamp_ + 1000_ms) errorHandler.hardThrow(clock::error::pll1_timeout);
+		}
 
-		//Wait for the MCU to switch to PLL1 as the clock source
-		stmcpp::clock::systick::waitForTrue(domain.sourceStatus() == stmcpp::clock::domain::source::pll1, []() { errorHandler.hardThrow(clock::error::domain_source_switch_timeout); });
+		// We have switched to the new core clock, reconfigure systick aswell
+		stmcpp::clock::systick::reconfigure(480_MHz, 1_ms);
 
 		// Enable clock compensation cell and wait for it to be ready
 		stmcpp::reg::set(std::ref(SYSCFG->CCCSR), SYSCFG_CCCSR_EN);
@@ -68,7 +81,7 @@ namespace clock {
 
 		static constexpr std::uint32_t usart234578ClkSel = 0b100 << RCC_D2CCIP2R_USART28SEL_Pos; 
 		stmcpp::reg::set(std::ref(RCC->D2CCIP2R), usart234578ClkSel);
-		stmcpp::reg::waitForBitsEqual(std::ref(RCC->D3CCIPR), RCC_D2CCIP2R_USART28SEL_Msk, usart234578ClkSel, []() { errorHandler.hardThrow(clock::error::clock_mux_timeout); });
+		stmcpp::reg::waitForBitsEqual(std::ref(RCC->D2CCIP2R), RCC_D2CCIP2R_USART28SEL_Msk, usart234578ClkSel, []() { errorHandler.hardThrow(clock::error::clock_mux_timeout); });
 		
 	}
 }
