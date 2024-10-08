@@ -177,11 +177,19 @@ SECTIONS
     . = ALIGN(8);
   } >DTCMRAM
 
-    /* DMA BUFFERS */
+
+  /* DMA BUFFERS */
   .dma_buffer :
   {
     *(.dma_buffer)
   } >RAM_D2
+
+  /* USB BUFFERS */
+  .usb_buffer :
+  {
+    *(.usb_buffer)
+  } >RAM_D2
+
 
   
 

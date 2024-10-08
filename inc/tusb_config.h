@@ -42,6 +42,10 @@
 #define CFG_TUSB_DEBUG              3
 #define BOARD_TUD_RHPORT 1
 
+// Place memory into a specific region
+#define CFG_TUSB_MEM_SECTION __attribute__ (( section(".usb_buffers") ))
+#define CFG_TUSB_MEM_ALIGN   __attribute__ ((aligned(4)))
+
 //--------------------------------------------------------------------+
 // Board Specific Configuration
 //--------------------------------------------------------------------+

@@ -70,7 +70,7 @@ namespace clock {
 		stmcpp::reg::set(std::ref(RCC->D2CCIP2R), usbClkSel);
 		stmcpp::reg::waitForBitsEqual(std::ref(RCC->D2CCIP2R), RCC_D2CCIP2R_USBSEL_Msk, usbClkSel, []() { errorHandler.hardThrow(clock::error::clock_mux_timeout); });
 
-		//Select CSI as clock for loww speed peripherals (I2C, UART)
+		//Select CSI as clock for low speed peripherals (I2C, UART)
 		static constexpr std::uint32_t i2c123ClkSel = 0b01 << RCC_D2CCIP2R_I2C123SEL_Pos; 
 		stmcpp::reg::set(std::ref(RCC->D2CCIP2R), i2c123ClkSel);
 		stmcpp::reg::waitForBitsEqual(std::ref(RCC->D2CCIP2R), RCC_D2CCIP2R_I2C123SEL_Msk, i2c123ClkSel, []() { errorHandler.hardThrow(clock::error::clock_mux_timeout); });

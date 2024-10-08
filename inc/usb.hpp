@@ -6,16 +6,18 @@
 #include <stmcpp/clock.hpp>
 #include <stmcpp/units.hpp>
 
-
 namespace usb {
     enum class error {
         ulpi_timeout,
         ahb_idle_timeout,
         core_reset_timeout,
+        interface_test_error,
         other
     };
 
     static stmcpp::error::handler<error, "usb"> errorHandler;
+
+    void init();
 
     namespace interface {
       void init();
@@ -27,6 +29,7 @@ namespace usb {
     namespace core {
         void init();
         void softReset();
+        void hardReset();
     }
 }
 

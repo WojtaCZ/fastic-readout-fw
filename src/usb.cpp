@@ -4,13 +4,39 @@
 
 #include <tusb_config.h>
 #include <tinyusb/src/tusb.h>
+#include <tinyusb/src/device/usbd.h>
 
-//#include "usb_device.h"
+// This is required by the tinyusb library
+uint32_t SystemCoreClock = 480000000;
 
 namespace usb {
     using namespace stmcpp::units;
 
-    namespace interface{
+    void init() {
+      // Init the interface and core
+      usb::interface::init();
+      usb::core::init();
+      usb::interface::reset();
+
+      // Check that we can correctly read the VID and PID 
+      if(usb::interface::readRegister(0x00) != 0x24 || usb::interface::readRegister(0x01) != 0x04 || usb::interface::readRegister(0x02) != 0x07 || usb::interface::readRegister(0x03) != 0x00){
+        errorHandler.hardThrow(error::interface_test_error);
+      }
+
+      // Try to write a test pattern to the scratch register and read it (if this is correct, we consider the interface as working)
+      usb::interface::writeRegister(0x16, 0xAA);
+      if(usb::interface::readRegister(0x16) != 0xAA){
+        errorHandler.hardThrow(error::interface_test_error);
+      }
+
+      // Reset the core states
+      //usb::core::hardReset();
+
+      // Hand it over to tinyusb
+      tusb_init();
+    }
+
+    namespace interface {
       // Control interface pins
       stmcpp::gpio::pin<stmcpp::gpio::port::porte, 7> refsel0 (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
       stmcpp::gpio::pin<stmcpp::gpio::port::portb, 2> refsel1 (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
@@ -109,12 +135,17 @@ namespace usb {
         stmcpp::reg::waitForBitClear(std::ref(USB1_OTG_HS->GRSTCTL), USB_OTG_GRSTCTL_CSRST_Msk, []() { errorHandler.hardThrow(usb::error::core_reset_timeout); });
       }
 
+      void hardReset() {
+        stmcpp::reg::set(std::ref(RCC->AHB1RSTR), RCC_AHB1RSTR_USB1OTGHSRST);
+        
+        // Reenable the clocks
+        stmcpp::clock::enablePeripherals(
+          stmcpp::clock::peripheral::usb1otg,
+          stmcpp::clock::peripheral::usb1ulpi
+        );
+      }
+
     }
-   
-
-
-
-  
 }
 
 
@@ -125,7 +156,7 @@ extern "C" void OTG_FS_IRQHandler(void) {
 extern "C" void OTG_HS_IRQHandler(void) {
   tud_int_handler(1);
 }
-
+/*
 // Invoked when device is mounted
 extern "C" void tud_mount_cb(void) {
 
@@ -137,3 +168,4 @@ extern "C" void tud_umount_cb(void) {
 }
 
 
+*/
