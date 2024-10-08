@@ -86,8 +86,47 @@ namespace fastic {
     stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel0> dmamux1ch0(stmcpp::dmamux1::request::spi1_rx_dma);
     stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream0> fastic2_dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::word, false, static_cast<uint32_t>(SPI1_BASE) + offsetof(SPI_TypeDef, RXDR), stmcpp::dma::datasize::word, true, (uint32_t)&fastic2_buffers[0][0], (uint32_t)&fastic2_buffers[1][0], fasticBufferSize, stmcpp::dma::priority::veryHigh, false, stmcpp::dma::pincOffset::psize, true);
 
+    stmcpp::gpio::pin<stmcpp::gpio::port::porte, 11>  fastic1_inj (stmcpp::gpio::mode::af1, stmcpp::gpio::otype::pushPull, stmcpp::gpio::speed::veryHigh);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porte, 13>  fastic2_inj (stmcpp::gpio::mode::af1, stmcpp::gpio::otype::pushPull, stmcpp::gpio::speed::veryHigh);
+
+    void initInjectionChannels() {
+
+           
+
+        // Timer 15 is used as a trigger (generate a 500kHz base clock) 
+        stmcpp::reg::write(std::ref(TIM15->PSC), 239);   
+        stmcpp::reg::write(std::ref(TIM15->ARR), 499000);
+        // Load all the registers
+        stmcpp::reg::set(std::ref(TIM15->EGR), TIM_EGR_UG | TIM_EGR_TG);
+        //Enable the timer and its output
+        stmcpp::reg::set(std::ref(TIM15->CR1), TIM_CR1_CEN);
 
 
+
+        // Timer 1 is used to inject pulses into the fastic injection channels
+
+        // Slave mode: combined reset & trigger
+        stmcpp::reg::write(std::ref(TIM1->SMCR), (0b1000 << TIM_SMCR_SMS_Pos));
+
+        // Enable CH2_P and CH3_P outputs and configure them to be active low
+	    stmcpp::reg::set(std::ref(TIM1->CCER), TIM_CCER_CC2E | /*TIM_CCER_CC2P |*/ TIM_CCER_CC3E /*| TIM_CCER_CC3P*/ );
+
+        // Select the output compare mode 
+	    stmcpp::reg::set(std::ref(TIM1->CCMR1), TIM_CCMR1_OC2M);
+	    stmcpp::reg::set(std::ref(TIM1->CCMR2), TIM_CCMR2_OC3M);
+        
+        stmcpp::reg::write(std::ref(TIM1->CCR2), 23);
+        stmcpp::reg::write(std::ref(TIM1->CCR3), 23);
+
+        //stmcpp::reg::write(std::ref(TIM1->PSC), 23);   
+	
+        // Load all the registers
+        stmcpp::reg::set(std::ref(TIM1->EGR), TIM_EGR_UG);
+        //Enable the timer and its output
+        stmcpp::reg::set(std::ref(TIM1->CR1), TIM_CR1_CEN);
+        stmcpp::reg::set(std::ref(TIM1->BDTR), TIM_BDTR_MOE);
+
+    }
        
     void init() {
 

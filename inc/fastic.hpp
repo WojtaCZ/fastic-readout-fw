@@ -6,6 +6,7 @@
 namespace fastic {
     void init();
     void syncClock();
+    void initInjectionChannels();
 }
 
 

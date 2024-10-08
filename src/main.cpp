@@ -62,6 +62,7 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::i2c4,
 		stmcpp::clock::peripheral::uart4,
 		stmcpp::clock::peripheral::tim1,
+		stmcpp::clock::peripheral::tim15,
 		// SPI and DMA used for aurora stream reception
 		stmcpp::clock::peripheral::spi1,
 		stmcpp::clock::peripheral::dma1,
@@ -77,12 +78,12 @@ extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
 
-	usart4.enableTx();
-	usart4.enable();
+	//usart4.enableTx();
+	//usart4.enable();
 
-	printf("Test \n\r");
+	//printf("Test \n\r");
 
-	usb::init();
+	//usb::init();
 
 
 	
@@ -90,11 +91,12 @@ extern "C" int main(void){
 	//si5340::init();
 	//ad9510::init();
 	//fastic::init();
+	fastic::initInjectionChannels();
 
 
 	
 	while(1){
-		tud_task();
+		//tud_task();
 		//stmcpp::clock::systick::waitBlocking(100_ms);
 		
 	}
