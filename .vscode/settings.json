@@ -97,5 +97,6 @@
         "typeindex": "cpp",
         "valarray": "cpp"
     },
-    "cortex-debug.variableUseNaturalFormat": false
+    "cortex-debug.variableUseNaturalFormat": false,
+    "C_Cpp.errorSquiggles": "disabled"
 }

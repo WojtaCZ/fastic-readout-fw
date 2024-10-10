@@ -12,10 +12,10 @@ cmake_minimum_required(VERSION 3.6.0)
 # Set the device type
 set(DEVICE STM32H753xx)
 
-set(TOOLCHAIN_PREFIX "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/")
+#set(TOOLCHAIN_PREFIX "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10/")
 
 # Replace with appropriate linker script
-set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32H753VITX_FLASH.ld)
+set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32H753VITx_FLASH.ld)
 
 # List the source files to be compiled
 set(SOURCE_BASE ${CMAKE_SOURCE_DIR}/src)
@@ -98,7 +98,7 @@ endif (NOT DEFINED PROJECT)
 project(${PROJECT} LANGUAGES CXX C ASM VERSION 0.1.0)
 
 # Include toolchain related definitions
-include(${CMAKE_SOURCE_DIR}/cmake/toolchain-arm-none-eabi.cmake)
+#include(${CMAKE_SOURCE_DIR}/cmake/toolchain-arm-none-eabi.cmake)
 
 # Set a default build type if none was specified
 set(default_build_type "Debug")
@@ -129,7 +129,7 @@ set(LIBS "" CACHE INTERNAL "which libs to use")
 set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} ${VALIDATION_OPTS} ${OPTIMIZATIONS} ${LIBS} ${OTHER_C} -D${DEVICE}" CACHE INTERNAL "(Project) C Compiler options")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VALIDATION_OPTS} ${OPTIMIZATIONS} ${LIBS} ${OTHER_CPP} -D${DEVICE}" CACHE INTERNAL "(Project) C++ Compiler options")
 set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -D${DEVICE}" CACHE INTERNAL "(Project) ASM Compiler options")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -D${DEVICE} -lm -specs=nosys.specs -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf" CACHE INTERNAL "(Project) Project linker options")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -D${DEVICE} -lm -specs=nosys.specs -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -Wl,--print-memory-usage " CACHE INTERNAL "(Project) Project linker options")
 
 
 
@@ -148,7 +148,7 @@ target_include_directories(${PROJECT_NAME}.elf PRIVATE
 # custom definitions
 #add_definitions(-Dabc=123)
 
-include(${CMAKE_SOURCE_DIR}/cmake/linker.cmake)
+#include(${CMAKE_SOURCE_DIR}/cmake/linker.cmake)
 
 # Select the device definition
 if (DEVICE MATCHES ^STM32H7)
@@ -171,21 +171,12 @@ set(BIN_FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bin)
 #link_directories(${CMAKE_SOURCE_DIR}/lib/libopencm3/lib/stm32/g4 )
 #target_link_libraries(${PROJECT_NAME}.elf -L${CMAKE_SOURCE_DIR}/lib/libopencm3/lib)
 
-add_custom_command(
-	POST_BUILD
-	TARGET ${PROJECT_NAME}.elf
-	COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
-	COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
-	COMMENT "Building ${HEX_FILE} \nBuilding ${BIN_FILE}")
-
-
-add_custom_command(
-	POST_BUILD
-	TARGET ${PROJECT_NAME}.elf
-	COMMAND echo ""
-	COMMAND echo "Resulting section sizes:"
-	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${PROJECT_NAME}.elf>
-	COMMENT "Calculating the section sizes")
+#add_custom_command(
+#	POST_BUILD
+#	TARGET ${PROJECT_NAME}.elf
+#	COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
+#	COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
+#	COMMENT "Building ${HEX_FILE} \nBuilding ${BIN_FILE}")
 
 	
 #include(${CMAKE_SOURCE_DIR}/cmake/git.cmake)
