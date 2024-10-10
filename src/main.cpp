@@ -83,9 +83,6 @@ extern "C" void SystemInit(void){
 	__ASM volatile("dsb");
 	__ASM volatile("isb");
 
-	
-
-
 	// Enable the necessary peripheral clocks
 	stmcpp::clock::enablePeripherals(
 		stmcpp::clock::peripheral::gpioa,
@@ -119,7 +116,7 @@ extern "C" int main(void){
 
 	//printf("Test \n\r");
 
-	//usb::init();
+	usb::init();
 
 
 	
@@ -127,12 +124,12 @@ extern "C" int main(void){
 	//si5340::init();
 	//ad9510::init();
 	//fastic::init();
-	fastic::initInjectionChannels();
+	//fastic::initInjectionChannels();
 
 
 	
 	while(1){
-		//tud_task();
+		tud_task();
 		//stmcpp::clock::systick::waitBlocking(100_ms);
 		
 	}

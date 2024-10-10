@@ -26,18 +26,14 @@
 
 #include "tusb.h"
 
-/* A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
- * Same VID/PID with different interface e.g MSC (first), then CDC (later) will possibly cause system error on PC.
- *
- * Auto ProductID layout's Bitmap:
- *   [MSB]         HID | MSC | CDC          [LSB]
- */
+
+
 #define _PID_MAP(itf, n)  ( (CFG_TUD_##itf) << (n) )
 #define USB_PID           (0x4000 | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
                            _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4) )
 
 #define USB_VID   0xCafe
-#define USB_BCD   0x0200
+#define USB_BCD   0x0200 // USB 2.0
 
 //--------------------------------------------------------------------+
 // Device Descriptors
@@ -50,9 +46,9 @@ tusb_desc_device_t const desc_device =
 
     // Use Interface Association Descriptor (IAD) for CDC
     // As required by USB Specs IAD's subclass must be common class (2) and protocol must be IAD (1)
-    .bDeviceClass       = TUSB_CLASS_MISC,
-    .bDeviceSubClass    = MISC_SUBCLASS_COMMON,
-    .bDeviceProtocol    = MISC_PROTOCOL_IAD,
+    .bDeviceClass       = TUSB_CLASS_VENDOR_SPECIFIC,
+    .bDeviceSubClass    = 0x00,
+    .bDeviceProtocol    = 0x00,
     .bMaxPacketSize0    = CFG_TUD_ENDPOINT0_SIZE,
 
     .idVendor           = USB_VID,
@@ -78,83 +74,51 @@ uint8_t const * tud_descriptor_device_cb(void)
 //--------------------------------------------------------------------+
 enum
 {
-  ITF_NUM_CDC_0 = 0,
-  ITF_NUM_CDC_0_DATA,
-  ITF_NUM_CDC_1,
-  ITF_NUM_CDC_1_DATA,
+  ITF_NUM_CDC_NOTIF = 0,
+  ITF_NUM_CDC_DATA,
+  ITF_NUM_FASTIC_0,
+  ITF_NUM_FASTIC_1,
   ITF_NUM_TOTAL
 };
 
-#define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + CFG_TUD_CDC * TUD_CDC_DESC_LEN)
+#define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + 2*TUD_VENDOR_DESC_LEN)
 
-#if CFG_TUSB_MCU == OPT_MCU_LPC175X_6X || CFG_TUSB_MCU == OPT_MCU_LPC177X_8X || CFG_TUSB_MCU == OPT_MCU_LPC40XX
-  // LPC 17xx and 40xx endpoint type (bulk/interrupt/iso) are fixed by its number
-  // 0 control, 1 In, 2 Bulk, 3 Iso, 4 In etc ...
-  #define EPNUM_CDC_0_NOTIF   0x81
-  #define EPNUM_CDC_0_OUT     0x02
-  #define EPNUM_CDC_0_IN      0x82
+// Specify the endpoints used for CDC communication and data from both FascICs
+#define EPNUM_CDC_NOTIF         0x81
+#define EPNUM_CDC_OUT           0x02
+#define EPNUM_CDC_IN            0x82
 
-  #define EPNUM_CDC_1_NOTIF   0x84
-  #define EPNUM_CDC_1_OUT     0x05
-  #define EPNUM_CDC_1_IN      0x85
+#define EPNUM_FASTIC_0_OUT      0x03
+#define EPNUM_FASTIC_0_IN       0x83
 
-#elif CFG_TUSB_MCU == OPT_MCU_SAMG || CFG_TUSB_MCU ==  OPT_MCU_SAMX7X
-  // SAMG & SAME70 don't support a same endpoint number with different direction IN and OUT
-  //    e.g EP1 OUT & EP1 IN cannot exist together
-  #define EPNUM_CDC_0_NOTIF   0x81
-  #define EPNUM_CDC_0_OUT     0x02
-  #define EPNUM_CDC_0_IN      0x83
+#define EPNUM_FASTIC_1_OUT      0x04
+#define EPNUM_FASTIC_1_IN       0x84
 
-  #define EPNUM_CDC_1_NOTIF   0x84
-  #define EPNUM_CDC_1_OUT     0x05
-  #define EPNUM_CDC_1_IN      0x86
-
-#elif CFG_TUSB_MCU == OPT_MCU_FT90X || CFG_TUSB_MCU == OPT_MCU_FT93X
-  // FT9XX doesn't support a same endpoint number with different direction IN and OUT
-  //    e.g EP1 OUT & EP1 IN cannot exist together
-  #define EPNUM_CDC_0_NOTIF   0x81
-  #define EPNUM_CDC_0_OUT     0x02
-  #define EPNUM_CDC_0_IN      0x83
-
-  #define EPNUM_CDC_1_NOTIF   0x84
-  #define EPNUM_CDC_1_OUT     0x05
-  #define EPNUM_CDC_1_IN      0x86
-
-#else
-  #define EPNUM_CDC_0_NOTIF   0x81
-  #define EPNUM_CDC_0_OUT     0x02
-  #define EPNUM_CDC_0_IN      0x82
-
-  #define EPNUM_CDC_1_NOTIF   0x83
-  #define EPNUM_CDC_1_OUT     0x04
-  #define EPNUM_CDC_1_IN      0x84
-#endif
 
 uint8_t const desc_fs_configuration[] =
 {
   // Config number, interface count, string index, total length, attribute, power in mA
   TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, 0x00, 100),
 
-  // 1st CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
-  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, EPNUM_CDC_0_NOTIF, 8, EPNUM_CDC_0_OUT, EPNUM_CDC_0_IN, 64),
+  // Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_DATA, 4, EPNUM_CDC_NOTIF, 8, EPNUM_CDC_OUT, EPNUM_CDC_IN, 64),
 
-  // 2nd CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
-  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_1, 4, EPNUM_CDC_1_NOTIF, 8, EPNUM_CDC_1_OUT, EPNUM_CDC_1_IN, 64),
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_0, 4, EPNUM_FASTIC_0_OUT, EPNUM_FASTIC_0_OUT, 64),
+
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_1, 4, EPNUM_FASTIC_1_OUT, EPNUM_FASTIC_1_OUT, 64)
 };
-
-#if TUD_OPT_HIGH_SPEED
-// Per USB specs: high speed capable device must report device_qualifier and other_speed_configuration
 
 uint8_t const desc_hs_configuration[] =
 {
   // Config number, interface count, string index, total length, attribute, power in mA
   TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, 0x00, 100),
+  
+  // Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_DATA, 4, EPNUM_CDC_NOTIF, 8, EPNUM_CDC_OUT, EPNUM_CDC_IN, 512),
 
-  // 1st CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
-  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, EPNUM_CDC_0_NOTIF, 8, EPNUM_CDC_0_OUT, EPNUM_CDC_0_IN, 512),
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_0, 4, EPNUM_FASTIC_0_OUT, EPNUM_FASTIC_0_OUT, 512),
 
-  // 2nd CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
-  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_1, 4, EPNUM_CDC_1_NOTIF, 8, EPNUM_CDC_1_OUT, EPNUM_CDC_1_IN, 512),
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_1, 4, EPNUM_FASTIC_1_OUT, EPNUM_FASTIC_1_OUT, 512)
 };
 
 // device qualifier is mostly similar to device descriptor since we don't change configuration based on speed
@@ -164,9 +128,9 @@ tusb_desc_device_qualifier_t const desc_device_qualifier =
   .bDescriptorType    = TUSB_DESC_DEVICE,
   .bcdUSB             = USB_BCD,
 
-  .bDeviceClass       = TUSB_CLASS_MISC,
-  .bDeviceSubClass    = MISC_SUBCLASS_COMMON,
-  .bDeviceProtocol    = MISC_PROTOCOL_IAD,
+  .bDeviceClass       = TUSB_CLASS_VENDOR_SPECIFIC,
+  .bDeviceSubClass    = 0x00,
+  .bDeviceProtocol    = 0x00,
 
   .bMaxPacketSize0    = CFG_TUD_ENDPOINT0_SIZE,
   .bNumConfigurations = 0x01,
@@ -193,7 +157,6 @@ uint8_t const* tud_descriptor_other_speed_configuration_cb(uint8_t index)
   return (tud_speed_get() == TUSB_SPEED_HIGH) ?  desc_fs_configuration : desc_hs_configuration;
 }
 
-#endif // highspeed
 
 // Invoked when received GET CONFIGURATION DESCRIPTOR
 // Application return pointer to descriptor
@@ -202,12 +165,7 @@ uint8_t const * tud_descriptor_configuration_cb(uint8_t index)
 {
   (void) index; // for multiple configurations
 
-#if TUD_OPT_HIGH_SPEED
-  // Although we are highspeed, host may be fullspeed.
   return (tud_speed_get() == TUSB_SPEED_HIGH) ?  desc_hs_configuration : desc_fs_configuration;
-#else
-  return desc_fs_configuration;
-#endif
 }
 
 //--------------------------------------------------------------------+
@@ -226,10 +184,10 @@ enum {
 char const *string_desc_arr[] =
 {
   (const char[]) { 0x09, 0x04 }, // 0: is supported language is English (0x0409)
-  "TinyUSB",                     // 1: Manufacturer
-  "TinyUSB Device",              // 2: Product
+  "CERN",                        // 1: Manufacturer
+  "FastIC+ Readout",             // 2: Product
   NULL,                          // 3: Serials will use unique ID if possible
-  "TinyUSB CDC",                 // 4: CDC Interface
+  NULL,                          // 4:
 };
 
 static uint16_t _desc_str[32 + 1];
