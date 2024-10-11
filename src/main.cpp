@@ -111,10 +111,10 @@ extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
 
-	//usart4.enableTx();
-	//usart4.enable();
+	usart4.enableTx();
+	usart4.enable();
 
-	//printf("Test \n\r");
+	printf("Test \n\r");
 
 	usb::init();
 
@@ -167,9 +167,7 @@ extern "C" int _write(int file, char* ptr, int len){
 	// Implement for printf redirection
 	return 0;
 }
-extern "C" void __wrap_printf(char *format) {
-    _write(0, format, strlen(format));
-}    
+  
 
 void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
 	//There has been an error caused by the handler, try to figure out what happened

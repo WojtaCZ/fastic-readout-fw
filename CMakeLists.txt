@@ -44,11 +44,11 @@ set(SOURCES
 	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/dfu/dfu_rt_device.c
 	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/hid/hid_device.c
 	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/midi/midi_device.c
-	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/msc/msc_device.c
+	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/msc/msc_device.c
 	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/net/ecm_rndis_device.c
 	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/net/ncm_device.c
 	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/usbtmc/usbtmc_device.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/vendor/vendor_device.c
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/vendor/vendor_device.c
 	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/video/video_device.c
 	# host
 	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/host/usbh.c
@@ -129,8 +129,8 @@ set(LIBS "" CACHE INTERNAL "which libs to use")
 set(CMAKE_C_FLAGS     "${CMAKE_C_FLAGS} ${VALIDATION_OPTS} ${OPTIMIZATIONS} ${LIBS} ${OTHER_C} -D${DEVICE}" CACHE INTERNAL "(Project) C Compiler options")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${VALIDATION_OPTS} ${OPTIMIZATIONS} ${LIBS} ${OTHER_CPP} -D${DEVICE}" CACHE INTERNAL "(Project) C++ Compiler options")
 set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -D${DEVICE}" CACHE INTERNAL "(Project) ASM Compiler options")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -D${DEVICE} -lm -specs=nosys.specs -ffreestanding -fdiagnostics-color=always -Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf -Wl,--print-memory-usage " CACHE INTERNAL "(Project) Project linker options")
-
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -D${DEVICE} -lm -specs=nosys.specs -ffreestanding -fdiagnostics-color=always -Wl,--print-memory-usage " CACHE INTERNAL "(Project) Project linker options")
+#-Wl,--wrap,printf -Wl,--wrap,snprintf -Wl,--wrap,vsnprintf
 
 
 target_include_directories(${PROJECT_NAME}.elf PRIVATE 
