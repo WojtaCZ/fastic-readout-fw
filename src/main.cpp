@@ -99,6 +99,8 @@ extern "C" void SystemInit(void){
 		// SPI and DMA used for aurora stream reception
 		stmcpp::clock::peripheral::spi1,
 		stmcpp::clock::peripheral::dma1,
+		stmcpp::clock::peripheral::dma2,
+		stmcpp::clock::peripheral::bdma,
 		// USB clocks
 		stmcpp::clock::peripheral::usb1otg,
 		stmcpp::clock::peripheral::usb1ulpi

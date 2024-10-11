@@ -41,9 +41,10 @@
 #define CFG_TUSB_RHPORT1_MODE       (OPT_MODE_DEVICE | OPT_MODE_HIGH_SPEED)
 #define CFG_TUSB_DEBUG              3
 #define BOARD_TUD_RHPORT 1
+#define CFG_TUD_DWC2_DMA 1
 
 // Place memory into a specific region
-#define CFG_TUSB_MEM_SECTION __attribute__ (( section(".usb_buffers") ))
+#define CFG_TUSB_MEM_SECTION __attribute__ (( section(".usb_buffer") ))
 #define CFG_TUSB_MEM_ALIGN   __attribute__ ((aligned(4)))
 
 //--------------------------------------------------------------------+

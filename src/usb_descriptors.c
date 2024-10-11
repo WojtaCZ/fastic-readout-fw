@@ -25,8 +25,6 @@
 
 #include "tusb.h"
 #include "stm32h753xx.h"
-#include "core_cm7.h"
-#include "cmsis_compiler.h"
 
 #define USB_PID   0x4000 
 #define USB_VID   0xCafe
@@ -95,11 +93,11 @@ uint8_t const desc_fs_configuration[] =
   // Config number, interface count, string index, total length, attribute, power in mA
   TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, 0x00, 100),
 
-  // 1st CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+  // CDC interface used for communication and logging
   TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, EPNUM_CDC_NOTIF, 8, EPNUM_CDC_OUT, EPNUM_CDC_IN, 64),
 
+  // FastIC bulk interfaces used for data transfer
   TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_0, 5, EPNUM_FASTIC_0_OUT, EPNUM_FASTIC_0_IN, 64),
-
   TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_1, 6, EPNUM_FASTIC_1_OUT, EPNUM_FASTIC_1_IN, 64)
 };
 
@@ -108,11 +106,11 @@ uint8_t const desc_hs_configuration[] =
   // Config number, interface count, string index, total length, attribute, power in mA
   TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, 0x00, 100),
 
-  // 1st CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+  // CDC interface used for communication and logging
   TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, EPNUM_CDC_NOTIF, 8, EPNUM_CDC_OUT, EPNUM_CDC_IN, 512),
 
+  // FastIC bulk interfaces used for data transfer
   TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_0, 5, EPNUM_FASTIC_0_OUT, EPNUM_FASTIC_0_IN, 512),
-
   TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_1, 6, EPNUM_FASTIC_1_OUT, EPNUM_FASTIC_1_IN, 512)
 };
 
@@ -132,39 +130,16 @@ tusb_desc_device_qualifier_t const desc_device_qualifier =
   .bReserved          = 0x00
 };
 
-// Invoked when received GET DEVICE QUALIFIER DESCRIPTOR request
-// Application return pointer to descriptor, whose contents must exist long enough for transfer to complete.
-// device_qualifier descriptor describes information about a high-speed capable device that would
-// change if the device were operating at the other speed. If not highspeed capable stall this request.
-uint8_t const* tud_descriptor_device_qualifier_cb(void)
-{
+uint8_t const* tud_descriptor_device_qualifier_cb(void) {
   return (uint8_t const*) &desc_device_qualifier;
 }
 
-// Invoked when received GET OTHER SEED CONFIGURATION DESCRIPTOR request
-// Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
-// Configuration descriptor in the other speed e.g if high speed then this is for full speed and vice versa
-uint8_t const* tud_descriptor_other_speed_configuration_cb(uint8_t index)
-{
-  (void) index; // for multiple configurations
-
-  // if link speed is high return fullspeed config, and vice versa
+uint8_t const* tud_descriptor_other_speed_configuration_cb(uint8_t index) {
   return (tud_speed_get() == TUSB_SPEED_HIGH) ?  desc_fs_configuration : desc_hs_configuration;
 }
 
-// Invoked when received GET CONFIGURATION DESCRIPTOR
-// Application return pointer to descriptor
-// Descriptor contents must exist long enough for transfer to complete
-uint8_t const * tud_descriptor_configuration_cb(uint8_t index)
-{
-  (void) index; // for multiple configurations
-
-#if TUD_OPT_HIGH_SPEED
-  // Although we are highspeed, host may be fullspeed.
+uint8_t const * tud_descriptor_configuration_cb(uint8_t index) {
   return (tud_speed_get() == TUSB_SPEED_HIGH) ?  desc_hs_configuration : desc_fs_configuration;
-#else
-  return desc_fs_configuration;
-#endif
 }
 
 //--------------------------------------------------------------------+
