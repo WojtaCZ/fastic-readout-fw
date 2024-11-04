@@ -130,9 +130,7 @@ namespace fastic {
        
     void init() {
 
-        //Enable RNG
-        RNG->CR |= RNG_CR_RNGEN;
-
+    
         fastic2_rst_n.set();
 
         stmcpp::clock::systick::waitBlocking(10_ms);
@@ -150,6 +148,34 @@ namespace fastic {
         static constexpr uint8_t speed = 0x04;
         static constexpr uint8_t spReg = 0x02 | (speed << 3); 
         fastic2_i2c.writeRegister(0xb9, spReg , fastic2_address);
+
+        tmpReg = fastic2_i2c.readRegister(0x00, fastic2_address);
+
+        fastic2_i2c.writeRegister(0x00, 0, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 1, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 2, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 3, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 4, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 5, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 6, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 7, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 8, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 9, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 10, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 11, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 12, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 13, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 14, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 15, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 16, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 17, fastic2_address);
+        fastic2_i2c.writeRegister(0x00, 18, fastic2_address);
+
+         fastic2_i2c.writeRegister(0x00, 0, fastic2_address);
+
+          fastic2_i2c.writeRegister(0x00, 0, fastic2_address);
+
+        
         // Disable scrambling on the aurora bus
         //fastic2_i2c.writeRegister(0x89, 0x00, fastic2_address);
 
@@ -179,12 +205,12 @@ namespace fastic {
 
         // Force the FastIC+ to output a known serializer word (a square wave in this case)
         // Serializer word (MSB to LSB)
-        fastic2_i2c.writeRegister(0xA3, 0xAA, fastic2_address);
-        fastic2_i2c.writeRegister(0xA4, 0xAA, fastic2_address);
-        fastic2_i2c.writeRegister(0xA5, 0xAA, fastic2_address);
-        fastic2_i2c.writeRegister(0xA6, 0xAA, fastic2_address);
+        fastic2_i2c.writeRegister(0xA3, 0x55, fastic2_address);
+        fastic2_i2c.writeRegister(0xA4, 0x55, fastic2_address);
+        fastic2_i2c.writeRegister(0xA5, 0x55, fastic2_address);
+        fastic2_i2c.writeRegister(0xA6, 0x55, fastic2_address);
         // Force contnuous serializer word
-        //fastic2_i2c.writeRegister(0x87, (0x3F | 0x80) , fastic2_address);
+        fastic2_i2c.writeRegister(0x87, (0x3F | 0x80) , fastic2_address);
 
  
        

@@ -38,8 +38,8 @@ using namespace stmcpp::units;
 //stmcpp::gpio::pin<stmcpp::gpio::port::porte, 12> led1(stmcpp::gpio::mode::output);
 //stmcpp::gpio::pin<stmcpp::gpio::port::porte, 14> led2(stmcpp::gpio::mode::output);
 
-stmcpp::gpio::pin<stmcpp::gpio::port::porta, 0> usart4_tx(stmcpp::gpio::mode::af8);
-stmcpp::usart::uart<stmcpp::usart::peripheral::uart4> usart4(4_MHz, stmcpp::usart::divider::noDivide, 115200_Bd);
+//stmcpp::gpio::pin<stmcpp::gpio::port::porta, 0> usart4_tx(stmcpp::gpio::mode::af8);
+ stmcpp::usart::uart<stmcpp::usart::peripheral::uart4> usart4(4_MHz, stmcpp::usart::divider::noDivide, 115200_Bd);
 
 extern "C" void SystemInit(void){
 	// Enable the FPU if needed
@@ -52,7 +52,7 @@ extern "C" void SystemInit(void){
 
 	// Configure the MPU to not cache D2 RAM - this is needed for the DMA buffers
 	// We are configuring region 0
-	stmcpp::reg::write(std::ref(MPU->RNR), 0);
+	/*stmcpp::reg::write(std::ref(MPU->RNR), 0);
 	
 	// Make sure the region is disabled
 	stmcpp::reg::clear(std::ref(MPU->RASR), MPU_RASR_ENABLE_Msk);
@@ -82,7 +82,7 @@ extern "C" void SystemInit(void){
 
 	__ASM volatile("dsb");
 	__ASM volatile("isb");
-
+*/
 	// Enable the necessary peripheral clocks
 	stmcpp::clock::enablePeripherals(
 		stmcpp::clock::peripheral::gpioa,
@@ -113,26 +113,26 @@ extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
 
-	usart4.enableTx();
-	usart4.enable();
+	//usart4.enableTx();
+	//usart4.enable();
 
-	printf("Test \n\r");
+	//printf("Test \n\r");
 
-	usb::init();
+	//usb::init();
 
 
 	
 	
-	//si5340::init();
-	//ad9510::init();
-	//fastic::init();
+	si5340::init();
+	ad9510::init();
+	fastic::init();
 	//fastic::initInjectionChannels();
 
 
 	
 	while(1){
-		tud_task();
-		//stmcpp::clock::systick::waitBlocking(100_ms);
+		//tud_task();
+		stmcpp::clock::systick::waitBlocking(100_ms);
 		
 	}
 	

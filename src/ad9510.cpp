@@ -41,8 +41,8 @@ namespace ad9510 {
     static constexpr std::uint8_t OUT6_DIV_VAL = 0x33;   // Divide by 8, 50% duty cycle
     static constexpr std::uint8_t OUT7_DIV_VAL = 0x33;   // Divide by 8, 50% duty cycle
 
-    static constexpr std::uint8_t OUT4_PHA_VAL = 0x01;   // Phase shift by 90 deg
-    static constexpr std::uint8_t OUT5_PHA_VAL = 0x01;   // Phase shift by 90 deg
+    static constexpr std::uint8_t OUT4_PHA_VAL = 0x00;   // Phase shift by 90 deg /0x01
+    static constexpr std::uint8_t OUT5_PHA_VAL = 0x00;   // Phase shift by 90 deg
     static constexpr std::uint8_t OUT6_PHA_VAL = 0x00;   // Phase shift by 0 deg
     static constexpr std::uint8_t OUT7_PHA_VAL = 0x00;   // Phase shift by 0 deg
 
@@ -91,6 +91,9 @@ void init() {
         // Adjust the phase of the Fastic clocks
         write(OUT6_PHA_ADD, OUT6_PHA_VAL);
         write(OUT7_PHA_ADD, OUT7_PHA_VAL);
+
+        //write(OUT6_PHA_ADD, OUT6_PHA_VAL);
+        //write(OUT7_PHA_ADD, OUT7_PHA_VAL);
 
         //Update the registers with the config
         write(UPD_REG_ADD, 0x01);

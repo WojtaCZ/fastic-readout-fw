@@ -51,6 +51,14 @@ namespace clock {
 			if(stmcpp::clock::systick::getDuration() > (timestamp_ + 2000_ms)) errorHandler.hardThrow(clock::error::pll1_timeout);
 		}
 
+		stmcpp::clock::pll::setSource(stmcpp::clock::pll::clkSource::hse);
+		stmcpp::clock::pll::pll<stmcpp::clock::pll::peripheral::pll3, 4, 20, 0, 0, 15> pll3(stmcpp::clock::pll::inputRange::f8_16MHz);
+		pll3.enable();
+		timestamp_ = stmcpp::clock::systick::getDuration(); 
+		while (!pll3.isLocked()) {
+			if(stmcpp::clock::systick::getDuration() > (timestamp_ + 2000_ms)) errorHandler.hardThrow(clock::error::pll1_timeout);
+		}
+
 		//Setup the domain dividers and wait for the MCU to switch to PLL1 as the clock source
 		stmcpp::clock::domain::domain domain(stmcpp::clock::domain::d1cpre::div1, stmcpp::clock::domain::d1ppre::div2, stmcpp::clock::domain::hpre::div2, stmcpp::clock::domain::d2ppre1::div2, stmcpp::clock::domain::d2ppre2::div2, stmcpp::clock::domain::d3ppre::div2, stmcpp::clock::domain::source::pll1);
 		timestamp_ = stmcpp::clock::systick::getDuration(); 

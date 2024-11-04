@@ -171,12 +171,12 @@ set(BIN_FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bin)
 #link_directories(${CMAKE_SOURCE_DIR}/lib/libopencm3/lib/stm32/g4 )
 #target_link_libraries(${PROJECT_NAME}.elf -L${CMAKE_SOURCE_DIR}/lib/libopencm3/lib)
 
-#add_custom_command(
-#	POST_BUILD
-#	TARGET ${PROJECT_NAME}.elf
-#	COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
-#	COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
-#	COMMENT "Building ${HEX_FILE} \nBuilding ${BIN_FILE}")
+add_custom_command(
+	POST_BUILD
+	TARGET ${PROJECT_NAME}.elf
+	COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
+	COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
+	COMMENT "Building ${HEX_FILE} \nBuilding ${BIN_FILE}")
 
 	
 #include(${CMAKE_SOURCE_DIR}/cmake/git.cmake)
