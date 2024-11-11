@@ -50,39 +50,6 @@ extern "C" void SystemInit(void){
 	// Initialize the system clock
 	clock::init();
 
-	// Configure the MPU to not cache D2 RAM - this is needed for the DMA buffers
-	// We are configuring region 0
-	/*stmcpp::reg::write(std::ref(MPU->RNR), 0);
-	
-	// Make sure the region is disabled
-	stmcpp::reg::clear(std::ref(MPU->RASR), MPU_RASR_ENABLE_Msk);
-
-	// Set the region base address - RAM D2
-	stmcpp::reg::write(std::ref(MPU->RBAR), 0x30000000); 
-
-	// Configure the region flags
-	stmcpp::reg::write(std::ref(MPU->RASR),
-		(0b0 		<< MPU_RASR_XN_Pos) |	// Instruction fetch enabled
-		(0b011 		<< MPU_RASR_AP_Pos) |	// RW access
-		(0b001 		<< MPU_RASR_TEX_Pos) |	// normaal, non shareable, non cacheable
-		(0b0 		<< MPU_RASR_S_Pos) |
-		(0b0 		<< MPU_RASR_C_Pos) |
-		(0b0 		<< MPU_RASR_B_Pos) |
-		(0b0 		<< MPU_RASR_SRD_Pos) |	// Sub region enabled
-		(17 		<< MPU_RASR_SIZE_Pos) |	// Region size = 17 -> 2^(17+1) = 256KiB (this is smaller than the actual D2 size, but it's enough for all the buffers)
-		(0b1 		<< MPU_RASR_ENABLE_Pos) // Enable the region
-	);	
-
-	// Enable the MPU
-	stmcpp::reg::write(std::ref(MPU->CTRL), 
-		(0b1 << MPU_CTRL_PRIVDEFENA_Pos) |
-		(0b0 << MPU_CTRL_HFNMIENA_Pos) |
-		(0b1 << MPU_CTRL_ENABLE_Pos) 
-	);
-
-	__ASM volatile("dsb");
-	__ASM volatile("isb");
-*/
 	// Enable the necessary peripheral clocks
 	stmcpp::clock::enablePeripherals(
 		stmcpp::clock::peripheral::gpioa,
@@ -113,25 +80,10 @@ extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
 
-	//usart4.enableTx();
-	//usart4.enable();
-
-	//printf("Test \n\r");
-
-	//usb::init();
-
-
-	
-	
 	si5340::init();
 	ad9510::init();
-	fastic::init();
-	//fastic::initInjectionChannels();
-
-
 	
 	while(1){
-		//tud_task();
 		stmcpp::clock::systick::waitBlocking(100_ms);
 		
 	}
@@ -151,25 +103,6 @@ extern "C" void NMI_Handler(void) {
 		while (true) {;}
 	}
 }
-
-extern "C" int _write(int file, char* ptr, int len){
-
-	for(int i = 0; i < len; i++){
-		usart4.transmit(ptr[i]);
-
-		duration timestamp_ = stmcpp::clock::systick::getDuration();
-
-		while (!usart4.getStatusFlag(stmcpp::usart::flag::txFree)) {
-			if(stmcpp::clock::systick::getDuration() > (timestamp_ + 500_ms)) {
-				stmcpp::error::globalFaultHandler(0,0);
-			}
-		}
-	}
-
-	// Implement for printf redirection
-	return 0;
-}
-  
 
 void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
 	//There has been an error caused by the handler, try to figure out what happened

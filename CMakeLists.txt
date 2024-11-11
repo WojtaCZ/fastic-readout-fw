@@ -24,60 +24,6 @@ set(SOURCES
 	${SOURCE_BASE}/clock.cpp
 	${SOURCE_BASE}/si5340.cpp
 	${SOURCE_BASE}/ad9510.cpp
-	${SOURCE_BASE}/usb.cpp
-	${SOURCE_BASE}/fastic.cpp
-
-	${SOURCE_BASE}/usb_descriptors.c
-
-	${CMAKE_SOURCE_DIR}/lib/aurora/src/aurora.cpp
-	
-
-	# common
-	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/tusb.c
-	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/common/tusb_fifo.c
-	# device
-	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/device/usbd.c
-	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/device/usbd_control.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/audio/audio_device.c
-	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/cdc/cdc_device.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/dfu/dfu_device.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/dfu/dfu_rt_device.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/hid/hid_device.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/midi/midi_device.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/msc/msc_device.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/net/ecm_rndis_device.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/net/ncm_device.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/usbtmc/usbtmc_device.c
-	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/vendor/vendor_device.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/video/video_device.c
-	# host
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/host/usbh.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/host/hub.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/cdc/cdc_host.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/hid/hid_host.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/msc/msc_host.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/class/vendor/vendor_host.c
-	# typec
-	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/typec/usbc.c
-
-	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/portable/synopsys/dwc2/dcd_dwc2.c
-
-	
-
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/tusb.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/common/tusb_fifo.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/device/usbd.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/device/usbd_control.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/portable/st/stm32_fsdev/dcd_stm32_fsdev.c
-
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/host/hub.c
-	#${CMAKE_SOURCE_DIR}/lib/tinyusb/src/host/usbh.c
-
-
-	#${SOURCE_BASE}/status.cpp
-	
-	#${SOURCE_BASE}/spi.cpp
-	#${SOURCE_BASE}/i2c.cpp
 	startup/startup_stm32h753zitx.s
 )
 
