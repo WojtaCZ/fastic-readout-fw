@@ -7,6 +7,6 @@
 [submodule "lib/tinyusb"]
 	path = lib/tinyusb
 	url = https://github.com/hathach/tinyusb.git
-[submodule "lib/aurora-parser"]
-	path = lib/aurora-parser
-	url = ssh://git@gitlab.cern.ch:7999/vvosahlo/aurora-parser.git
+[submodule "lib/fastic-library"]
+	path = lib/fastic-library
+	url = git@github.com:WojtaCZ/fastic-library.git
