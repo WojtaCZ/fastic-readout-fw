@@ -21,10 +21,7 @@
 #include "git.hpp"
 
 #include "clock.hpp"
-#include "si5340.hpp"
-#include "ad9510.hpp"
 #include "usb.hpp"
-#include "fastic.hpp"
 
 #include <tinyusb/src/device/usbd.h>
 
@@ -32,14 +29,6 @@
 
 using namespace stmcpp::units;
 
-
-
-//stmcpp::gpio::pin<stmcpp::gpio::port::porte, 10> led0(stmcpp::gpio::mode::output);
-//stmcpp::gpio::pin<stmcpp::gpio::port::porte, 12> led1(stmcpp::gpio::mode::output);
-//stmcpp::gpio::pin<stmcpp::gpio::port::porte, 14> led2(stmcpp::gpio::mode::output);
-
-//stmcpp::gpio::pin<stmcpp::gpio::port::porta, 0> usart4_tx(stmcpp::gpio::mode::af8);
- stmcpp::usart::uart<stmcpp::usart::peripheral::uart4> usart4(4_MHz, stmcpp::usart::divider::noDivide, 115200_Bd);
 
 extern "C" void SystemInit(void){
 	// Enable the FPU if needed
@@ -50,9 +39,9 @@ extern "C" void SystemInit(void){
 	// Initialize the system clock
 	clock::init();
 
-	// Configure the MPU to not cache D2 RAM - this is needed for the DMA buffers
+	// Configure the MPU to not cache D2 RAM - this is needed for the USB DMA buffers
 	// We are configuring region 0
-	/*stmcpp::reg::write(std::ref(MPU->RNR), 0);
+	stmcpp::reg::write(std::ref(MPU->RNR), 0);
 	
 	// Make sure the region is disabled
 	stmcpp::reg::clear(std::ref(MPU->RASR), MPU_RASR_ENABLE_Msk);
@@ -82,7 +71,7 @@ extern "C" void SystemInit(void){
 
 	__ASM volatile("dsb");
 	__ASM volatile("isb");
-*/
+
 	// Enable the necessary peripheral clocks
 	stmcpp::clock::enablePeripherals(
 		stmcpp::clock::peripheral::gpioa,
@@ -113,27 +102,9 @@ extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
 
-	//usart4.enableTx();
-	//usart4.enable();
-
-	//printf("Test \n\r");
-
-	//usb::init();
-
-
-	
-	
-	si5340::init();
-	ad9510::init();
-	fastic::init();
-	//fastic::initInjectionChannels();
-
-
 	
 	while(1){
-		//tud_task();
-		stmcpp::clock::systick::waitBlocking(100_ms);
-		
+		tud_task();
 	}
 	
 }
@@ -151,25 +122,6 @@ extern "C" void NMI_Handler(void) {
 		while (true) {;}
 	}
 }
-
-extern "C" int _write(int file, char* ptr, int len){
-
-	for(int i = 0; i < len; i++){
-		usart4.transmit(ptr[i]);
-
-		duration timestamp_ = stmcpp::clock::systick::getDuration();
-
-		while (!usart4.getStatusFlag(stmcpp::usart::flag::txFree)) {
-			if(stmcpp::clock::systick::getDuration() > (timestamp_ + 500_ms)) {
-				stmcpp::error::globalFaultHandler(0,0);
-			}
-		}
-	}
-
-	// Implement for printf redirection
-	return 0;
-}
-  
 
 void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
 	//There has been an error caused by the handler, try to figure out what happened
