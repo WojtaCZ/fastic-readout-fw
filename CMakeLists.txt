@@ -140,7 +140,7 @@ target_include_directories(${PROJECT_NAME}.elf PRIVATE
 	${CMAKE_SOURCE_DIR}/lib/CMSIS/Include
 	${CMAKE_SOURCE_DIR}/lib/CMSIS/Device/ST/STM32H7xx/Include
 	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/
-	${CMAKE_SOURCE_DIR}/lib/aurora/inc/
+	${CMAKE_SOURCE_DIR}/lib/aurora-parser/inc/
 
 )
 
