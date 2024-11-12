@@ -129,7 +129,7 @@ extern "C" int main(void){
 
 extern "C" void ADC1_2_IRQHandler(){
 	stmcpp::reg::waitForBitSet(std::ref(ADC1->ISR), ADC_ISR_EOC);
-	uint16_t data = ADC1->DR;
+	uint32_t data = ADC1->DR;
 	fasitVoltage = (1.8/65538.0)*((float)data);
 	adc1.clearInterruptFlag(stmcpp::adc::interrupt::endOfConversion);
 	dac1_ch1.setValue(data >> 4);
