@@ -15,6 +15,7 @@
 #include <stmcpp/adc.hpp>
 #include <stmcpp/dac.hpp>
 #include <string>
+#include <vector>
 
 #include <stmcpp/i2c.hpp>
 
@@ -23,23 +24,18 @@
 #include "clock.hpp"
 #include "si5340.hpp"
 #include "ad9510.hpp"
-#include "usb.hpp"
-#include "fastic.hpp"
 
-#include <tinyusb/src/device/usbd.h>
 
 
 
 using namespace stmcpp::units;
 
+float fasitVoltage, temperature = 0;
 
+// Resaling needs to be done because the values in TSCAL are measured with VREF = 3.3V
+float tscal1 = (double)(*(uint16_t*)(0x1ff1e820)) / (3.3 / 1.8);
+float tscal2 = (double)(*(uint16_t*)(0x1ff1e840)) / (3.3 / 1.8);
 
-//stmcpp::gpio::pin<stmcpp::gpio::port::porte, 10> led0(stmcpp::gpio::mode::output);
-//stmcpp::gpio::pin<stmcpp::gpio::port::porte, 12> led1(stmcpp::gpio::mode::output);
-//stmcpp::gpio::pin<stmcpp::gpio::port::porte, 14> led2(stmcpp::gpio::mode::output);
-
-//stmcpp::gpio::pin<stmcpp::gpio::port::porta, 0> usart4_tx(stmcpp::gpio::mode::af8);
- stmcpp::usart::uart<stmcpp::usart::peripheral::uart4> usart4(4_MHz, stmcpp::usart::divider::noDivide, 115200_Bd);
 
 extern "C" void SystemInit(void){
 	// Enable the FPU if needed
@@ -49,6 +45,11 @@ extern "C" void SystemInit(void){
 
 	// Initialize the system clock
 	clock::init();
+
+	// Select HSE as PER clock
+	stmcpp::reg::change(std::ref(RCC->D1CCIPR), 0b11, 0b10, RCC_D1CCIPR_CKPERSEL_Pos);
+	// Select PER as ADC clock
+	stmcpp::reg::change(std::ref(RCC->D3CCIPR), 0b11, 0b10, RCC_D3CCIPR_ADCSEL_Pos);
 
 	// Enable the necessary peripheral clocks
 	stmcpp::clock::enablePeripherals(
@@ -68,6 +69,9 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::dma1,
 		stmcpp::clock::peripheral::dma2,
 		stmcpp::clock::peripheral::bdma,
+		stmcpp::clock::peripheral::adc12,
+		stmcpp::clock::peripheral::adc3,
+		stmcpp::clock::peripheral::dac12,
 		// USB clocks
 		stmcpp::clock::peripheral::usb1otg,
 		stmcpp::clock::peripheral::usb1ulpi
@@ -75,19 +79,73 @@ extern "C" void SystemInit(void){
 }
 
 
+stmcpp::gpio::pin<stmcpp::gpio::port::porta, 6> adc1_in3 (stmcpp::gpio::mode::analog);
+stmcpp::adc::adc<stmcpp::adc::peripheral::adc1> adc1 (stmcpp::adc::resolution::sixteenBit);
+static constexpr stmcpp::adc::channel adc1_ch3(3, stmcpp::adc::channel::samplingTime::eightHundretTenAndHalfClocks);
+std::vector<stmcpp::adc::channel> adc1_sequence = {adc1_ch3};
+
+stmcpp::gpio::pin<stmcpp::gpio::port::porta, 4> dac1_out1 (stmcpp::gpio::mode::analog);
+stmcpp::dac::dac<stmcpp::dac::channel::ch1> dac1_ch1;
+
+stmcpp::adc::adc<stmcpp::adc::peripheral::adc3> adc3 (stmcpp::adc::resolution::sixteenBit);
+static constexpr stmcpp::adc::channel adc3_ch18(18, stmcpp::adc::channel::samplingTime::eightHundretTenAndHalfClocks);
+std::vector<stmcpp::adc::channel> adc3_sequence = {adc3_ch18};
 
 extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
 
-	si5340::init();
-	ad9510::init();
-	
+	//si5340::init();
+	//ad9510::init();
+
+	stmcpp::reg::set(std::ref(ADC12_COMMON->CCR), 0b1001, ADC_CCR_PRESC_Pos);
+	stmcpp::reg::set(std::ref(ADC3_COMMON->CCR), 0b1001, ADC_CCR_PRESC_Pos);
+	stmcpp::reg::set(std::ref(ADC3_COMMON->CCR), ADC_CCR_TSEN);
+
+	adc1.calibrate(stmcpp::adc::calibration::singleEnded);
+	adc1.setupRegularSequence(adc1_sequence);
+	adc1.enableInterrupt(stmcpp::adc::interrupt::endOfConversion);
+	NVIC_EnableIRQ(ADC_IRQn);
+
+	adc3.calibrate(stmcpp::adc::calibration::singleEnded);
+	adc3.setupRegularSequence(adc3_sequence);
+	adc3.enableInterrupt(stmcpp::adc::interrupt::endOfConversion);
+	NVIC_EnableIRQ(ADC3_IRQn);
+
+	dac1_ch1.enable();
+
+	adc1.enable();
+	//adc3.enable();
+	//adc3.startRegular();
+	adc1.startRegular();
+
 	while(1){
-		stmcpp::clock::systick::waitBlocking(100_ms);
-		
+		stmcpp::clock::systick::waitBlocking(1000_ms);
+		//adc1.startRegular();
+
 	}
 	
+}
+
+extern "C" void ADC1_2_IRQHandler(){
+	stmcpp::reg::waitForBitSet(std::ref(ADC1->ISR), ADC_ISR_EOC);
+	uint16_t data = ADC1->DR;
+	fasitVoltage = (1.8/65538.0)*((float)data);
+	adc1.clearInterruptFlag(stmcpp::adc::interrupt::endOfConversion);
+	dac1_ch1.setValue(data >> 4);
+	//dac1_ch1.trigger();
+	NVIC_ClearPendingIRQ(ADC_IRQn);
+	adc1.startRegular();
+
+}
+
+extern "C" void ADC3_IRQHandler(){
+	stmcpp::reg::waitForBitSet(std::ref(ADC3->ISR), ADC_ISR_EOC);
+	uint16_t data = ADC3->DR;
+	temperature = ((110.0 - 30.0) / (double)(tscal2 - tscal1)) * (double)(data - tscal1) + 30.0;
+	adc3.clearInterruptFlag(stmcpp::adc::interrupt::endOfConversion);
+	NVIC_ClearPendingIRQ(ADC3_IRQn);
+	adc3.startRegular();
 }
 
 // Increment the systick timer
@@ -135,12 +193,6 @@ void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
 				}
 			break;
 		
-		case stmcpp::error::moduleHash("usb"):
-				{
-				usb::error err = static_cast<usb::error>(code);
-				__ASM volatile("bkpt");
-				}
-			break;
 		
 		default:
 			__ASM volatile("bkpt");
