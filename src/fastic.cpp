@@ -149,38 +149,13 @@ namespace fastic {
         static constexpr uint8_t spReg = 0x02 | (speed << 3); 
         fastic2_i2c.writeRegister(0xb9, spReg , fastic2_address);
 
-        tmpReg = fastic2_i2c.readRegister(0x00, fastic2_address);
-
-        fastic2_i2c.writeRegister(0x00, 0, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 1, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 2, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 3, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 4, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 5, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 6, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 7, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 8, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 9, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 10, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 11, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 12, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 13, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 14, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 15, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 16, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 17, fastic2_address);
-        fastic2_i2c.writeRegister(0x00, 18, fastic2_address);
-
-         fastic2_i2c.writeRegister(0x00, 0, fastic2_address);
-
-          fastic2_i2c.writeRegister(0x00, 0, fastic2_address);
-
+      
         
         // Disable scrambling on the aurora bus
         //fastic2_i2c.writeRegister(0x89, 0x00, fastic2_address);
 
 
-        syncClock();
+        //syncClock();
         
         fastic2_dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
         NVIC_EnableIRQ(DMA1_Stream0_IRQn);
@@ -262,14 +237,15 @@ extern "C" void DMA_STR0_IRQHandler(){
     /*for(int i = 0; i < fastic::fasticBufferSize; i++){
         if(fastic::fastic2_buffers[(!fastic::fastic2_dma.getTargetMemory()) & 0x01][i] == 0x123456)
     }*/
+   __ASM volatile("bkpt");
 
-   if(!fastic::fastic2.trySync()){
+   if(!fastic::fastic2.synchronize()){
 		__ASM volatile("bkpt");
 	}else{
         fastic::slip = fastic::fastic2.getBitSlip();
 	}
         
-    fastic::fastic2.processBuffer();
+    /*fastic::fastic2.processBuffer();
     auto packets = fastic::fastic2.getPacketBuffer();
     fastic::valid = packets.size();
     fastic::errors = std::count_if(packets.begin(), packets.end(), [](aurora::packet packet) { return (packet.getType() == aurora::packet::type::error); });
@@ -278,7 +254,7 @@ extern "C" void DMA_STR0_IRQHandler(){
     for (aurora::packet p : packets){
         fastic::data = p.getData();
         __ASM volatile("bkpt");
-    }
+    }*/
 
    __ASM volatile("bkpt");
 }

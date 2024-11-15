@@ -53,7 +53,6 @@
             "type": "cortex-debug",
             "servertype": "bmp",
             "interface": "swd",
-			"showDevDebugOutput": "raw",
             "BMPGDBSerialPort": "COM8",  // Use whatever serial port makes sense for your OS and BMP setup
             "runToEntryPoint": "main",
 			"svdFile": "${workspaceFolder}/STM32H753.svd",
