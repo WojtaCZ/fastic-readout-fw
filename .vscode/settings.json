@@ -99,5 +99,6 @@
         "*.old": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false,
-    "C_Cpp.errorSquiggles": "disabled"
+    "C_Cpp.errorSquiggles": "disabled",
+    "cSpell.enabled": false
 }
