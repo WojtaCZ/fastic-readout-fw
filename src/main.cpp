@@ -25,21 +25,18 @@
 #include "ad9510.hpp"
 #include "usb.hpp"
 #include "fastic.hpp"
+#include "readout.hpp"
 
 #include <tinyusb/src/device/usbd.h>
 
 
+    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 5> ledRed(stmcpp::gpio::mode::output);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 6> ledGreen(stmcpp::gpio::mode::output);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 7> ledBlue(stmcpp::gpio::mode::output);
+
+    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 10> ledUSB(stmcpp::gpio::mode::output);
 
 using namespace stmcpp::units;
-
-
-
-//stmcpp::gpio::pin<stmcpp::gpio::port::porte, 10> led0(stmcpp::gpio::mode::output);
-//stmcpp::gpio::pin<stmcpp::gpio::port::porte, 12> led1(stmcpp::gpio::mode::output);
-//stmcpp::gpio::pin<stmcpp::gpio::port::porte, 14> led2(stmcpp::gpio::mode::output);
-
-//stmcpp::gpio::pin<stmcpp::gpio::port::porta, 0> usart4_tx(stmcpp::gpio::mode::af8);
- stmcpp::usart::uart<stmcpp::usart::peripheral::uart4> usart4(4_MHz, stmcpp::usart::divider::noDivide, 115200_Bd);
 
 extern "C" void SystemInit(void){
 	// Enable the FPU if needed
@@ -51,7 +48,7 @@ extern "C" void SystemInit(void){
 	clock::init();
 
 	// Disable caching in the D2 region where the DMA buffers are stored
-	memory::disableCachingD2();
+	//memory::disableCachingD2();
 
 	// Enable the necessary peripheral clocks
 	stmcpp::clock::enablePeripherals(
@@ -60,6 +57,7 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::gpioc,
         stmcpp::clock::peripheral::gpiod,
 		stmcpp::clock::peripheral::gpioe,
+		stmcpp::clock::peripheral::gpioi,
         stmcpp::clock::peripheral::i2c1,
 		stmcpp::clock::peripheral::i2c3,
 		stmcpp::clock::peripheral::i2c4,
@@ -93,16 +91,27 @@ extern "C" int main(void){
 
 	
 	
-	si5340::init();
-	ad9510::init();
-	fastic::init();
+	//si5340::init();
+	//ad9510::init();
+	//fastic::init();
 	//fastic::initInjectionChannels();
 
-
+	ledRed.set();
 	
 	while(1){
 		//tud_task();
-		stmcpp::clock::systick::waitBlocking(100_ms);
+		
+		ledUSB.toggle();
+
+		stmcpp::clock::systick::waitBlocking(500_ms);
+		ledRed.toggle();
+		ledGreen.toggle();
+		stmcpp::clock::systick::waitBlocking(500_ms);
+		ledGreen.toggle();
+		ledBlue.toggle();
+		stmcpp::clock::systick::waitBlocking(500_ms);
+		ledBlue.toggle();
+		ledRed.toggle();
 		
 	}
 	
@@ -122,6 +131,7 @@ extern "C" void NMI_Handler(void) {
 	}
 }
 
+/*
 extern "C" int _write(int file, char* ptr, int len){
 
 	for(int i = 0; i < len; i++){
@@ -139,7 +149,7 @@ extern "C" int _write(int file, char* ptr, int len){
 	// Implement for printf redirection
 	return 0;
 }
-  
+  */
 
 void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
 	//There has been an error caused by the handler, try to figure out what happened

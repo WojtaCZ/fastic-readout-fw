@@ -1,0 +1,12 @@
+[submodule "lib/stm-cpp"]
+	path = lib/stm-cpp
+	url = git@github.com:WojtaCZ/stmcpp.git
+[submodule "lib/stmcpp"]
+	path = lib/stmcpp
+	url = git@github.com:WojtaCZ/stmcpp.git
+[submodule "lib/tinyusb"]
+	path = lib/tinyusb
+	url = https://github.com/hathach/tinyusb.git
+[submodule "lib/fastic-library"]
+	path = lib/fastic-library
+	url = git@github.com:WojtaCZ/fastic-library.git

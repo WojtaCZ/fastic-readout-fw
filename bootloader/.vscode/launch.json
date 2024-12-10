@@ -1,0 +1,74 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+
+			"preLaunchTask": "Build Debug",
+			"type": "cortex-debug",
+			"request": "launch",
+			"name": "OpenOCD Debug",
+			"showDevDebugOutput": "none",
+			"servertype": "openocd",
+			 "postStartSessionCommands": [
+			 	"monitor adapter speed 500"
+			 ],
+			 "postRestartSessionCommands": [
+			 	"monitor adapter speed 500"
+			 ],
+			"interface": "swd",
+			"cwd": "${workspaceFolder}",
+			"executable": "${workspaceFolder}/build/${command:cmake.getLaunchTargetFilename}",
+			"svdFile": "${workspaceFolder}/STM32H753.svd",
+			"configFiles": [
+				"${workspaceFolder}/openocd.cfg",
+			],
+			"breakAfterReset": false
+		},
+
+		{
+			"type": "cortex-debug",
+			// there is also attach mode, that that has several issues
+			"request": "attach",
+			"name": "OpenOCD Attach",
+			"showDevDebugOutput": "none",
+			"servertype": "openocd",
+			"configFiles": [
+				"${workspaceFolder}/openocd.cfg",
+			],
+			"cwd": "${workspaceFolder}",
+			"executable": "${workspaceFolder}/build/${command:cmake.getLaunchTargetFilename}",
+			"svdFile": "${workspaceFolder}/STM32H753.svd"
+		},
+
+		{
+            "name": "BlackMagic Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/${command:cmake.getLaunchTargetFilename}",
+            "request": "launch",    
+            "preLaunchTask": "Build Debug",
+			"preResetCommands": ["set mem inaccessible-by-default off", "monitor connect_rst enable"],
+            "type": "cortex-debug",
+            "servertype": "bmp",
+            "interface": "swd",
+            "BMPGDBSerialPort": "COM8",  // Use whatever serial port makes sense for your OS and BMP setup
+            "runToEntryPoint": "main",
+			"svdFile": "${workspaceFolder}/STM32H753.svd",
+        },
+
+		{
+            "name": "BlackMagic Attach",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/${command:cmake.getLaunchTargetFilename}",
+            "request": "attach",    // "launch" also works perhaps
+            "type": "cortex-debug",
+            "servertype": "bmp",
+            "interface": "swd",
+            "BMPGDBSerialPort": "COM8",  // Use whatever serial port makes sense for your OS and BMP setup
+			"svdFile": "${workspaceFolder}/STM32H753.svd",
+        },
+
+	]
+}
