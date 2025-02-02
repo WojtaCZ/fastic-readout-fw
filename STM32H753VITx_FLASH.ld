@@ -189,8 +189,6 @@ SECTIONS
   {
     *(.usb_buffer)
   } >RAM_D2
-
-
   
 
   /* Remove information from the standard libraries */

@@ -37,11 +37,6 @@ namespace usb {
     }
 
     namespace interface {
-      // Control interface pins
-      stmcpp::gpio::pin<stmcpp::gpio::port::porte, 7> refsel0 (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
-      stmcpp::gpio::pin<stmcpp::gpio::port::portb, 2> refsel1 (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
-      stmcpp::gpio::pin<stmcpp::gpio::port::portc, 5> refsel2 (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
-
       // ULPI interface pins (high speed should be more than enough, no need for fast slew rates)
       stmcpp::gpio::pin<stmcpp::gpio::port::porta, 3>  ulpi_d0 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
       stmcpp::gpio::pin<stmcpp::gpio::port::portb, 0>  ulpi_d1 (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
@@ -54,11 +49,11 @@ namespace usb {
 
       stmcpp::gpio::pin<stmcpp::gpio::port::portc, 0>  ulpi_stp (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
       stmcpp::gpio::pin<stmcpp::gpio::port::portc, 2>  ulpi_dir (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
-      stmcpp::gpio::pin<stmcpp::gpio::port::portc, 3>  ulpi_nxt (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
+      stmcpp::gpio::pin<stmcpp::gpio::port::porth, 4>  ulpi_nxt (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
       stmcpp::gpio::pin<stmcpp::gpio::port::porta, 5>  ulpi_clk (stmcpp::gpio::mode::af10, stmcpp::gpio::speed::high);
       
       // Reset pin of the interface
-      stmcpp::gpio::pin<stmcpp::gpio::port::porta, 2>  ulpi_rst (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
+      stmcpp::gpio::pin<stmcpp::gpio::port::portj, 3>  ulpi_rst (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull);
 
       // Hidden ULPI registers that can be used to read/wrte the PHY
       #define USBULPI_PHYCR *(__IO uint32_t *)  (((uint32_t)(0x40040000 + 0x034)))
@@ -69,15 +64,8 @@ namespace usb {
 
       // Initialize all the required interface related stuff
       void init() {
-        // Make sure that the analog switches for PC2 and PC3 are closed
-        stmcpp::reg::clear(std::ref(SYSCFG->PMCR), SYSCFG_PMCR_PC2SO); 
-        stmcpp::reg::clear(std::ref(SYSCFG->PMCR), SYSCFG_PMCR_PC3SO); 
-
         // Set up the reference clock to 24MHz (all refsel pins high)
         ulpi_rst.clear();
-        refsel0.set();
-        refsel1.set(); 
-        refsel2.set();
         stmcpp::clock::systick::waitBlocking(1_ms);
         ulpi_rst.set();
         stmcpp::clock::systick::waitBlocking(30_ms);
@@ -156,16 +144,65 @@ extern "C" void OTG_FS_IRQHandler(void) {
 extern "C" void OTG_HS_IRQHandler(void) {
   tud_int_handler(1);
 }
-/*
-// Invoked when device is mounted
-extern "C" void tud_mount_cb(void) {
 
+void tud_mount_cb(void) {
 }
 
 // Invoked when device is unmounted
-extern "C" void tud_umount_cb(void) {
+void tud_umount_cb(void) {
+}
 
+// Invoked when usb bus is suspended
+// remote_wakeup_en : if host allow us  to perform remote wakeup
+// Within 7ms, device must draw an average of current less than 2.5 mA from bus
+void tud_suspend_cb(bool remote_wakeup_en) {
+  (void) remote_wakeup_en;
+}
+
+// Invoked when usb bus is resumed
+void tud_resume_cb(void) {
 }
 
 
-*/
+//--------------------------------------------------------------------+
+// USB CDC
+//--------------------------------------------------------------------+
+void cdc_task(void) {
+  // connected() check for DTR bit
+  // Most but not all terminal client set this when making connection
+  // if ( tud_cdc_connected() )
+  {
+    // connected and there are data available
+    if (tud_cdc_available()) {
+      // read data
+      char buf[64];
+      uint32_t count = tud_cdc_read(buf, sizeof(buf));
+      (void) count;
+
+      // Echo back
+      // Note: Skip echo by commenting out write() and write_flush()
+      // for throughput test e.g
+      //    $ dd if=/dev/zero of=/dev/ttyACM0 count=10000
+      tud_cdc_write(buf, count);
+      tud_cdc_write_flush();
+    }
+  }
+}
+
+// Invoked when cdc when line state changed e.g connected/disconnected
+void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) {
+  (void) itf;
+  (void) rts;
+
+  // TODO set some indicator
+  if (dtr) {
+    // Terminal connected
+  } else {
+    // Terminal disconnected
+  }
+}
+
+// Invoked when CDC interface received data from host
+void tud_cdc_rx_cb(uint8_t itf) {
+  (void) itf;
+}

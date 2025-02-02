@@ -10,12 +10,12 @@ bool lol, los;
 namespace si5340 {
     using namespace stmcpp::units;
     // Loss of signal, loss of lock and interrupt status pins
-    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 0> los_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 1> lol_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 2> int_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porte, 2> los_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porte, 3> lol_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porte, 0> int_n (stmcpp::gpio::mode::input, stmcpp::gpio::pull::pullUp);
     // Reset and output enable pins
-    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 3> oe_n (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull, stmcpp::gpio::pull::pullUp);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 4> rst_n (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull, stmcpp::gpio::pull::pullUp);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 4> oe_n (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull, stmcpp::gpio::pull::pullUp);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porte, 1> rst_n (stmcpp::gpio::mode::output, stmcpp::gpio::otype::pushPull, stmcpp::gpio::pull::pullUp);
     // Configure the i2c pins and interface
     stmcpp::gpio::pin<stmcpp::gpio::port::portb, 6> scl (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::high);
     stmcpp::gpio::pin<stmcpp::gpio::port::portb, 7> sda (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::high);

@@ -39,7 +39,7 @@
 #define BOARD_TUD_MAX_SPEED         OPT_MODE_HIGH_SPEED  // 480mbps
 #define BOARD_DEVICE_RHPORT_NUM     1
 #define CFG_TUSB_RHPORT1_MODE       (OPT_MODE_DEVICE | OPT_MODE_HIGH_SPEED)
-#define CFG_TUSB_DEBUG              3
+#define CFG_TUSB_DEBUG              0
 #define BOARD_TUD_RHPORT 1
 #define CFG_TUD_DWC2_DMA 1
 

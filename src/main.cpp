@@ -18,7 +18,7 @@
 
 #include <stmcpp/i2c.hpp>
 
-#include "git.hpp"
+//#include "git.hpp"
 
 #include "clock.hpp"
 #include "si5340.hpp"
@@ -26,9 +26,11 @@
 #include "usb.hpp"
 #include "fastic.hpp"
 #include "readout.hpp"
+#include "power.hpp"
+#include "memory.hpp"
 
 #include <tinyusb/src/device/usbd.h>
-
+#include <tinyusb/src/class/cdc/cdc_device.h>
 
     stmcpp::gpio::pin<stmcpp::gpio::port::porti, 5> ledRed(stmcpp::gpio::mode::output);
     stmcpp::gpio::pin<stmcpp::gpio::port::porti, 6> ledGreen(stmcpp::gpio::mode::output);
@@ -37,6 +39,9 @@
     stmcpp::gpio::pin<stmcpp::gpio::port::portd, 10> ledUSB(stmcpp::gpio::mode::output);
 
 using namespace stmcpp::units;
+
+
+bool s = false;
 
 extern "C" void SystemInit(void){
 	// Enable the FPU if needed
@@ -48,7 +53,7 @@ extern "C" void SystemInit(void){
 	clock::init();
 
 	// Disable caching in the D2 region where the DMA buffers are stored
-	//memory::disableCachingD2();
+	memory::disableCachingD2();
 
 	// Enable the necessary peripheral clocks
 	stmcpp::clock::enablePeripherals(
@@ -57,8 +62,14 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::gpioc,
         stmcpp::clock::peripheral::gpiod,
 		stmcpp::clock::peripheral::gpioe,
+		stmcpp::clock::peripheral::gpiof,
+		stmcpp::clock::peripheral::gpiog,
+		stmcpp::clock::peripheral::gpioh,
 		stmcpp::clock::peripheral::gpioi,
+		stmcpp::clock::peripheral::gpioj,
+		stmcpp::clock::peripheral::gpiok,
         stmcpp::clock::peripheral::i2c1,
+		stmcpp::clock::peripheral::i2c2,
 		stmcpp::clock::peripheral::i2c3,
 		stmcpp::clock::peripheral::i2c4,
 		stmcpp::clock::peripheral::uart4,
@@ -66,6 +77,9 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::tim15,
 		// SPI and DMA used for aurora stream reception
 		stmcpp::clock::peripheral::spi1,
+		stmcpp::clock::peripheral::spi2,
+		stmcpp::clock::peripheral::spi3,
+		stmcpp::clock::peripheral::spi4,
 		stmcpp::clock::peripheral::dma1,
 		stmcpp::clock::peripheral::dma2,
 		stmcpp::clock::peripheral::bdma,
@@ -81,37 +95,23 @@ extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
 
+	usb::init();
+
 	//usart4.enableTx();
 	//usart4.enable();
 
-	//printf("Test \n\r");
-
-	//usb::init();
-
+	s = power::isPowerGood(power::ldo::D1V8);
+	s = power::isPowerGood(power::ldo::A3V3);
 
 	
-	
-	//si5340::init();
-	//ad9510::init();
-	//fastic::init();
+	si5340::init();
+	fastic::init();
 	//fastic::initInjectionChannels();
 
 	ledRed.set();
 	
 	while(1){
-		//tud_task();
-		
-		ledUSB.toggle();
-
-		stmcpp::clock::systick::waitBlocking(500_ms);
-		ledRed.toggle();
-		ledGreen.toggle();
-		stmcpp::clock::systick::waitBlocking(500_ms);
-		ledGreen.toggle();
-		ledBlue.toggle();
-		stmcpp::clock::systick::waitBlocking(500_ms);
-		ledBlue.toggle();
-		ledRed.toggle();
+		tud_task();	
 		
 	}
 	
@@ -131,10 +131,13 @@ extern "C" void NMI_Handler(void) {
 	}
 }
 
-/*
+
 extern "C" int _write(int file, char* ptr, int len){
 
-	for(int i = 0; i < len; i++){
+	tud_cdc_write(ptr, len);
+    tud_cdc_write_flush();
+
+	/*for(int i = 0; i < len; i++){
 		usart4.transmit(ptr[i]);
 
 		duration timestamp_ = stmcpp::clock::systick::getDuration();
@@ -144,12 +147,12 @@ extern "C" int _write(int file, char* ptr, int len){
 				stmcpp::error::globalFaultHandler(0,0);
 			}
 		}
-	}
+	}*/
 
 	// Implement for printf redirection
 	return 0;
 }
-  */
+
 
 void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
 	//There has been an error caused by the handler, try to figure out what happened

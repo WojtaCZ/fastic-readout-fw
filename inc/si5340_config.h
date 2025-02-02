@@ -9,8 +9,8 @@
  * Part:		                                       Si5340 Rev D
  * Design ID:                                          
  * Includes Pre/Post Download Control Register Writes: No
- * Created By:                                         ClockBuilder Pro v4.13.0.2 [2024-06-10]
- * Timestamp:                                          2024-07-31 10:25:14 GMT+02:00
+ * Created By:                                         ClockBuilder Pro v4.14 [2024-12-02]
+ * Timestamp:                                          2025-02-02 14:25:49 GMT+01:00
  *
  * A complete design report corresponding to this export is included at the end 
  * of this header file.
@@ -35,7 +35,7 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
 	{ 0x0007, 0x00 },
 	{ 0x0008, 0x00 },
 	{ 0x000B, 0x74 },
-	{ 0x0017, 0xF0 },
+	{ 0x0017, 0xD0 },
 	{ 0x0018, 0xFF },
 	{ 0x0021, 0x0F },
 	{ 0x0022, 0x00 },
@@ -65,21 +65,21 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
 	{ 0x009E, 0x00 },
 	{ 0x0102, 0x01 },
 	{ 0x0112, 0x06 },
-	{ 0x0113, 0x09 },
-	{ 0x0114, 0x3B },
-	{ 0x0115, 0x28 },
-	{ 0x0117, 0x01 },
-	{ 0x0118, 0x09 },
-	{ 0x0119, 0x3B },
-	{ 0x011A, 0x28 },
-	{ 0x0126, 0x01 },
+	{ 0x0113, 0x8C },
+	{ 0x0114, 0x00 },
+	{ 0x0115, 0x48 },
+	{ 0x0117, 0x06 },
+	{ 0x0118, 0x8C },
+	{ 0x0119, 0x00 },
+	{ 0x011A, 0x48 },
+	{ 0x0126, 0x02 },
 	{ 0x0127, 0x09 },
-	{ 0x0128, 0x3B },
-	{ 0x0129, 0x28 },
-	{ 0x012B, 0x01 },
+	{ 0x0128, 0x3E },
+	{ 0x0129, 0x18 },
+	{ 0x012B, 0x02 },
 	{ 0x012C, 0x09 },
-	{ 0x012D, 0x3B },
-	{ 0x012E, 0x28 },
+	{ 0x012D, 0x3E },
+	{ 0x012E, 0x18 },
 	{ 0x013F, 0x00 },
 	{ 0x0140, 0x00 },
 	{ 0x0141, 0x40 },
@@ -127,23 +127,23 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
 	{ 0x0235, 0x00 },
 	{ 0x0236, 0x00 },
 	{ 0x0237, 0x00 },
-	{ 0x0238, 0x00 },
-	{ 0x0239, 0x8C },
+	{ 0x0238, 0x80 },
+	{ 0x0239, 0xCF },
 	{ 0x023A, 0x00 },
 	{ 0x023B, 0x00 },
 	{ 0x023C, 0x00 },
 	{ 0x023D, 0x00 },
-	{ 0x023E, 0x80 },
+	{ 0x023E, 0xC0 },
 	{ 0x0250, 0x00 },
 	{ 0x0251, 0x00 },
 	{ 0x0252, 0x00 },
 	{ 0x0253, 0x00 },
 	{ 0x0254, 0x00 },
 	{ 0x0255, 0x00 },
-	{ 0x025C, 0x00 },
+	{ 0x025C, 0x01 },
 	{ 0x025D, 0x00 },
 	{ 0x025E, 0x00 },
-	{ 0x025F, 0x00 },
+	{ 0x025F, 0x01 },
 	{ 0x0260, 0x00 },
 	{ 0x0261, 0x00 },
 	{ 0x026B, 0x00 },
@@ -158,7 +158,7 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
 	{ 0x0303, 0x00 },
 	{ 0x0304, 0x00 },
 	{ 0x0305, 0x80 },
-	{ 0x0306, 0x0A },
+	{ 0x0306, 0x29 },
 	{ 0x0307, 0x00 },
 	{ 0x0308, 0x00 },
 	{ 0x0309, 0x00 },
@@ -330,7 +330,7 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
 	{ 0x0861, 0x00 },
 	{ 0x090E, 0x02 },
 	{ 0x091C, 0x04 },
-	{ 0x0943, 0x01 },
+	{ 0x0943, 0x00 },
 	{ 0x0949, 0x00 },
 	{ 0x094A, 0x00 },
 	{ 0x094E, 0x49 },
@@ -358,10 +358,9 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * ========
  * 
  * Part:               Si5340ABCD Rev D
- * Project File:       C:\Users\vvosahlo\cernbox\Documents\Si5340-RevD-Project.slabtimeproj
  * Design ID:          <none>
- * Created By:         ClockBuilder Pro v4.13.0.2 [2024-06-10]
- * Timestamp:          2024-07-31 10:25:14 GMT+02:00
+ * Created By:         ClockBuilder Pro v4.14 [2024-12-02]
+ * Timestamp:          2025-02-02 14:25:49 GMT+01:00
  * 
  * Design Rule Check
  * =================
@@ -370,11 +369,23 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * - No errors
  * 
  * Warnings:
- * - No warnings
+ * - OUT0: For the best signal integrity, Skyworks strongly recommends selecting
+ *   the lowest LVCMOS output impedance (22 ?) and then choosing the proper
+ *   external source resistor to produce the best signal shape at the end of the
+ *   signal trace
+ * - OUT1: For the best signal integrity, Skyworks strongly recommends selecting
+ *   the lowest LVCMOS output impedance (22 ?) and then choosing the proper
+ *   external source resistor to produce the best signal shape at the end of the
+ *   signal trace
+ * 
+ * Notes:
+ * - You have selected CMOS output. Please review AN862 "Optimizing Jitter
+ *   Performance in Next Generation Internet Infrastructure Systems" to ensure
+ *   your configuration meets your jitter requirements
  * 
  * Device Grade
  * ============
- * Maximum Output Frequency: 320 MHz
+ * Maximum Output Frequency: 80 MHz
  * Frequency Synthesis Mode: Integer
  * Frequency Plan Grade:     D
  * Minimum Base OPN:         Si5340D*
@@ -396,7 +407,7 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * Design
  * ======
  * Host Interface:
- *    I/O Power Supply: VDDA (3.3V)
+ *    I/O Power Supply: VDD (Core)
  *    SPI Mode: 4-Wire
  *    I2C Address Range: 116d to 119d / 0x74 to 0x77 (selected via A0/A1 pins)
  * 
@@ -409,26 +420,23 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  *   FB_IN: Unused
  * 
  * Outputs:
- *    OUT0: 320 MHz
- *          Enabled, LVDS 2.5 V
- *    OUT1: Unused
- *    OUT2: Unused
- *    OUT3: Unused
- * 
- * Output Enable:
- *    OUT0: OE0
- *    OUT1: OE0
- *    OUT2: OE0
- *    OUT3: OE0
+ *    OUT0: 80 MHz
+ *          Enabled, LVCMOS Comp 3.3 V 30 ?
+ *    OUT1: 80 MHz
+ *          Enabled, LVCMOS Comp 3.3 V 30 ?
+ *    OUT2: 40 MHz
+ *          Enabled, LVDS 1.8 V
+ *    OUT3: 40 MHz
+ *          Enabled, LVDS 1.8 V
  * 
  * Frequency Plan
  * ==============
  * 
- * Priority: OUT0 is lowest jitter output
+ * Priority: maximize the number of low jitter outputs
  * 
  * Fpfd = 48 MHz
- * Fvco = 13.44 GHz
- * Fms0 = 640 MHz
+ * Fvco = 13.28 GHz
+ * Fms0 = 160 MHz
  * 
  * P dividers:
  *    P0  = Unused
@@ -437,11 +445,14 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  *    P3  = Unused
  *    Pxaxb = 1
  * 
- * M = 280
+ * M = 276.6666666666666666... [ 276 + 2/3 ]
  * N dividers:
  *    N0:
- *       Value: 21
- *       OUT0: 320 MHz
+ *       Value: 83
+ *       OUT0: 80 MHz
+ *       OUT1: 80 MHz
+ *       OUT2: 40 MHz
+ *       OUT3: 40 MHz
  *    N1:
  *       Unused
  *    N2:
@@ -451,9 +462,9 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * 
  * R dividers:
  *    R0 = 2
- *    R1 = Unused
- *    R2 = Unused
- *    R3 = Unused
+ *    R1 = 2
+ *    R2 = 4
+ *    R3 = 4
  * 
  * Dividers listed above show effective values. These values are translated to register settings by ClockBuilder Pro. For the actual register values, see below. Refer to the Family Reference Manual for information on registers related to frequency plan.
  * 
@@ -474,13 +485,13 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * Assumptions:
  * 
  * VDD:      1.8 V
- * Ta:       25 °C
- * Theta-JA: 18.30 °C/W (JEDEC Board with 2 m/s airflow)
+ * Ta:       25 ï¿½C
+ * Theta-JA: 18.30 ï¿½C/W (JEDEC Board with 2 m/s airflow)
  * 
  *                               Overall  On Chip
  * Condition                     Power    Power    Ta    Tj
  * ----------------------------  -------  -------  ----  ----
- * Typical Ta, Voltage, Current  590 mW   584 mW   25 C  35 C
+ * Typical Ta, Voltage, Current  721 mW   709 mW   25 C  37 C
  * 
  *                                   -----------------------
  *                                           Typical        
@@ -488,23 +499,22 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  *                                   Voltage  Current  Power
  *        Output  Frequency  Format    (V)     (mA)    (mW) 
  *        ------  ---------  ------  -------  -------  -----
- * VDD                                  1.80       98    177
+ * VDD                                  1.80       99    179
  * VDDA                                 3.30      113    372
- * VDDO0  OUT0      320 MHz    LVDS     2.50       16     41
- * VDDO1  OUT1       Unused        
- * VDDO2  OUT2       Unused        
- * VDDO3  OUT3       Unused        
+ * VDDO0  OUT0       80 MHz  LVCMOS (comp)     3.30       18     58
+ * VDDO1  OUT1       80 MHz  LVCMOS (comp)     3.30       18     58
+ * VDDO2  OUT2       40 MHz    LVDS     1.80       15     27
+ * VDDO3  OUT3       40 MHz    LVDS     1.80       15     27
  *                                   -------  -------  -----
- *                                      1.80       98    177
- *                                      2.50       16     41
- *                                      3.30      113    372
+ *                                      1.80      130    233
+ *                                      3.30      148    488
  *                                   -------  -------  -----
- *                                     Total             590
+ *                                     Total             721
  *                                   -------  -------  -----
  * 
  * Note:
  * 
- * - Tj is junction temperature. Tj must be less than 125 °C (on Si5340 Revision
+ * - Tj is junction temperature. Tj must be less than 125 ï¿½C (on Si5340 Revision
  *   D) for device to comply with datasheet specifications. Tj = Ta +
  *   Theta_JA*On_Chip_Power.
  * - Overall power includes on-chip power dissipation and adds differential load
@@ -526,7 +536,7 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * 0x0017[1]     LOSXAXB_INTR_MSK     0                  0x0              
  * 0x0017[2]     LOSREF_INTR_MSK      0                  0x0              
  * 0x0017[3]     LOL_INTR_MSK         0                  0x0              
- * 0x0017[5]     SMB_TMOUT_INTR_MSK   1                  0x1              
+ * 0x0017[5]     SMB_TMOUT_INTR_MSK   0                  0x0              
  * 0x0018[3:0]   LOSIN_INTR_MSK       15                 0xF              
  * 0x0021[0]     IN_SEL_REGCTRL       1                  0x1              
  * 0x0021[2:1]   IN_SEL               3                  0x3              
@@ -556,53 +566,53 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * 0x0112[0]     OUT0_PDN             0                  0x0              
  * 0x0112[1]     OUT0_OE              1                  0x1              
  * 0x0112[2]     OUT0_RDIV_FORCE2     1                  0x1              
- * 0x0113[2:0]   OUT0_FORMAT          1                  0x1              
+ * 0x0113[2:0]   OUT0_FORMAT          4                  0x4              
  * 0x0113[3]     OUT0_SYNC_EN         1                  0x1              
  * 0x0113[5:4]   OUT0_DIS_STATE       0                  0x0              
- * 0x0113[7:6]   OUT0_CMOS_DRV        0                  0x0              
- * 0x0114[3:0]   OUT0_CM              11                 0xB              
- * 0x0114[6:4]   OUT0_AMPL            3                  0x3              
+ * 0x0113[7:6]   OUT0_CMOS_DRV        2                  0x2              
+ * 0x0114[3:0]   OUT0_CM              0                  0x0              
+ * 0x0114[6:4]   OUT0_AMPL            0                  0x0              
  * 0x0115[2:0]   OUT0_MUX_SEL         0                  0x0              
- * 0x0115[5:4]   OUT0_VDD_SEL         2                  0x2              
+ * 0x0115[5:4]   OUT0_VDD_SEL         0                  0x0              
  * 0x0115[3]     OUT0_VDD_SEL_EN      1                  0x1              
- * 0x0115[7:6]   OUT0_INV             0                  0x0              
- * 0x0117[0]     OUT1_PDN             1                  0x1              
- * 0x0117[1]     OUT1_OE              0                  0x0              
- * 0x0117[2]     OUT1_RDIV_FORCE2     0                  0x0              
- * 0x0118[2:0]   OUT1_FORMAT          1                  0x1              
+ * 0x0115[7:6]   OUT0_INV             1                  0x1              
+ * 0x0117[0]     OUT1_PDN             0                  0x0              
+ * 0x0117[1]     OUT1_OE              1                  0x1              
+ * 0x0117[2]     OUT1_RDIV_FORCE2     1                  0x1              
+ * 0x0118[2:0]   OUT1_FORMAT          4                  0x4              
  * 0x0118[3]     OUT1_SYNC_EN         1                  0x1              
  * 0x0118[5:4]   OUT1_DIS_STATE       0                  0x0              
- * 0x0118[7:6]   OUT1_CMOS_DRV        0                  0x0              
- * 0x0119[3:0]   OUT1_CM              11                 0xB              
- * 0x0119[6:4]   OUT1_AMPL            3                  0x3              
+ * 0x0118[7:6]   OUT1_CMOS_DRV        2                  0x2              
+ * 0x0119[3:0]   OUT1_CM              0                  0x0              
+ * 0x0119[6:4]   OUT1_AMPL            0                  0x0              
  * 0x011A[2:0]   OUT1_MUX_SEL         0                  0x0              
- * 0x011A[5:4]   OUT1_VDD_SEL         2                  0x2              
+ * 0x011A[5:4]   OUT1_VDD_SEL         0                  0x0              
  * 0x011A[3]     OUT1_VDD_SEL_EN      1                  0x1              
- * 0x011A[7:6]   OUT1_INV             0                  0x0              
- * 0x0126[0]     OUT2_PDN             1                  0x1              
- * 0x0126[1]     OUT2_OE              0                  0x0              
+ * 0x011A[7:6]   OUT1_INV             1                  0x1              
+ * 0x0126[0]     OUT2_PDN             0                  0x0              
+ * 0x0126[1]     OUT2_OE              1                  0x1              
  * 0x0126[2]     OUT2_RDIV_FORCE2     0                  0x0              
  * 0x0127[2:0]   OUT2_FORMAT          1                  0x1              
  * 0x0127[3]     OUT2_SYNC_EN         1                  0x1              
  * 0x0127[5:4]   OUT2_DIS_STATE       0                  0x0              
  * 0x0127[7:6]   OUT2_CMOS_DRV        0                  0x0              
- * 0x0128[3:0]   OUT2_CM              11                 0xB              
+ * 0x0128[3:0]   OUT2_CM              14                 0xE              
  * 0x0128[6:4]   OUT2_AMPL            3                  0x3              
  * 0x0129[2:0]   OUT2_MUX_SEL         0                  0x0              
- * 0x0129[5:4]   OUT2_VDD_SEL         2                  0x2              
+ * 0x0129[5:4]   OUT2_VDD_SEL         1                  0x1              
  * 0x0129[3]     OUT2_VDD_SEL_EN      1                  0x1              
  * 0x0129[7:6]   OUT2_INV             0                  0x0              
- * 0x012B[0]     OUT3_PDN             1                  0x1              
- * 0x012B[1]     OUT3_OE              0                  0x0              
+ * 0x012B[0]     OUT3_PDN             0                  0x0              
+ * 0x012B[1]     OUT3_OE              1                  0x1              
  * 0x012B[2]     OUT3_RDIV_FORCE2     0                  0x0              
  * 0x012C[2:0]   OUT3_FORMAT          1                  0x1              
  * 0x012C[3]     OUT3_SYNC_EN         1                  0x1              
  * 0x012C[5:4]   OUT3_DIS_STATE       0                  0x0              
  * 0x012C[7:6]   OUT3_CMOS_DRV        0                  0x0              
- * 0x012D[3:0]   OUT3_CM              11                 0xB              
+ * 0x012D[3:0]   OUT3_CM              14                 0xE              
  * 0x012D[6:4]   OUT3_AMPL            3                  0x3              
  * 0x012E[2:0]   OUT3_MUX_SEL         0                  0x0              
- * 0x012E[5:4]   OUT3_VDD_SEL         2                  0x2              
+ * 0x012E[5:4]   OUT3_VDD_SEL         1                  0x1              
  * 0x012E[3]     OUT3_VDD_SEL_EN      1                  0x1              
  * 0x012E[7:6]   OUT3_INV             0                  0x0              
  * 0x013F[11:0]  OUTX_ALWAYS_ON       0                  0x000            
@@ -617,12 +627,12 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * 0x0222[31:0]  P2_SET               0                  0x00000000       
  * 0x0226[47:0]  P3                   0                  0x000000000000   
  * 0x022C[31:0]  P3_SET               0                  0x00000000       
- * 0x0235[43:0]  M_NUM                601295421440       0x08C00000000    
- * 0x023B[31:0]  M_DEN                2147483648         0x80000000       
+ * 0x0235[43:0]  M_NUM                891205713920       0x0CF80000000    
+ * 0x023B[31:0]  M_DEN                3221225472         0xC0000000       
  * 0x0250[23:0]  R0_REG               0                  0x000000         
  * 0x0253[23:0]  R1_REG               0                  0x000000         
- * 0x025C[23:0]  R2_REG               0                  0x000000         
- * 0x025F[23:0]  R3_REG               0                  0x000000         
+ * 0x025C[23:0]  R2_REG               1                  0x000001         
+ * 0x025F[23:0]  R3_REG               1                  0x000001         
  * 0x026B[7:0]   DESIGN_ID0           0                  0x00             
  * 0x026C[7:0]   DESIGN_ID1           0                  0x00             
  * 0x026D[7:0]   DESIGN_ID2           0                  0x00             
@@ -631,7 +641,7 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * 0x0270[7:0]   DESIGN_ID5           0                  0x00             
  * 0x0271[7:0]   DESIGN_ID6           0                  0x00             
  * 0x0272[7:0]   DESIGN_ID7           0                  0x00             
- * 0x0302[43:0]  N0_NUM               45097156608        0x00A80000000    
+ * 0x0302[43:0]  N0_NUM               178241142784       0x02980000000    
  * 0x0308[31:0]  N0_DEN               2147483648         0x80000000       
  * 0x030C[0]     N0_UPDATE            0                  0x0              
  * 0x030D[43:0]  N1_NUM               0                  0x00000000000    
@@ -720,7 +730,7 @@ si5340_revd_register_t const si5340_revd_registers[SI5340_REVD_REG_CONFIG_NUM_RE
  * 0x090E[0]     XAXB_EXTCLK_EN       0                  0x0              
  * 0x090E[1]     XAXB_PDNB            1                  0x1              
  * 0x091C[2:0]   ZDM_EN               4                  0x4              
- * 0x0943[0]     IO_VDD_SEL           1                  0x1              
+ * 0x0943[0]     IO_VDD_SEL           0                  0x0              
  * 0x0949[3:0]   IN_EN                0                  0x0              
  * 0x0949[7:4]   IN_PULSED_CMOS_EN    0                  0x0              
  * 0x094A[7:4]   INX_TO_PFD_EN        0                  0x0              
