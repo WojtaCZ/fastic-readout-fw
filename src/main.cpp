@@ -31,12 +31,13 @@
 
 #include <tinyusb/src/device/usbd.h>
 #include <tinyusb/src/class/cdc/cdc_device.h>
+#include <tinyusb/src/class/vendor/vendor_device.h>
 
     stmcpp::gpio::pin<stmcpp::gpio::port::porti, 5> ledRed(stmcpp::gpio::mode::output);
     stmcpp::gpio::pin<stmcpp::gpio::port::porti, 6> ledGreen(stmcpp::gpio::mode::output);
     stmcpp::gpio::pin<stmcpp::gpio::port::porti, 7> ledBlue(stmcpp::gpio::mode::output);
-
-    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 10> ledUSB(stmcpp::gpio::mode::output);
+stmcpp::gpio::pin<stmcpp::gpio::port::portd, 10> ledUSB(stmcpp::gpio::mode::output);
+    
 
 using namespace stmcpp::units;
 
@@ -51,6 +52,11 @@ extern "C" void SystemInit(void){
 
 	// Initialize the system clock
 	clock::init();
+
+	// Select HSE as PER clock
+	stmcpp::reg::change(std::ref(RCC->D1CCIPR), 0b11, 0b10, RCC_D1CCIPR_CKPERSEL_Pos);
+	// Select PER as ADC clock
+	stmcpp::reg::change(std::ref(RCC->D3CCIPR), 0b11, 0b10, RCC_D3CCIPR_ADCSEL_Pos);
 
 	// Disable caching in the D2 region where the DMA buffers are stored
 	memory::disableCachingD2();
@@ -75,6 +81,10 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::uart4,
 		stmcpp::clock::peripheral::tim1,
 		stmcpp::clock::peripheral::tim15,
+		stmcpp::clock::peripheral::tim12,
+		stmcpp::clock::peripheral::adc12,
+		stmcpp::clock::peripheral::dac12,
+		stmcpp::clock::peripheral::vrefbuf,
 		// SPI and DMA used for aurora stream reception
 		stmcpp::clock::peripheral::spi1,
 		stmcpp::clock::peripheral::spi2,
@@ -106,12 +116,24 @@ extern "C" int main(void){
 	
 	si5340::init();
 	fastic::init();
+	hv::init();
 	//fastic::initInjectionChannels();
 
 	ledRed.set();
+	uint32_t aval;
+
+	int t1, t2;
 	
 	while(1){
 		tud_task();	
+		
+		//tud_vendor_n_write(, "Hello", 5);
+		
+		/*if(tud_vendor_mounted()){
+			t1 = stmcpp::clock::systick::getTicks();
+			tud_vendor_n_write(0, fastic1_buffers[0], 1024);
+			t2 = stmcpp::clock::systick::getTicks();
+		}*/
 		
 	}
 	
@@ -167,6 +189,20 @@ void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
 		case stmcpp::error::moduleHash("stmcpp::i2c"):
 				{
 				stmcpp::i2c::error err = static_cast<stmcpp::i2c::error>(code);
+				__ASM volatile("bkpt");
+				}
+			break;
+		
+		case stmcpp::error::moduleHash("stmcpp::adc"):
+				{
+				stmcpp::adc::error err = static_cast<stmcpp::adc::error>(code);
+				__ASM volatile("bkpt");
+				}
+			break;
+
+		case stmcpp::error::moduleHash("stmcpp::dac"):
+				{
+				stmcpp::dac::error err = static_cast<stmcpp::dac::error>(code);
 				__ASM volatile("bkpt");
 				}
 			break;

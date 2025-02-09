@@ -96,7 +96,8 @@
         "thread": "cpp",
         "typeindex": "cpp",
         "valarray": "cpp",
-        "*.old": "c"
+        "*.old": "c",
+        "vendor_device.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false,
     "C_Cpp.errorSquiggles": "disabled",

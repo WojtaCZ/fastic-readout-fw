@@ -14,4 +14,8 @@ namespace power {
     void enable1V2();
     void disable1V2();
 }
+
+namespace hv{
+    void init();
+}
 #endif

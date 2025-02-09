@@ -6,12 +6,13 @@
 #include <tinyusb/src/tusb.h>
 #include <tinyusb/src/device/usbd.h>
 
+
 // This is required by the tinyusb library
 uint32_t SystemCoreClock = 480000000;
 
 namespace usb {
     using namespace stmcpp::units;
-
+    
     void init() {
       // Init the interface and core
       usb::interface::init();
