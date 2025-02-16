@@ -84,20 +84,6 @@ namespace hv {
 
 
 
-    stmcpp::adc::adc<stmcpp::adc::peripheral::adc3> adc3 (stmcpp::adc::resolution::sixteenBit, stmcpp::adc::dataManegment::storeInDR, true, false, 16, 0, 4, true);
-
-    static constexpr stmcpp::adc::channel vsense(18, stmcpp::adc::channel::samplingTime::eightHundretTenAndHalfClocks);
-    static constexpr stmcpp::adc::channel vrefint(19, stmcpp::adc::channel::samplingTime::eightHundretTenAndHalfClocks);
-    static constexpr stmcpp::adc::channel vbat(17, stmcpp::adc::channel::samplingTime::eightHundretTenAndHalfClocks);
-
-    static constexpr std::array adc3_sequence = {vrefint};
-
-    uint32_t vrefIntMeasurement;
-
-    double referenceVoltage = 1.8;
-
-
-
     void init(){
 
         // Timer 15 is used as a trigger (generate a 100kHz clock) 
@@ -116,7 +102,7 @@ namespace hv {
 
         stmcpp::reg::set(std::ref(ADC3_COMMON->CCR), ADC_CCR_VREFEN | ADC_CCR_TSEN | ADC_CCR_VBATEN);
         // Set up the ADC
-        adc3.calibrate(stmcpp::adc::calibration::singleEnded, true);
+        /*adc3.calibrate(stmcpp::adc::calibration::singleEnded, true);
 
         adc3.setupRegularSequence(adc3_sequence);
         adc3.enable();
@@ -128,7 +114,7 @@ namespace hv {
         referenceVoltage = (((double)vrefIntCalibration * (3.3/65535)) / vrefIntMeasurement);
     
 
-
+*/
 
 
 

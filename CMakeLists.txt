@@ -29,6 +29,7 @@ set(SOURCES
 	${SOURCE_BASE}/fastic.cpp
 	${SOURCE_BASE}/power.cpp
 	${SOURCE_BASE}/memory.cpp
+	${SOURCE_BASE}/analog.cpp
 	${SOURCE_BASE}/usb_descriptors.c
 
 	${CMAKE_SOURCE_DIR}/lib/fastic-library/src/aurora.cpp

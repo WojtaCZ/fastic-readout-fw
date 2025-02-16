@@ -28,6 +28,7 @@
 #include "readout.hpp"
 #include "power.hpp"
 #include "memory.hpp"
+#include "analog.hpp"
 
 #include <tinyusb/src/device/usbd.h>
 #include <tinyusb/src/class/cdc/cdc_device.h>
@@ -112,7 +113,7 @@ extern "C" int main(void){
 	
 	si5340::init();
 	fastic::init();
-	hv::init();
+	analog::init();
 	//fastic::initInjectionChannels();
 
 	ledRed.set();
