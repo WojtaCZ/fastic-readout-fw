@@ -8,6 +8,12 @@ namespace analog
 {
 
     uint32_t vrefIntCalibration = *(uint32_t*)(0x1FF1E860);
+
+    // Temp calibration - resaling needs to be done because the values in TSCAL are measured with VREF = 3.3V
+    double tscal1 = (double)(*(uint16_t*)(0x1ff1e820)) / (3.3 / 1.8);
+    double tscal2 = (double)(*(uint16_t*)(0x1ff1e840)) / (3.3 / 1.8);
+    double temperature = 0;
+
     uint32_t vrefIntMeasurement = 0;
 
     double voltageMultiplier = 0;
@@ -34,16 +40,19 @@ namespace analog
 
     static constexpr std::array adc3_sequence = {adc3_fastic1_vmon, adc3_vsense, adc3_vrefint, adc3_vbat};
 
-    __attribute__((section(".dma_buffer")))  uint32_t adc3_measurements[adc3_sequence.size()];
+    __attribute__((section(".bdma_buffer")))  uint32_t adc3_measurements[adc3_sequence.size()];
 
 
     stmcpp::dmamux2::dmamux<stmcpp::dmamux2::channel::channel0> dmamux2ch0(stmcpp::dmamux2::request::adc3_dma);
-    stmcpp::bdma::bdma<stmcpp::bdma::peripheral::dma1, stmcpp::bdma::channel::channel0> adc3_dma(stmcpp::bdma::mode::periph2mem, stmcpp::bdma::dataSize::word, false, static_cast<uint32_t>(ADC3_BASE) + offsetof(ADC_TypeDef, DR), stmcpp::bdma::dataSize::word, true, (uint32_t)&adc3_measurements, 0, adc3_sequence.size(), stmcpp::bdma::priority::low, false, stmcpp::bdma::pincOffset::psize, false);
+    stmcpp::bdma::bdma<stmcpp::bdma::peripheral::bdma, stmcpp::bdma::channel::channel0> adc3_dma(stmcpp::bdma::mode::periph2mem, stmcpp::bdma::dataSize::word, false, static_cast<uint32_t>(ADC3_BASE) + offsetof(ADC_TypeDef, DR), stmcpp::bdma::dataSize::word, true, (uint32_t)&adc3_measurements, 0, adc3_sequence.size(), stmcpp::bdma::priority::low, false, stmcpp::bdma::pincOffset::psize, false);
 
 
 
     void init(){
-        
+        //Set up the reference buffer
+        stmcpp::reg::write(std::ref(VREFBUF->CSR), VREFBUF_CSR_ENVR | VREFBUF_CSR_VRS_OUT3);  
+        stmcpp::reg::waitForBitSet(std::ref(VREFBUF->CSR), VREFBUF_CSR_VRR_Msk);
+
         // Enable the auxilary measurement channels of ADC3 (internal vref, temperature sensor and battery voltage)
         stmcpp::reg::set(std::ref(ADC3_COMMON->CCR), ADC_CCR_VREFEN | ADC_CCR_TSEN | ADC_CCR_VBATEN);
 
@@ -60,6 +69,8 @@ namespace analog
         adc3_dma.enableInterrupt(stmcpp::bdma::interrupt::transferComplete);
         adc2_dma.setNumberOfData(adc2_sequence.size());
         adc3_dma.setNumberOfData(adc3_sequence.size());
+        adc2_dma.enable();
+        adc3_dma.enable();
 
         // Enable interrupts
         NVIC_EnableIRQ(DMA1_Stream7_IRQn);
@@ -73,23 +84,31 @@ namespace analog
     }
 
     void calibrateMultiplier(){
-        voltageMultiplier = (((double)vrefIntCalibration * (3.3 / 65535)) / (double)vrefIntMeasurement);
+        voltageMultiplier = (((double)vrefIntCalibration * (3.3 / 65535)) / (double)adc3_measurements[2]);
     }
 } 
 
 
-extern "C" void BDMA_Channel0_IRQHandler(void)
+extern "C" void BDMA_CH0_IRQHandler(void)
 {
     __ASM volatile("bkpt");
+    analog::adc3_dma.disable();
     analog::adc3_dma.clearInterruptFlag(stmcpp::bdma::interrupt::transferComplete);
     NVIC_ClearPendingIRQ(BDMA_Channel0_IRQn);
+    analog::adc3_dma.setNumberOfData(analog::adc3_sequence.size());
+    analog::adc3_dma.enable();
+    analog::adc3.startRegular();
+    analog::calibrateMultiplier();
+    analog::temperature = ((110.0 - 30.0) / (double)(analog::tscal2 - analog::tscal1)) * (double)(analog::adc3_measurements[1] - analog::tscal1) + 30.0;
 
 }
 
 
-extern "C" void DMA_STR7_IRQHandler(){
+extern "C" void DMA1_STR7_IRQHandler(){
     __ASM volatile("bkpt");
     analog::adc2_dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
     NVIC_ClearPendingIRQ(DMA1_Stream7_IRQn);
+    analog::adc2_dma.enable();
+    analog::adc2.startRegular();
 
 }

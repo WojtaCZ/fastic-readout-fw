@@ -190,6 +190,11 @@ SECTIONS
     *(.usb_buffer)
   } >RAM_D2
   
+    /* BDMA BUFFERS */
+  .bdma_buffer :
+  {
+    *(.usb_buffer)
+  } >RAM_D3
 
   /* Remove information from the standard libraries */
   /DISCARD/ :
