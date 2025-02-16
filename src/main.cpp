@@ -53,11 +53,6 @@ extern "C" void SystemInit(void){
 	// Initialize the system clock
 	clock::init();
 
-	// Select HSE as PER clock
-	stmcpp::reg::change(std::ref(RCC->D1CCIPR), 0b11, 0b10, RCC_D1CCIPR_CKPERSEL_Pos);
-	// Select PER as ADC clock
-	stmcpp::reg::change(std::ref(RCC->D3CCIPR), 0b11, 0b10, RCC_D3CCIPR_ADCSEL_Pos);
-
 	// Disable caching in the D2 region where the DMA buffers are stored
 	memory::disableCachingD2();
 
@@ -83,6 +78,7 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::tim15,
 		stmcpp::clock::peripheral::tim12,
 		stmcpp::clock::peripheral::adc12,
+		stmcpp::clock::peripheral::adc3,
 		stmcpp::clock::peripheral::dac12,
 		stmcpp::clock::peripheral::vrefbuf,
 		// SPI and DMA used for aurora stream reception

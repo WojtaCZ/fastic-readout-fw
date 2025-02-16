@@ -91,5 +91,9 @@ namespace clock {
 		stmcpp::reg::set(std::ref(RCC->D2CCIP2R), usart234578ClkSel);
 		stmcpp::reg::waitForBitsEqual(std::ref(RCC->D2CCIP2R), RCC_D2CCIP2R_USART28SEL_Msk, usart234578ClkSel, []() { errorHandler.hardThrow(clock::error::clock_mux_timeout); });
 		
+		// Select HSE (48MHz) as PER clock
+		stmcpp::reg::change(std::ref(RCC->D1CCIPR), 0b11, 0b10, RCC_D1CCIPR_CKPERSEL_Pos);
+		// Select PER as ADC clock
+		stmcpp::reg::change(std::ref(RCC->D3CCIPR), 0b11, 0b10, RCC_D3CCIPR_ADCSEL_Pos);
 	}
 }
