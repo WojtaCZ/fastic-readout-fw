@@ -18,7 +18,7 @@ namespace analog
 
     double voltageMultiplier = 0;
 
-    stmcpp::adc::adc<stmcpp::adc::peripheral::adc2> adc2 (stmcpp::adc::resolution::sixteenBit, stmcpp::adc::dataManegment::oneShotDMA, true, false, 16, 0, 4, true);
+    stmcpp::adc::adc<stmcpp::adc::peripheral::adc2> adc2 (stmcpp::adc::resolution::sixteenBit, stmcpp::adc::dataManegment::circularDMA, true, false, 16, 0, 4, true);
 
     static constexpr stmcpp::adc::channel adc2_fastic2_vmon(14, stmcpp::adc::channel::samplingTime::eightHundretTenAndHalfClocks);
     static constexpr stmcpp::adc::channel adc2_dac1(16, stmcpp::adc::channel::samplingTime::eightHundretTenAndHalfClocks);
@@ -28,10 +28,10 @@ namespace analog
     __attribute__((section(".dma_buffer"))) uint32_t adc2_measurements[adc2_sequence.size()];
 
     stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel7> dmamux1ch7(stmcpp::dmamux1::request::adc2_dma);
-    stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream7> adc2_dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::word, false, static_cast<uint32_t>(ADC2_BASE) + offsetof(ADC_TypeDef, DR), stmcpp::dma::datasize::word, true, (uint32_t)&adc2_measurements, 0, adc2_sequence.size(), stmcpp::dma::priority::low, false, stmcpp::dma::pincOffset::psize, false);
+    stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream7> adc2_dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::word, false, static_cast<uint32_t>(ADC2_BASE) + offsetof(ADC_TypeDef, DR), stmcpp::dma::datasize::word, true, (uint32_t)&adc2_measurements, 0, adc2_sequence.size(), stmcpp::dma::priority::low, true, stmcpp::dma::pincOffset::psize, false);
 
 
-    stmcpp::adc::adc<stmcpp::adc::peripheral::adc3> adc3 (stmcpp::adc::resolution::sixteenBit, stmcpp::adc::dataManegment::oneShotDMA, true, false, 16, 0, 4, true);
+    stmcpp::adc::adc<stmcpp::adc::peripheral::adc3> adc3 (stmcpp::adc::resolution::sixteenBit, stmcpp::adc::dataManegment::circularDMA, true, false, 16, 0, 4, true);
 
     static constexpr stmcpp::adc::channel adc3_fastic1_vmon(13, stmcpp::adc::channel::samplingTime::eightHundretTenAndHalfClocks);
     static constexpr stmcpp::adc::channel adc3_vsense(18, stmcpp::adc::channel::samplingTime::eightHundretTenAndHalfClocks);
@@ -44,11 +44,24 @@ namespace analog
 
 
     stmcpp::dmamux2::dmamux<stmcpp::dmamux2::channel::channel0> dmamux2ch0(stmcpp::dmamux2::request::adc3_dma);
-    stmcpp::bdma::bdma<stmcpp::bdma::peripheral::bdma, stmcpp::bdma::channel::channel0> adc3_dma(stmcpp::bdma::mode::periph2mem, stmcpp::bdma::dataSize::word, false, static_cast<uint32_t>(ADC3_BASE) + offsetof(ADC_TypeDef, DR), stmcpp::bdma::dataSize::word, true, (uint32_t)&adc3_measurements, 0, adc3_sequence.size(), stmcpp::bdma::priority::low, false, stmcpp::bdma::pincOffset::psize, false);
+    stmcpp::bdma::bdma<stmcpp::bdma::peripheral::bdma, stmcpp::bdma::channel::channel0> adc3_dma(stmcpp::bdma::mode::periph2mem, stmcpp::bdma::dataSize::word, false, static_cast<uint32_t>(ADC3_BASE) + offsetof(ADC_TypeDef, DR), stmcpp::bdma::dataSize::word, true, (uint32_t)&adc3_measurements, 0, adc3_sequence.size(), stmcpp::bdma::priority::low, true, stmcpp::bdma::pincOffset::psize, false);
 
 
 
     void init(){
+        // set up timer 15 used to trigger the ADCs
+        stmcpp::reg::write(std::ref(TIM15->PSC), 24-1);   
+        stmcpp::reg::write(std::ref(TIM15->ARR), 10000);
+
+        // Load all the registers and enable trigger
+        stmcpp::reg::set(std::ref(TIM15->EGR), TIM_EGR_UG | TIM_EGR_TG);
+
+         //stmcpp::reg::set(std::ref(TIM15->DIER), TIM_DIER_UIE);
+        stmcpp::reg::write(std::ref(TIM15->CCMR1), (0b0110 << TIM_CCMR1_OC1M_Pos));
+        stmcpp::reg::set(std::ref(TIM15->CCMR1), TIM_CCER_CC1E);
+
+        //NVIC_EnableIRQ(TIM15_IRQn);
+
         //Set up the reference buffer
         stmcpp::reg::write(std::ref(VREFBUF->CSR), VREFBUF_CSR_ENVR | VREFBUF_CSR_VRS_OUT3);  
         stmcpp::reg::waitForBitSet(std::ref(VREFBUF->CSR), VREFBUF_CSR_VRR_Msk);
@@ -61,26 +74,30 @@ namespace analog
         adc3.calibrate(stmcpp::adc::calibration::singleEnded, true);
 
         // Set up the ADC sequences
-        adc2.setupRegularSequence(adc2_sequence);
-        adc3.setupRegularSequence(adc3_sequence);
+        adc2.setupRegularSequence(adc2_sequence, 0b01110, stmcpp::adc::hardwareTrigEdge::both);
+        adc3.setupRegularSequence(adc3_sequence, 0b01110, stmcpp::adc::hardwareTrigEdge::both);
 
         // Set up the DMA
-        adc2_dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
-        adc3_dma.enableInterrupt(stmcpp::bdma::interrupt::transferComplete);
+        //adc2_dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
+        //adc3_dma.enableInterrupt(stmcpp::bdma::interrupt::transferComplete);
         adc2_dma.setNumberOfData(adc2_sequence.size());
         adc3_dma.setNumberOfData(adc3_sequence.size());
         adc2_dma.enable();
         adc3_dma.enable();
 
         // Enable interrupts
-        NVIC_EnableIRQ(DMA1_Stream7_IRQn);
-        NVIC_EnableIRQ(BDMA_Channel0_IRQn);
+        //NVIC_EnableIRQ(DMA1_Stream7_IRQn);
+        //NVIC_EnableIRQ(BDMA_Channel0_IRQn);
 
         adc2.enable();
         adc3.enable();
 
         adc2.startRegular();
         adc3.startRegular();
+
+        //Enable the timer and its output
+        stmcpp::reg::set(std::ref(TIM15->CR1), TIM_CR1_CEN);
+        
     }
 
     void calibrateMultiplier(){
@@ -92,14 +109,14 @@ namespace analog
 extern "C" void BDMA_CH0_IRQHandler(void)
 {
     __ASM volatile("bkpt");
-    analog::adc3_dma.disable();
+    //analog::adc3_dma.disable();
     analog::adc3_dma.clearInterruptFlag(stmcpp::bdma::interrupt::transferComplete);
     NVIC_ClearPendingIRQ(BDMA_Channel0_IRQn);
-    analog::adc3_dma.setNumberOfData(analog::adc3_sequence.size());
-    analog::adc3_dma.enable();
+    //analog::adc3_dma.setNumberOfData(analog::adc3_sequence.size());
+    //analog::adc3_dma.enable();
     analog::adc3.startRegular();
-    analog::calibrateMultiplier();
-    analog::temperature = ((110.0 - 30.0) / (double)(analog::tscal2 - analog::tscal1)) * (double)(analog::adc3_measurements[1] - analog::tscal1) + 30.0;
+    //analog::calibrateMultiplier();
+    //analog::temperature = ((110.0 - 30.0) / (double)(analog::tscal2 - analog::tscal1)) * (double)(analog::adc3_measurements[1] - analog::tscal1) + 30.0;
 
 }
 
@@ -111,4 +128,17 @@ extern "C" void DMA1_STR7_IRQHandler(){
     analog::adc2_dma.enable();
     analog::adc2.startRegular();
 
+}
+
+extern "C" void TIM15_IRQHandler() {
+    if (stmcpp::reg::read(std::ref(TIM15->SR), TIM_SR_UIF_Msk)) {
+        // Clear the update interrupt flag
+        stmcpp::reg::clear(std::ref(TIM15->SR), TIM_SR_UIF_Msk);
+       // hv::measurementIdx = 0;
+        //hv::adc1.startRegular();
+        analog::adc2.startRegular();
+        analog::adc3.startRegular();
+    }
+
+    NVIC_ClearPendingIRQ(TIM15_IRQn);
 }

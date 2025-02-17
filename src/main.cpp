@@ -112,7 +112,7 @@ extern "C" int main(void){
 
 	
 	si5340::init();
-	fastic::init();
+	//fastic::init();
 	analog::init();
 	//fastic::initInjectionChannels();
 
