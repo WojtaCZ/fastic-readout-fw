@@ -9,6 +9,7 @@ namespace analog {
 
     void init();
     void calibrateVref();
+    void log();
 } 
 
 

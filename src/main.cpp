@@ -29,19 +29,28 @@
 #include "power.hpp"
 #include "memory.hpp"
 #include "analog.hpp"
+#include "scheduler.hpp"
 
 #include <tinyusb/src/device/usbd.h>
 #include <tinyusb/src/class/cdc/cdc_device.h>
 #include <tinyusb/src/class/vendor/vendor_device.h>
 
-    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 5> ledRed(stmcpp::gpio::mode::output);
-    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 6> ledGreen(stmcpp::gpio::mode::output);
-    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 7> ledBlue(stmcpp::gpio::mode::output);
+stmcpp::gpio::pin<stmcpp::gpio::port::porti, 5> ledRed(stmcpp::gpio::mode::output);
+stmcpp::gpio::pin<stmcpp::gpio::port::porti, 6> ledGreen(stmcpp::gpio::mode::output);
+stmcpp::gpio::pin<stmcpp::gpio::port::porti, 7> ledBlue(stmcpp::gpio::mode::output);
 stmcpp::gpio::pin<stmcpp::gpio::port::portd, 10> ledUSB(stmcpp::gpio::mode::output);
     
 
 using namespace stmcpp::units;
 
+void keepalive(){
+	ledGreen.toggle();
+}
+
+
+
+scheduler keepaliveScheduler = scheduler(200, &keepalive, scheduler::PERIODICAL | scheduler::ACTIVE);
+scheduler logScheduler = scheduler(1000, &analog::log, scheduler::PERIODICAL | scheduler::ACTIVE);
 
 bool s = false;
 
@@ -124,6 +133,8 @@ extern "C" int main(void){
 	while(1){
 		tud_task();	
 		
+		keepaliveScheduler.dispatch();
+		logScheduler.dispatch();
 		//tud_vendor_n_write(, "Hello", 5);
 		
 		/*if(tud_vendor_mounted()){
@@ -139,6 +150,8 @@ extern "C" int main(void){
 // Increment the systick timer
 extern "C" void SysTick_Handler(){
     stmcpp::clock::systick::increment();
+	keepaliveScheduler.increment();
+	logScheduler.increment();
 }
 
 extern "C" void NMI_Handler(void) {

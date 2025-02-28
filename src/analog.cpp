@@ -49,16 +49,28 @@ namespace analog
 
 
     void init(){
-        // set up timer 15 used to trigger the ADCs
+        // set up timer 15 used to trigger the ADCs to generate an event at 1kHz
         stmcpp::reg::write(std::ref(TIM15->PSC), 24-1);   
-        stmcpp::reg::write(std::ref(TIM15->ARR), 10000);
+        stmcpp::reg::write(std::ref(TIM15->ARR), 10000-1);
+        stmcpp::reg::write(std::ref(TIM15->CR2), 0b010<< TIM_CR2_MMS_Pos);
 
         // Load all the registers and enable trigger
-        stmcpp::reg::set(std::ref(TIM15->EGR), TIM_EGR_UG | TIM_EGR_TG);
+        //stmcpp::reg::set(std::ref(TIM15->EGR), TIM_EGR_TG);
 
          //stmcpp::reg::set(std::ref(TIM15->DIER), TIM_DIER_UIE);
-        stmcpp::reg::write(std::ref(TIM15->CCMR1), (0b0110 << TIM_CCMR1_OC1M_Pos));
-        stmcpp::reg::set(std::ref(TIM15->CCMR1), TIM_CCER_CC1E);
+        // The timer needs to be configured in PWM2 mode
+        //stmcpp::reg::write(std::ref(TIM15->CCMR1), (0b0111 << TIM_CCMR1_OC1M_Pos));
+        // Set up the period
+        //stmcpp::reg::write(std::ref(TIM15->CCR1), 0);
+        
+        //Enable the output
+        //stmcpp::reg::set(std::ref(TIM15->CCER), TIM_CCER_CC1E);
+
+        //stmcpp::reg::set(std::ref(TIM15->BDTR), TIM_BDTR_MOE);
+
+        //Maybe moe is needed?
+
+        //stmcpp::reg::set(std::ref(TIM15->CCMR1), TIM_CCER_CC1E);
 
         //NVIC_EnableIRQ(TIM15_IRQn);
 
@@ -74,8 +86,8 @@ namespace analog
         adc3.calibrate(stmcpp::adc::calibration::singleEnded, true);
 
         // Set up the ADC sequences
-        adc2.setupRegularSequence(adc2_sequence, 0b01110, stmcpp::adc::hardwareTrigEdge::both);
-        adc3.setupRegularSequence(adc3_sequence, 0b01110, stmcpp::adc::hardwareTrigEdge::both);
+        adc2.setupRegularSequence(adc2_sequence, 0b01110, stmcpp::adc::hardwareTrigEdge::rising);
+        adc3.setupRegularSequence(adc3_sequence, 0b01110, stmcpp::adc::hardwareTrigEdge::rising);
 
         // Set up the DMA
         //adc2_dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
@@ -102,6 +114,11 @@ namespace analog
 
     void calibrateMultiplier(){
         voltageMultiplier = (((double)vrefIntCalibration * (3.3 / 65535)) / (double)adc3_measurements[2]);
+    }
+
+    void log(){
+        calibrateMultiplier();
+        printf("Voltages:%f,%f,%f,%f,%f,%f\n", adc3_measurements[0], adc2_measurements[0], adc3_measurements[1], adc3_measurements[2], adc3_measurements[3], adc2_measurements[1]);
     }
 } 
 
