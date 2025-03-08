@@ -47,10 +47,13 @@ void keepalive(){
 	ledGreen.toggle();
 }
 
+void log(){
+	printf("Voltages: FastIC1: %f, FastIC2: %f, Vbat: %f, Temperature: %f\n\r", analog::getFastIC1Voltage(), analog::getFastIC2Voltage(), analog::getVbatVoltage(), analog::getTemperature());
+}
 
 
 scheduler keepaliveScheduler = scheduler(200, &keepalive, scheduler::PERIODICAL | scheduler::ACTIVE);
-scheduler logScheduler = scheduler(1000, &analog::log, scheduler::PERIODICAL | scheduler::ACTIVE);
+scheduler logScheduler = scheduler(1000, &log, scheduler::PERIODICAL | scheduler::ACTIVE);
 
 bool s = false;
 
@@ -104,7 +107,6 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::usb1ulpi
 	);
 }
-
 
 
 extern "C" int main(void){
