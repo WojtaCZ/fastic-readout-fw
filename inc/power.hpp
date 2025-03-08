@@ -1,6 +1,9 @@
 #ifndef POWER_H
 #define POWER_H
 
+
+//#include <stmcpp/units.hpp>
+
 namespace power {
     enum class ldo {
         D1V2,
@@ -17,5 +20,8 @@ namespace power {
 
 namespace hv{
     void init();
+    double getVoltage();
+    double getCurrent();
+    void setVoltage(int value);
 }
 #endif

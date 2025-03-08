@@ -49,11 +49,16 @@ void keepalive(){
 
 void log(){
 	printf("Voltages: FastIC1: %f, FastIC2: %f, Vbat: %f, Temperature: %f\n\r", analog::getFastIC1Voltage(), analog::getFastIC2Voltage(), analog::getVbatVoltage(), analog::getTemperature());
+	
+
 }
 
+void log2(){
+	printf("HV: V: %f [V], I: %f [uA]\n\r", hv::getVoltage(), hv::getCurrent());
+}
 
 scheduler keepaliveScheduler = scheduler(200, &keepalive, scheduler::PERIODICAL | scheduler::ACTIVE);
-scheduler logScheduler = scheduler(1000, &log, scheduler::PERIODICAL | scheduler::ACTIVE);
+scheduler logScheduler = scheduler(100, &log2, scheduler::PERIODICAL | scheduler::ACTIVE);
 
 bool s = false;
 
@@ -68,6 +73,11 @@ extern "C" void SystemInit(void){
 
 	// Disable caching in the D2 region where the DMA buffers are stored
 	memory::disableCachingD2();
+
+	// Disable caching in the D3 region where the BDMA buffers are stored
+	memory::disableCachingD3();
+
+	memory::enableMPU();
 
 	// Enable the necessary peripheral clocks
 	stmcpp::clock::enablePeripherals(
@@ -109,6 +119,29 @@ extern "C" void SystemInit(void){
 }
 
 
+//--------------------------------------------------------------------+
+// USB CDC
+//--------------------------------------------------------------------+
+void cdc_task(void) {
+	// connected() check for DTR bit
+	// Most but not all terminal client set this when making connection
+	//if ( tud_cdc_connected() )
+	{
+	  // connected and there are data available
+	  if (tud_cdc_available()) {
+		// read data
+		char buf[512];
+		uint32_t count = tud_cdc_read(buf, sizeof(buf));
+		(void) count;
+  
+		int value = atoi(buf);
+		//printf("Received: %d\n\r", value);
+  
+		hv::setVoltage(value);
+	  }
+	}
+  }
+
 extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
@@ -125,6 +158,7 @@ extern "C" int main(void){
 	si5340::init();
 	//fastic::init();
 	analog::init();
+	hv::init();
 	//fastic::initInjectionChannels();
 
 	ledRed.set();
@@ -134,6 +168,7 @@ extern "C" int main(void){
 	
 	while(1){
 		tud_task();	
+		cdc_task();
 		
 		keepaliveScheduler.dispatch();
 		logScheduler.dispatch();

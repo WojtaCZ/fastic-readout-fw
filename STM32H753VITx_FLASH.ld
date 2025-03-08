@@ -193,7 +193,7 @@ SECTIONS
     /* BDMA BUFFERS */
   .bdma_buffer :
   {
-    *(.usb_buffer)
+    *(.bdma_buffer)
   } >RAM_D3
 
   /* Remove information from the standard libraries */
