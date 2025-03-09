@@ -71,6 +71,7 @@ enum
 {
   ITF_NUM_CDC_0 = 0,
   ITF_NUM_CDC_0_DATA,
+  ITF_NUM_RAW_CONTROL,
   ITF_NUM_FASTIC_0,
   ITF_NUM_FASTIC_1,
   ITF_NUM_TOTAL
@@ -82,11 +83,14 @@ enum
 #define EPNUM_CDC_OUT           0x02
 #define EPNUM_CDC_IN            0x82
 
-#define EPNUM_FASTIC_0_OUT      0x03
-#define EPNUM_FASTIC_0_IN       0x83
+#define EPNUM_RAW_CONTROL_OUT   0x03
+#define EPNUM_RAW_CONTROL_IN    0x83
 
-#define EPNUM_FASTIC_1_OUT      0x04
-#define EPNUM_FASTIC_1_IN       0x84
+#define EPNUM_FASTIC_0_OUT      0x04
+#define EPNUM_FASTIC_0_IN       0x84
+
+#define EPNUM_FASTIC_1_OUT      0x05
+#define EPNUM_FASTIC_1_IN       0x85
 
 uint8_t const desc_fs_configuration[] =
 {
@@ -96,9 +100,12 @@ uint8_t const desc_fs_configuration[] =
   // CDC interface used for communication and logging
   TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, EPNUM_CDC_NOTIF, 8, EPNUM_CDC_OUT, EPNUM_CDC_IN, 64),
 
+  // Vendor interface for control data
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_RAW_CONTROL, 5, EPNUM_RAW_CONTROL_OUT, EPNUM_RAW_CONTROL_IN, 64),
+
   // FastIC bulk interfaces used for data transfer
-  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_0, 5, EPNUM_FASTIC_0_OUT, EPNUM_FASTIC_0_IN, 64),
-  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_1, 6, EPNUM_FASTIC_1_OUT, EPNUM_FASTIC_1_IN, 64)
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_0, 6, EPNUM_FASTIC_0_OUT, EPNUM_FASTIC_0_IN, 64),
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_1, 7, EPNUM_FASTIC_1_OUT, EPNUM_FASTIC_1_IN, 64)
 };
 
 uint8_t const desc_hs_configuration[] =
@@ -109,9 +116,12 @@ uint8_t const desc_hs_configuration[] =
   // CDC interface used for communication and logging
   TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, EPNUM_CDC_NOTIF, 8, EPNUM_CDC_OUT, EPNUM_CDC_IN, 512),
 
+  // Vendor interface for control data
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_RAW_CONTROL, 5, EPNUM_RAW_CONTROL_OUT, EPNUM_RAW_CONTROL_IN, 512),
+
   // FastIC bulk interfaces used for data transfer
-  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_0, 5, EPNUM_FASTIC_0_OUT, EPNUM_FASTIC_0_IN, 512),
-  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_1, 6, EPNUM_FASTIC_1_OUT, EPNUM_FASTIC_1_IN, 512)
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_0, 6, EPNUM_FASTIC_0_OUT, EPNUM_FASTIC_0_IN, 512),
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_FASTIC_1, 7, EPNUM_FASTIC_1_OUT, EPNUM_FASTIC_1_IN, 512)
 };
 
 // device qualifier is mostly similar to device descriptor since we don't change configuration based on speed
@@ -152,6 +162,7 @@ enum {
   STRID_MANUFACTURER,
   STRID_PRODUCT,
   STRID_SERIAL,
+  STRID_RAW_CONTROL,
   STRID_VENDOR_0,
   STRID_VENDOR_1
 };
@@ -163,9 +174,10 @@ char const *string_desc_arr[] =
   "CERN",                        // 1: Manufacturer
   "FastIC+ Readout",             // 2: Product
   NULL,                          // 3: UID (generated bellow)
-  "Readout Communication",       // 4: Serial Interface
-  "FastIC+ A Data",              // 5: FastIC+ A interface
-  "FastIC+ B Data",              // 6: FastIC+ B interface
+  "Readout Serial Communication",// 4: Serial Interface
+  "Readout RAW Communication",   // 5: Raw communication interface
+  "FastIC+ A Data",              // 6: FastIC+ A interface
+  "FastIC+ B Data",              // 7: FastIC+ B interface
 };
 
 static uint16_t _desc_str[32 + 1];

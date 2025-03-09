@@ -59,6 +59,10 @@ namespace power {
     void disable1V2() {
         en_1V2.clear();
     }
+
+    bool is1V2Enabled() {
+        return en_1V2.read();
+    }
 } 
 
 namespace hv {
@@ -120,6 +124,10 @@ namespace hv {
         stmcpp::reg::set(std::ref(TIM12->CR1), TIM_CR1_CEN);
         
     } 
+
+    bool isEnabled() {
+        return shutdown_n.read();
+    }
 
     double getVoltage() {
         return hvVoltage;

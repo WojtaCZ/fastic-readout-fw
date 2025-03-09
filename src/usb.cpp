@@ -182,3 +182,64 @@ void tud_cdc_line_state_cb(uint8_t itf, bool dtr, bool rts) {
 void tud_cdc_rx_cb(uint8_t itf) {
   (void) itf;
 }
+
+bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const* request) {
+  switch (request->bmRequestType_bit.type) {
+    case TUSB_REQ_TYPE_VENDOR:
+      if(request->bmRequestType_bit.direction == TUSB_DIR_IN){
+        switch (stage)
+        {
+          case CONTROL_STAGE_SETUP:
+            /* code */
+            tud_control_xfer(rhport, request, (void*) (uintptr_t) "Hello", 5);
+            break;
+
+          case CONTROL_STAGE_DATA:
+            /* code */
+            break;
+
+          case CONTROL_STAGE_ACK:
+            /* code */
+            break;
+          
+          default:
+            break;
+        }
+      } else if (request->bmRequestType_bit.direction == TUSB_DIR_OUT){
+        switch (stage)
+        {
+          case CONTROL_STAGE_SETUP:
+            /* code */
+            //tud_control_xfer(rhport, request, (void*) (uintptr_t) "Hello", 5);
+            return true;
+            break;
+
+          case CONTROL_STAGE_DATA:
+            /* code */
+            break;
+
+          case CONTROL_STAGE_ACK:
+            /* code */
+            break;
+          
+          default:
+            break;
+        }
+      }
+      
+      
+      // Class request in the vendor specific range (0x80 - 0xff)
+      //__ASM volatile("bkpt");
+      break;
+
+    case TUSB_REQ_TYPE_CLASS:
+      // Class request in the CDC range (0x20 - 0x2f)
+      __ASM volatile("bkpt");
+      break;
+
+    default: break;
+  }
+
+  // stall unknown request
+  return false;
+}

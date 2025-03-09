@@ -32,6 +32,7 @@ set(SOURCES
 	${SOURCE_BASE}/analog.cpp
 	${SOURCE_BASE}/usb_descriptors.c
 	${SOURCE_BASE}/scheduler.cpp
+	${SOURCE_BASE}/communication.cpp
 
 
 	${CMAKE_SOURCE_DIR}/lib/fastic-library/src/aurora.cpp

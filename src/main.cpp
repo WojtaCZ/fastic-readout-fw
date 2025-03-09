@@ -30,6 +30,7 @@
 #include "memory.hpp"
 #include "analog.hpp"
 #include "scheduler.hpp"
+#include "communication.hpp"
 
 #include <tinyusb/src/device/usbd.h>
 #include <tinyusb/src/class/cdc/cdc_device.h>
@@ -54,7 +55,9 @@ void log(){
 }
 
 void log2(){
-	printf("HV: V: %f [V], I: %f [uA]\n\r", hv::getVoltage(), hv::getCurrent());
+
+	communication::sendStatus();
+	//printf("HV: V: %f [V], I: %f [uA]\n\r", hv::getVoltage(), hv::getCurrent());
 }
 
 scheduler keepaliveScheduler = scheduler(200, &keepalive, scheduler::PERIODICAL | scheduler::ACTIVE);
@@ -142,6 +145,8 @@ void cdc_task(void) {
 	}
   }
 
+
+
 extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
@@ -150,9 +155,6 @@ extern "C" int main(void){
 
 	//usart4.enableTx();
 	//usart4.enable();
-
-	s = power::isPowerGood(power::ldo::D1V8);
-	s = power::isPowerGood(power::ldo::A3V3);
 
 	
 	si5340::init();

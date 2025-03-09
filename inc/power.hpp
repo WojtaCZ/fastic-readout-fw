@@ -16,10 +16,12 @@ namespace power {
     bool isPowerGood(ldo regulator);
     void enable1V2();
     void disable1V2();
+    bool is1V2Enabled();
 }
 
 namespace hv{
     void init();
+    bool isEnabled();
     double getVoltage();
     double getCurrent();
     void setVoltage(int value);
