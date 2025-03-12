@@ -122,34 +122,11 @@ extern "C" void SystemInit(void){
 }
 
 
-//--------------------------------------------------------------------+
-// USB CDC
-//--------------------------------------------------------------------+
-void cdc_task(void) {
-	// connected() check for DTR bit
-	// Most but not all terminal client set this when making connection
-	//if ( tud_cdc_connected() )
-	{
-	  // connected and there are data available
-	  if (tud_cdc_available()) {
-		// read data
-		char buf[512];
-		uint32_t count = tud_cdc_read(buf, sizeof(buf));
-		(void) count;
-  
-		int value = atoi(buf);
-		//printf("Received: %d\n\r", value);
-  
-		hv::setVoltage(value);
-	  }
-	}
-  }
-
-
-
 extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
+
+	//setvbuf(stdout, NULL, _IONBF, 0);
 
 	usb::init();
 
@@ -158,7 +135,7 @@ extern "C" int main(void){
 
 	
 	si5340::init();
-	//fastic::init();
+	fastic::init();
 	analog::init();
 	hv::init();
 	//fastic::initInjectionChannels();
@@ -170,7 +147,8 @@ extern "C" int main(void){
 	
 	while(1){
 		tud_task();	
-		cdc_task();
+		communication::process();
+		//cdc_task();
 		
 		keepaliveScheduler.dispatch();
 		logScheduler.dispatch();

@@ -183,44 +183,59 @@ void tud_cdc_rx_cb(uint8_t itf) {
   (void) itf;
 }
 
+/*
+  D[7] Data Phase Transfer Direction
+    0 = Host to Device
+    1 = Device to Host
+  D[5:6] Type
+    0 = Standard
+    1 = Class
+    2 = Vendor
+    3 = Reserved
+  D[0:4] Recipient
+    0 = Device
+    1 = Interface
+    2 = Endpoint
+    3 = Other
+    4..31 = Reserved
+*/
+
+uint8_t buffer[5];
+
 bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const* request) {
   switch (request->bmRequestType_bit.type) {
     case TUSB_REQ_TYPE_VENDOR:
+
       if(request->bmRequestType_bit.direction == TUSB_DIR_IN){
+        // If data is requested from the device
         switch (stage)
         {
+          // If the setup is completed, we should provide some data back
           case CONTROL_STAGE_SETUP:
-            /* code */
-            tud_control_xfer(rhport, request, (void*) (uintptr_t) "Hello", 5);
-            break;
-
-          case CONTROL_STAGE_DATA:
-            /* code */
-            break;
-
-          case CONTROL_STAGE_ACK:
-            /* code */
+            return tud_control_xfer(rhport, request, (void*) (uintptr_t) "Hello", 5);
             break;
           
+          // Nothing to do here
+          case CONTROL_STAGE_DATA:
+          case CONTROL_STAGE_ACK:
+            return true;
+
           default:
             break;
         }
       } else if (request->bmRequestType_bit.direction == TUSB_DIR_OUT){
+        // If data was sent to the device
         switch (stage)
         {
+          // If the setup is completed, deal with what we've received
           case CONTROL_STAGE_SETUP:
-            /* code */
-            //tud_control_xfer(rhport, request, (void*) (uintptr_t) "Hello", 5);
-            return true;
+            return tud_control_xfer(rhport, request, &buffer, 5);
             break;
 
+          // Nothing to do here
           case CONTROL_STAGE_DATA:
-            /* code */
-            break;
-
           case CONTROL_STAGE_ACK:
-            /* code */
-            break;
+            return true;
           
           default:
             break;

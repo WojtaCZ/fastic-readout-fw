@@ -289,6 +289,38 @@ namespace fastic {
         fastic2_dma.enable();
         */
     }
+
+    bool getFastIC1SyncReset() {
+        return fastic1_rstcnt_n.read();
+    }
+
+    bool getFastIC2SyncReset() {
+        return fastic2_rstcnt_n.read();
+    }
+
+    void setFastIC1SyncReset(uint8_t value) {
+        if(value) {
+            fastic1_rstcnt_n.set();
+        } else {
+            fastic1_rstcnt_n.clear();
+        }
+    }
+
+    void setFastIC2SyncReset(uint8_t value) {
+        if(value) {
+            fastic2_rstcnt_n.set();
+        } else {
+            fastic2_rstcnt_n.clear();
+        }
+    }
+
+    bool getFastIC1Time() {
+        return fastic1_time.read();
+    }
+
+    bool getFastIC2Time() {
+        return fastic2_time.read();
+    }
 }
 
 extern "C" void DMA_STR1_IRQHandler(){

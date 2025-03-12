@@ -185,4 +185,4 @@ add_custom_command(
 	COMMENT "Building ${HEX_FILE} \nBuilding ${BIN_FILE}")
 
 	
-#include(${CMAKE_SOURCE_DIR}/cmake/git.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/git.cmake)

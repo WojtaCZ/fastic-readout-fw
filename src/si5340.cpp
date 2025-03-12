@@ -95,6 +95,22 @@ namespace si5340 {
         i2c.writeRegister(0x12, 0x00, address);
     }
 
+    bool getLOL() {
+        return lol_n.read();
+    }
+
+    bool getLOS() {
+        return los_n.read();
+    }
+
+    bool isOutputEnabled() {
+        return oe_n.read();
+    }
+
+    bool isReset() {
+        return rst_n.read();
+    }
+
     void sendMagicPreamble() {
         // Select the configuration page B and write a magic config preamble
         i2c.writeRegister(0x01, 0x0B, address);

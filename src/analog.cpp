@@ -102,11 +102,11 @@ namespace analog
     }
 
     double getFastIC2Voltage(){
-        return adc2_measurements[0] * voltageMultiplier;
+        return adc2_measurements[0] * voltageMultiplier * 2.0/3.0;
     }
 
     double getFastIC1Voltage(){
-        return adc3_measurements[0] * voltageMultiplier;
+        return adc3_measurements[0] * voltageMultiplier * 2.0/3.0;
     }
 
     double getVbatVoltage(){

@@ -31,6 +31,7 @@ namespace usb {
         void softReset();
         void hardReset();
     }
+
 }
 
 #endif

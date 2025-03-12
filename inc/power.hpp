@@ -22,8 +22,10 @@ namespace power {
 namespace hv{
     void init();
     bool isEnabled();
+    void enable();
+    void disable();
     double getVoltage();
     double getCurrent();
-    void setVoltage(int value);
+    bool setVoltage(float voltage);
 }
 #endif

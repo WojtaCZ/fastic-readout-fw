@@ -21,6 +21,10 @@ namespace si5340 {
     void handleError();
     void sendMagicPreamble();
     void sendMagicPostamble();
+    bool getLOL();
+    bool getLOS();
+    bool isOutputEnabled();
+    bool isReset();
 }
 
 #endif

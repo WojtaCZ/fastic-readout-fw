@@ -89,6 +89,15 @@ namespace hv {
     double hvVoltage;
     double hvCurrent;
 
+    static constexpr double hvVoltageMax = 75;
+    static constexpr double hvVoltageMin = 0;
+
+    // PID controller setup
+    static constexpr double P = 20;
+    static constexpr double I = 10;
+    static constexpr double D = 0;
+    double pidSetPoint = 0;
+
     void init(){
 
         // Set up timer 15 used to trigger the ADCs to generate an event at 100Hz
@@ -129,6 +138,14 @@ namespace hv {
         return shutdown_n.read();
     }
 
+    void enable() {
+        shutdown_n.set();
+    }
+
+    void disable() {
+        shutdown_n.clear();
+    }
+
     double getVoltage() {
         return hvVoltage;
     }
@@ -137,10 +154,38 @@ namespace hv {
         return hvCurrent;
     }
 
-    void setVoltage(int value){
-        dac1_ch1.setValue(value);
+    bool setVoltage(float value){
+        // Check the bounds
+        if (value < hvVoltageMin || value > hvVoltageMax) {
+            return false;
+        }
+
+        pidSetPoint = value;
+
+        return true;
     }
 
+    double pidProcess(double setpoint, double processValue){
+        static double lastProcessValue = 0;
+        static double integral = 0;
+
+        double error = setpoint - processValue;
+        integral += error;
+        double derivative = processValue - lastProcessValue;
+
+        lastProcessValue = processValue;
+
+        uint16_t output = (double)(P * error + I * integral + D * derivative);
+
+        // Limit the output to 12-bit (0 to 4095)
+        if (output < 0) {
+            output = 0;
+        } else if (output > 4095) {
+            output = 4095;
+        }
+
+        return output;
+    }
 }
 
 
@@ -150,6 +195,9 @@ extern "C" void DMA_STR2_IRQHandler(){
 
     hv::hvVoltage = hv::adcMeasurements[1] * analog::getVoltageMultiplier() * 51;
     hv::hvCurrent = hv::adcMeasurements[0] * analog::getVoltageMultiplier() * 5000;
+
+    // Set the DAC based on the setpoint
+    hv::dac1_ch1.setValue(hv::pidProcess(hv::pidSetPoint, hv::hvVoltage));
     
 }
 
