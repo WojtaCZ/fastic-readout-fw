@@ -11,10 +11,10 @@ namespace analog {
     void calibrateVref();
     void calibrateVoltageMultiplier();
     double getVoltageMultiplier();
-    double getFastIC2Voltage();
-    double getFastIC1Voltage();
-    double getVbatVoltage();
-    double getTemperature();
+    float getFastIC2Voltage();
+    float getFastIC1Voltage();
+    float getVbatVoltage();
+    float getTemperature();
 } 
 
 

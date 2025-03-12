@@ -24,8 +24,8 @@ namespace hv{
     bool isEnabled();
     void enable();
     void disable();
-    double getVoltage();
-    double getCurrent();
+    float getVoltage();
+    float getCurrent();
     bool setVoltage(float voltage);
 }
 #endif

@@ -7,8 +7,8 @@
 namespace communication {
 
     enum class direction {
-        GET,
         SET,
+        GET,
         UNKNOWN
     };
 
@@ -39,6 +39,7 @@ namespace communication {
     command parseTextCommand(char *command);
     direction parseDirection(char * textCommand);
     bool processTextCommand(command &cmd, direction &dir, char * params);
+    bool processBinaryCommand(command cmd, direction dir, char * params, uint32_t * length);
 
     void process();
     void sendStatus();

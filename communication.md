@@ -10,15 +10,26 @@ USB byte: Reserved for USB CC
 3V3 voltage
 temperature
 
+| B0 | B1|
+| --| --|
 ### ID [get]
-STM UID
-FW verze (hash)
 
+| Bit [0:95] (96 bit) | Bit [96:151] (56 bit) | Bit [152:279] (128 bit) | Bit [280:311] (32 bit)
+| --| --| -- | -- |
+| UID | Git short commit | Git branch (first 16 characters) | Git build timestamp |
 
 ## HV power supply commands
 ### ENABLE [get/set]
 ### CURRENT [get]
+| Bit [0:31] (32bit)|
+| -- |
+| HV current [uA] in floating point format |
+
 ### VOLTAGE [get/set]
+
+| Bit [0:31] (32bit)|
+| -- |
+| HV voltage [V] in floating point format |
 
 ## Fastic Commands
 

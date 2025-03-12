@@ -1,4 +1,5 @@
 #include "usb.hpp"
+#include "communication.hpp"
 #include <stmcpp/register.hpp>
 #include <stmcpp/error.hpp>
 
@@ -200,7 +201,8 @@ void tud_cdc_rx_cb(uint8_t itf) {
     4..31 = Reserved
 */
 
-uint8_t buffer[5];
+char messageBuffer[512];
+uint32_t messageLength;
 
 bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_request_t const* request) {
   switch (request->bmRequestType_bit.type) {
@@ -212,7 +214,8 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
         {
           // If the setup is completed, we should provide some data back
           case CONTROL_STAGE_SETUP:
-            return tud_control_xfer(rhport, request, (void*) (uintptr_t) "Hello", 5);
+            communication::processBinaryCommand(static_cast<communication::command>(request->bRequest), communication::direction::GET, messageBuffer, &messageLength);
+            return tud_control_xfer(rhport, request, (void*) (uintptr_t) messageBuffer, messageLength);
             break;
           
           // Nothing to do here
@@ -229,11 +232,15 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
         {
           // If the setup is completed, deal with what we've received
           case CONTROL_STAGE_SETUP:
-            return tud_control_xfer(rhport, request, &buffer, 5);
+            messageLength = request->wLength;
+            return tud_control_xfer(rhport, request, &messageBuffer, request->wLength);
             break;
 
           // Nothing to do here
           case CONTROL_STAGE_DATA:
+            return communication::processBinaryCommand(static_cast<communication::command>(request->bRequest), communication::direction::SET, messageBuffer, &messageLength);
+            break;
+
           case CONTROL_STAGE_ACK:
             return true;
           

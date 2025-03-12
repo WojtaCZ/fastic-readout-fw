@@ -53,26 +53,7 @@ namespace communication {
         "userboard frommemory"
     };
 
-    struct statusMessage {
-        uint32_t header;
 
-        uint8_t pg1V2D : 1; 
-        uint8_t pg1V2T : 1;
-        uint8_t pg1V2A : 1;
-        uint8_t pg1V8D : 1;
-        uint8_t pg3V3A : 1;
-        uint8_t en1V2 : 1;
-        uint8_t enHV : 1;
-        uint8_t blank : 1;
-        
-
-        double mcuTemperature;
-        double mcuVoltage;
-        double fastIC1Voltage;
-        double fastIC2Voltage;
-        double hvVoltage;
-        double hvCurrent;
-    };
 
     // Buffer for print out of multiline messages
     char printBuffer[512];
@@ -122,7 +103,7 @@ namespace communication {
             
     }
 
-    void sendStatus(){
+    /*void sendStatus(){
         if(tud_vendor_mounted()){
             statusMessage status = {
                 .header = 0xABCD1234, // Example header value
@@ -148,7 +129,7 @@ namespace communication {
             tud_vendor_n_write_flush(0);
             tud_vendor_n_write(0, &buffer, 64);
         }
-    }
+    }*/
 
     direction parseDirection(char * textCommand){
         if(textCommand[0] == 'g'){
@@ -326,6 +307,291 @@ namespace communication {
                     hv::setVoltage(voltage);
 
                     printf("Set HV voltage to: %.2f [V]\n\r", voltage);
+                    return true;
+                }
+
+                break;
+            case command::FASTIC_REGISTER:
+
+                if (dir == direction::GET) {
+                    // Process get FastIC register command
+                } else {
+                    // Process set FastIC register command
+                } 
+
+                break;
+            case command::FASTIC_VOLTAGE:
+
+                if (dir == direction::GET) {
+
+                    if(params[0] == '1'){
+                        printf("FastIC 1 VMON voltage: %.3f [V]\n\r", analog::getFastIC1Voltage());
+                        return true;
+                    } else if (params[0] == '2'){
+                        printf("FastIC 2 VMON voltage: %.3f [V]\n\r", analog::getFastIC2Voltage());
+                        return true;
+                    } else {
+                        printf("Invalid parameter!\n\r");
+                        return false;
+                    }
+
+                } else {
+
+                    printf("This command does not support SET!\n\r");
+                    return false;
+
+                }
+
+                break;
+            case command::FASTIC_SYNCRESET:
+
+                if (dir == direction::GET) {
+                    if(params[0] == '1'){
+                        printf("FastIC 1 synchronous reset is %s\n\r", fastic::getFastIC1SyncReset() ? "high" : "low");
+                        return true;
+                    } else if (params[0] == '2'){
+                        printf("FastIC 2 synchronous reset is %s\n\r", fastic::getFastIC2SyncReset() ? "high" : "low");
+                        return true;
+                    } else {
+                        printf("Invalid parameter!\n\r");
+                        return false;
+                    }
+
+                } else {
+                    if(params[0] == '1'){
+                        if(params[2] == 'h'){
+                            fastic::setFastIC1SyncReset(1);
+                            printf("FastIC 1 synchronous reset set to high\n\r");
+                            return true;
+                        } else if (params[2] == 'l'){
+                            fastic::setFastIC1SyncReset(0);
+                            printf("FastIC 1 synchronous reset set to low\n\r");
+                            return true;
+                        } else {
+                            printf("Invalid parameter!\n\r");
+                            return false;
+                        }
+                    } else if (params[0] == '2'){
+                        if(params[2] == 'h'){
+                            fastic::setFastIC2SyncReset(1);
+                            printf("FastIC 2 synchronous reset set to high\n\r");
+                            return true;
+                        } else if (params[2] == 'l'){
+                            fastic::setFastIC2SyncReset(0);
+                            printf("FastIC 2 synchronous reset set to low\n\r");
+                            return true;
+                        } else {
+                            printf("Invalid parameter!\n\r");
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+                break;
+            case command::FASTIC_CALPULSE:
+                printf("This command is not implemented yet!\n\r");
+                return false;
+               /* if (dir == direction::GET) {
+
+                    return false;
+                    // Process set FastIC calibration pulse command
+                } else {
+                    // Invalid direction for this command
+                    return false;
+                }*/
+                break;
+            case command::FASTIC_TIME:
+                if (dir == direction::GET) {
+                    if(params[0] == '1'){
+                        printf("FastIC 1 time ouptut is %s\n\r", fastic::getFastIC1Time() ? "high" : "low");
+                        return true;
+                    } else if (params[0] == '2'){
+                        printf("FastIC 1 time ouptut is %s\n\r", fastic::getFastIC2Time() ? "high" : "low");
+                        return true;
+                    } else {
+                        printf("Invalid parameter!\n\r");
+                        return false;
+                    }
+                } else {
+                    printf("This command does not support SET!\n\r");
+                    return false;
+                }
+                break;
+            case command::FASTIC_AURORA:
+                printf("This command is not implemented yet!\n\r");
+                return false;
+                /*if (dir == direction::GET) {
+                    // Process get FastIC aurora command
+                } else {
+                    // Invalid direction for this command
+                    return false;
+                }*/
+                break;
+            case command::USERBOARD_STATUS:
+                if (dir == direction::GET) {
+                    // Process get userboard status command
+                } else {
+                    // Invalid direction for this command
+                    return false;
+                }
+                break;
+            case command::USERBOARD_REGISTER:
+                if (dir == direction::GET) {
+                    // Process get userboard register command
+                } else {
+                    // Process set userboard register command
+                } 
+                break;
+            case command::USERBOARD_ID:
+                if (dir == direction::GET) {
+                    // Process get userboard ID command
+                } else {
+                    // Invalid direction for this command
+                    return false;
+                }
+                break;
+            case command::USERBOARD_NAME:
+                if (dir == direction::GET) {
+                    // Process get userboard name command
+                } else {
+                    // Invalid direction for this command
+                    return false;
+                }
+                break;
+            case command::USERBOARD_VOLTAGE:
+                if (dir == direction::GET) {
+                    // Process get userboard voltage command
+                } else {
+                    // Process set userboard voltage command
+                } 
+                break;
+            case command::USERBOARD_TOMEMORY:
+                if (dir == direction::GET) {
+                    // Process set userboard to memory command
+                } else {
+                    // Invalid direction for this command
+                    return false;
+                }
+                break;
+            case command::USERBOARD_FROMMEMORY:
+                if (dir == direction::GET) {
+                    // Process get userboard from memory command
+                } else {
+                    // Invalid direction for this command
+                    return false;
+                }
+                break;
+
+            default:
+                // Unknown command
+                return false;
+        }
+
+        return true;
+    }
+
+    bool processBinaryCommand(command cmd, direction dir, char * params, uint32_t * length){
+        switch (cmd){
+            case command::READOUT_STATUS:
+
+                if (dir == direction::GET) {
+                    sprintf(printBuffer, "Readout temperature: %.2f [C]\n\r1V2 domain: %s\n\r   Power good 1V2D: %s\n\r   Power good 1V2T: %s\n\r   Power good 1V2A: %s\n\rOther domains:\n\r   3V3 voltage: %.2f [V]\n\r   Power good 3V3A: %s\n\r   Power good 1V8D: %s\n\rClock generator status:\n\r   Output enabled: %s\n\r   Reset: %s\n\r   Loss of Lock: %s\n\r   Loss of Signal: %s\n\r",
+                        analog::getTemperature(),
+                        power::is1V2Enabled() ? "enabled" : "disabled",
+                        power::isPowerGood(power::ldo::D1V2) ? "good" : "bad",
+                        power::isPowerGood(power::ldo::T1V2) ? "good" : "bad",
+                        power::isPowerGood(power::ldo::A1V2) ? "good" : "bad",
+                        analog::getVbatVoltage(),
+                        power::isPowerGood(power::ldo::A3V3) ? "good" : "bad",
+                        power::isPowerGood(power::ldo::D1V8) ? "good" : "bad",
+                        si5340::isOutputEnabled() ? "disabled" : "enabled",
+                        si5340::isReset() ? "high" : "low",
+                        si5340::getLOL() ? "locked" : "lock lost",
+                        si5340::getLOS() ? "signal ok" : "signal lost");
+                    
+                    tud_cdc_write(printBuffer, strlen(printBuffer));
+                    tud_cdc_write_flush();
+
+                    return true;
+                } else {
+                    printf("This command does not support SET!\n\r");
+                    return false;
+                }
+                break;
+            case command::READOUT_ID:
+
+                if (dir == direction::GET) {
+                    
+                    sprintf(printBuffer, "Readout UID: %08X%08X%08X\n\rReadout SW:   \n\rCommit: %s\n\r   Branch: %s\n\r   Build date and time: %s %s\n\r",
+                        *(uint32_t *)(UID_BASE), *(uint32_t *)(UID_BASE + 4), *(uint32_t *)(UID_BASE + 8),
+                        git::revision.c_str(),
+                        git::branch.c_str(),
+                        git::build_date.c_str(),
+                        git::build_time.c_str()
+                    );
+
+                    tud_cdc_write(printBuffer, strlen(printBuffer));
+                    tud_cdc_write_flush();
+                    return true;
+                   // printf("Readout SW:\n\r   Commit: %s\r\n   Branch: %s\r\n   Build date and time: %s %s\r\n", git::revision, git::branch, git::build_date, git::build_time);
+                } else {
+                    printf("This command does not support SET!\n\r");
+                    return false;
+                }
+
+                break;
+            case command::HV_ENABLE:
+
+                if (dir == direction::GET) {
+                    printf("HV supply is %s\n\r", hv::isEnabled() ? "enabled" : "disabled");
+                    return true;
+                } else {
+                    if(params[0] == 't'){
+                        hv::enable();
+                        printf("HV supply enabled\n\r");
+                        return true;
+                    } else if (params[0] == 'f'){
+                        hv::disable();
+                        printf("HV supply disabled\n\r");
+                        return true;
+                    } else {
+                        printf("Invalid parameter!\n\r");
+                        return false;
+                    }
+                    return false;
+                }
+
+                break;
+            case command::HV_CURRENT:
+
+                if (dir == direction::GET) {
+                    float current = hv::getCurrent();
+                    memcpy(params, &current, sizeof(float));
+                    *length = sizeof(float);
+
+                    return true;
+                } else {
+                    return false;
+                }
+
+                break;
+            case command::HV_VOLTAGE:
+
+                if (dir == direction::GET) {
+                    float voltage = hv::getVoltage();
+                    memcpy(params, &voltage, sizeof(float));
+                    *length = sizeof(float);
+
+                    return true;
+                } else {
+                    float voltage = std::bit_cast<float>(params[0] | (params[1] << 8) | (params[2] << 16) | (params[3] << 24));
+
+                    if(voltage < 0 || voltage > 80){
+                        return false;
+                    }
+                    
+                    hv::setVoltage(voltage);
+
                     return true;
                 }
 

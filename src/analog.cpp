@@ -10,8 +10,8 @@ namespace analog
     // Get the calibration values for the internal reference voltage
     uint32_t vrefIntCalibration = *(uint32_t*)(0x1FF1E860);
     // Get the temp calibration and rescale to volts instead of raw ADC values
-    double tscal1 = (double)(*(uint16_t*)(0x1ff1e820)) * (3.3 / 65535);
-    double tscal2 = (double)(*(uint16_t*)(0x1ff1e840)) * (3.3 / 65535);
+    float tscal1 = (double)(*(uint16_t*)(0x1ff1e820)) * (3.3 / 65535);
+    float tscal2 = (double)(*(uint16_t*)(0x1ff1e840)) * (3.3 / 65535);
 
     // Set up ADC2 - 16 bit, circular DMA, 16x oversampling
     stmcpp::adc::adc<stmcpp::adc::peripheral::adc2> adc2 (stmcpp::adc::resolution::sixteenBit, stmcpp::adc::dataManegment::oneShotDMA, true, false, 16, 0, 4, true, false, true);
@@ -101,20 +101,20 @@ namespace analog
         return voltageMultiplier;
     }
 
-    double getFastIC2Voltage(){
+    float getFastIC2Voltage(){
         return adc2_measurements[0] * voltageMultiplier * 2.0/3.0;
     }
 
-    double getFastIC1Voltage(){
+    float getFastIC1Voltage(){
         return adc3_measurements[0] * voltageMultiplier * 2.0/3.0;
     }
 
-    double getVbatVoltage(){
+    float getVbatVoltage(){
         return adc3_measurements[1] * voltageMultiplier * 4.0;
     }
 
-    double getTemperature(){
-        return ((110.0 - 30.0) / (double)(tscal2 - tscal1)) * (double)((adc3_measurements[2]*voltageMultiplier) - tscal1) + 30.0;
+    float getTemperature(){
+        return ((110.0 - 30.0) / (float)(tscal2 - tscal1)) * (float)((adc3_measurements[2]*voltageMultiplier) - tscal1) + 30.0;
     }
 } 
 

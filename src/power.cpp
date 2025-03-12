@@ -86,17 +86,17 @@ namespace hv {
     stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel2> dmamux1ch2(stmcpp::dmamux1::request::adc1_dma);
     stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream2> adc1_dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::word, false, static_cast<uint32_t>(ADC1_BASE) + offsetof(ADC_TypeDef, DR), stmcpp::dma::datasize::word, true, (uint32_t)&adcMeasurements[0], 0, adcMeasurementsSize, stmcpp::dma::priority::low, true, stmcpp::dma::pincOffset::psize, false);
 
-    double hvVoltage;
-    double hvCurrent;
+    float hvVoltage;
+    float hvCurrent;
 
-    static constexpr double hvVoltageMax = 75;
-    static constexpr double hvVoltageMin = 0;
+    static constexpr float hvVoltageMax = 75;
+    static constexpr float hvVoltageMin = 0;
 
     // PID controller setup
-    static constexpr double P = 20;
-    static constexpr double I = 10;
-    static constexpr double D = 0;
-    double pidSetPoint = 0;
+    static constexpr float P = 2;
+    static constexpr float I = .5;
+    static constexpr float D = 0;
+    float pidSetPoint = 0;
 
     void init(){
 
@@ -146,11 +146,11 @@ namespace hv {
         shutdown_n.clear();
     }
 
-    double getVoltage() {
+    float getVoltage() {
         return hvVoltage;
     }
 
-    double getCurrent() {
+    float getCurrent() {
         return hvCurrent;
     }
 
@@ -165,17 +165,17 @@ namespace hv {
         return true;
     }
 
-    double pidProcess(double setpoint, double processValue){
-        static double lastProcessValue = 0;
-        static double integral = 0;
+    float pidProcess(float setpoint, float processValue){
+        static float lastProcessValue = 0;
+        static float integral = 0;
 
-        double error = setpoint - processValue;
+        float error = setpoint - processValue;
         integral += error;
-        double derivative = processValue - lastProcessValue;
+        float derivative = processValue - lastProcessValue;
 
         lastProcessValue = processValue;
 
-        uint16_t output = (double)(P * error + I * integral + D * derivative);
+        uint16_t output = (float)(P * error + I * integral + D * derivative);
 
         // Limit the output to 12-bit (0 to 4095)
         if (output < 0) {

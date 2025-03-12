@@ -56,7 +56,7 @@ void log(){
 
 void log2(){
 
-	communication::sendStatus();
+	//communication::sendStatus();
 	//printf("HV: V: %f [V], I: %f [uA]\n\r", hv::getVoltage(), hv::getCurrent());
 }
 
@@ -121,6 +121,8 @@ extern "C" void SystemInit(void){
 	);
 }
 
+float f = 20.0;
+uint32_t i = (uint32_t)f;
 
 extern "C" int main(void){
 	// Enable the systick to run at 1ms
