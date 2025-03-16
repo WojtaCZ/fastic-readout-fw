@@ -20,6 +20,11 @@ temperature
 
 ## HV power supply commands
 ### ENABLE [get/set]
+
+| Bit [0:7] (8bit)|
+| -- |
+| 0x01 = enabled, 0x00 = disabled |
+
 ### CURRENT [get]
 | Bit [0:31] (32bit)|
 | -- |
@@ -34,6 +39,7 @@ temperature
 ## Fastic Commands
 
 ### REGISTER [get/set]
+
 ### VOLTAGE [get]
 ### SYNCRESET [get/set]
 ### CALPULSE [get/set]

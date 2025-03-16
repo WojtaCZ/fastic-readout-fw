@@ -321,6 +321,37 @@ namespace fastic {
     bool getFastIC2Time() {
         return fastic2_time.read();
     }
+
+    uint8_t getFastIC1Register(uint8_t address) {
+        return fastic1_i2c.readRegister(address, fastic1_address);
+    }
+
+    bool setFastIC1Register(uint8_t address, uint8_t value) {
+        fastic1_i2c.writeRegister(address, value, fastic1_address);
+        return true;
+    }
+
+    uint8_t getFastIC2Register(uint8_t address) {
+        return fastic2_i2c.readRegister(address, fastic2_address);
+    }
+
+    bool setFastIC2Register(uint8_t address, uint8_t value) {
+        fastic2_i2c.writeRegister(address, value, fastic2_address);
+        return true;
+    }
+
+    // Registers which could affect the functionality of the readout 
+    bool registerRequireForce(uint8_t address) {
+        if((address & 0xF0) == 0x50 || address == 0x66 || address >= 0x92) {
+            return true;
+        } else return false;
+    }
+
+    bool registerIsInRange(uint8_t address) {
+        if(address <= 0xBD) {
+            return true;
+        } else return false;
+    }
 }
 
 extern "C" void DMA_STR1_IRQHandler(){

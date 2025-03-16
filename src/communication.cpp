@@ -25,6 +25,8 @@ set userboard config
 #include "git.hpp"
 #include "si5340.hpp"
 
+#include <errno.h>
+
 
 #include <tinyusb/src/device/usbd.h>
 #include <tinyusb/src/class/cdc/cdc_device.h>
@@ -130,6 +132,17 @@ namespace communication {
             tud_vendor_n_write(0, &buffer, 64);
         }
     }*/
+
+    bool parseHexNumber(char * string, char ** endptr, uint32_t &number){
+        number = strtol(string, endptr, 16);
+
+        if(*endptr == string || (number == 0 && errno != 0)){
+            return false;
+        } else {
+            return true;
+        }
+
+    }
 
     direction parseDirection(char * textCommand){
         if(textCommand[0] == 'g'){
@@ -314,9 +327,118 @@ namespace communication {
             case command::FASTIC_REGISTER:
 
                 if (dir == direction::GET) {
-                    // Process get FastIC register command
+                    if(params[0] == '1'){
+
+                        uint32_t address;
+                        char * endptr;
+
+                        if(!parseHexNumber(params + 2, &endptr, &address)) {
+                            printf("Invalid parameter!\n\r");
+                            return false;
+                        }
+
+                        if(!registerIsInRange(address)) {
+                            printf("Register address out of range!\n\r");
+                            return false;
+                        }
+
+                        printf("FastIC 1 register 0x%02x has a value of 0x%02x\n\r", address, fastic::getFastIC1Register(address));
+                        return true;
+
+                    } else if (params[0] == '2'){
+
+                        uint32_t address;
+                        char * endptr;
+
+                        if(!parseHexNumber(params + 2, &endptr, &address)) {
+                            printf("Invalid parameter!\n\r");
+                            return false;
+                        }
+
+                        if(!registerIsInRange(address)) {
+                            printf("Register address out of range!\n\r");
+                            return false;
+                        }
+
+                        printf("FastIC 2 register 0x%02x has a value of 0x%02x\n\r", address, fastic::getFastIC2Register(address));
+                        return true;
+
+                    } else {
+                        printf("Invalid parameter!\n\r");
+                        return false;
+                    }
                 } else {
-                    // Process set FastIC register command
+                    if(params[0] == '1'){
+
+                        uint32_t address, value;
+                        char * endptr, nextptr;
+
+                        if(!parseHexNumber(params + 2, &endptr, &address)) {
+                            printf("Invalid parameter!\n\r");
+                            return false;
+                        }
+
+                        if(!registerIsInRange(address)) {
+                            printf("Register address out of range!\n\r");
+                            return false;
+                        }
+
+                        if(!parseHexNumber(params + 5 , &endptr, &value)) {
+                            printf("Invalid parameter!\n\r");
+                            return false;
+                        }
+
+                        if(value > 0xFF){
+                            printf("Value out of range!\n\r");
+                            return false;
+                        }
+                       
+                        if(registerRequireForce(address) && params[strlen(params) - 1] != 'f'){
+                            printf("This register can and probably will affect the function of the FastIC in a way that can break stream reception. Please modify this register carefully. The command needs to end with letter 'f' in order to force this register write.\n\r");
+                            return false;
+                        }
+                        
+                        fastic::setFastIC1Register(address, value);
+                        printf("FastIC 1 register 0x%x has been set to a value of 0x%x\n\r", address, fastic::getFastIC1Register(address));
+                        return true;
+
+                    } else if (params[0] == '2'){
+                        uint32_t address, value;
+                        char * endptr, nextptr;
+
+                        if(!parseHexNumber(params + 2, &endptr, &address)) {
+                            printf("Invalid parameter!\n\r");
+                            return false;
+                        }
+
+                        if(!registerIsInRange(address)) {
+                            printf("Register address out of range!\n\r");
+                            return false;
+                        }
+
+                        if(!parseHexNumber(params + 5 , &endptr, &value)) {
+                            printf("Invalid parameter!\n\r");
+                            return false;
+                        }
+
+                        if(value > 0xFF){
+                            printf("Value out of range!\n\r");
+                            return false;
+                        }
+                       
+                        if(registerRequireForce(address) && params[strlen(params) - 1] != 'f'){
+                            printf("This register can and probably will affect the function of the FastIC in a way that can break stream reception. Please modify this register carefully. The command needs to end with letter 'f' in order to force this register write.\n\r");
+                            return false;
+                        }
+                        
+                        fastic::setFastIC2Register(address, value);
+                        printf("FastIC 2 register 0x%x has been set to a value of 0x%x\n\r", address, fastic::getFastIC2Register(address));
+                        return true;
+
+                    } else {
+                        printf("Invalid parameter!\n\r");
+                        return false;
+                    }
                 } 
 
                 break;
@@ -599,7 +721,7 @@ namespace communication {
             case command::FASTIC_REGISTER:
 
                 if (dir == direction::GET) {
-                    // Process get FastIC register command
+                    
                 } else {
                     // Process set FastIC register command
                 } 

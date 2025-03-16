@@ -15,6 +15,14 @@ namespace fastic {
     void setFastIC2SyncReset(uint8_t value);
     bool getFastIC1Time();
     bool getFastIC2Time();
+
+    uint8_t getFastIC1Register(uint8_t address);
+    bool setFastIC1Register(uint8_t address, uint8_t value);
+    uint8_t getFastIC2Register(uint8_t address);
+    bool setFastIC2Register(uint8_t address, uint8_t value);
+
+    bool registerRequireForce(uint8_t address);
+    bool registerIsInRange(uint8_t address); 
     
 }
 
