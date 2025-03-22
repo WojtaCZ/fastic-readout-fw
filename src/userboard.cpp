@@ -65,7 +65,15 @@ namespace userboard {
         if(getShortID() != 0xF) return false;
 
         // Read the header data
-        readHeader(userboardHeader);    
+        readHeader(userboardHeader);
+        
+        // clear the name
+        if(size <= 1){
+            userboardHeader.nameInited = 0;
+            userboardHeader.name[0] = 0;
+            writeHeader(userboardHeader);
+            return true;
+        }
 
         // Copy the name to the buffer
         for(int i = 0; i < size; i++){
@@ -260,7 +268,7 @@ namespace userboard {
         readHeader(userboardHeader);
 
         // If the write protect flag is set, return false
-        //řif(userboardHeader.writeProtect && userboard::isInitialized()) return false;
+        if(userboardHeader.writeProtect && userboard::isInitialized()) return false;
 
         // Control byte for the EEPROM read operation
         uint8_t controlByte = 0b1010000;

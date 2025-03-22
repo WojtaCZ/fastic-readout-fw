@@ -561,18 +561,75 @@ namespace communication {
                 break;
             case command::USERBOARD_STATUS:
                 if (dir == direction::GET) {
-                    // Process get userboard status command
+                    {
+                        uint8_t shortID = userboard::getShortID();
+                        std::vector<uint8_t> longID;
+    
+                        if(shortID == 0x0){
+                            printf("Userboard is not connected!\n\r");
+                            return false;
+                        }
+    
+                       /* if(shortID != 0xF){
+                            printf("Userboard does not contain an EEPROM!\n\r");
+                            return false;
+                        }
+
+                        if(!userboard::isInitialized()){
+                            printf("Userboard is not initialized! Please initialize it first.\n\r");
+                            return false;
+                        }
+    
+                        if(!userboard::getUID(longID)){
+                            printf("Could not get userboard UID.\n\r");
+                        }*/
+
+                        if(shortID != 0xF){
+                            sprintf(printBuffer, "Userboard status:\n\r   EEPROM: not present\n\r   Short ID: 0x%01X\n\r\n\r",
+                                shortID
+                            );
+        
+                            tud_cdc_write(printBuffer, strlen(printBuffer));
+                            tud_cdc_write_flush();
+                        }else{
+
+                            if(!userboard::isInitialized()){
+                                sprintf(printBuffer, "Userboard status:\n\r   EEPROM: present, not initialized\n\r   Short ID: 0x%01X\n\r",
+                                    shortID
+                                );
+                            }else{
+
+                                userboard::memoryHeader header;
+                                userboard::readHeader(header);
+
+                                sprintf(printBuffer, "Userboard status:\n\r   EEPROM: present, initialized\n\r   Short ID: 0x%01X\n\r   Userboard UID: 0x%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\n\r   Memory write cycles: %d\n\r   Memory write protect: %s\n\r   Userboard name: %s\n\r",
+                                    shortID,
+                                    header.uid[0], header.uid[1], header.uid[2], header.uid[3],
+                                    header.uid[4], header.uid[5], header.uid[6], header.uid[7],
+                                    header.uid[8], header.uid[9], header.uid[10], header.uid[11],
+                                    header.uid[12], header.uid[13], header.uid[14], header.uid[15],
+                                    header.writeCycles,
+                                    header.writeProtect ? "true" : "false",
+                                    header.nameInited ? header.name : "not set"
+                                );
+                
+                                tud_cdc_write(printBuffer, strlen(printBuffer));
+                                tud_cdc_write_flush();
+                            }
+                        }
+                        return true;
+                    
+                    }
                 } else {
-                    // Invalid direction for this command
+                    printf("This command does not support SET!\n\r");
                     return false;
                 }
                 break;
             case command::USERBOARD_UID:
                 if (dir == direction::GET) {
-                    std::vector<uint8_t> longID;
-
                     {
                         uint8_t shortID = userboard::getShortID();
+                        std::vector<uint8_t> longID;
     
                         if(shortID == 0x0){
                             printf("Userboard is not connected!\n\r");
