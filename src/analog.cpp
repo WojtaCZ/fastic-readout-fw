@@ -4,6 +4,7 @@
 #include <stmcpp/bdma.hpp>
 #include <stmcpp/dmamux.hpp>
 
+
 namespace analog
 {
 
@@ -101,12 +102,12 @@ namespace analog
         return voltageMultiplier;
     }
 
-    float getFastIC2Voltage(){
-        return adc2_measurements[0] * voltageMultiplier * 2.0/3.0;
-    }
-
-    float getFastIC1Voltage(){
-        return adc3_measurements[0] * voltageMultiplier * 2.0/3.0;
+    float getFastICVoltage(fastic::identifier id){
+        if(id == fastic::identifier::FASTIC1){
+            return adc3_measurements[0] * voltageMultiplier * 2.0/3.0;
+        } else {
+            return adc2_measurements[0] * voltageMultiplier * 2.0/3.0;
+        }
     }
 
     float getVbatVoltage(){

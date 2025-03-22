@@ -88,8 +88,8 @@ namespace fastic {
     stmcpp::gpio::pin<stmcpp::gpio::port::portd, 5>  fastic2_rstcnt_n (stmcpp::gpio::mode::output, stmcpp::gpio::otype::openDrain, stmcpp::gpio::pull::noPull);
     
     // I2C4 is used for FastIC2
-    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 12> fastic2_scl      (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::high);
-    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 13> fastic2_sda      (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 12> fastic2_scl      (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::medium);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 13> fastic2_sda      (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::medium);
     
     // SPI4 is used for FastIC2
     stmcpp::gpio::pin<stmcpp::gpio::port::porte, 14>  fastic2_mosi   (stmcpp::gpio::mode::af5);
@@ -290,53 +290,57 @@ namespace fastic {
         */
     }
 
-    bool getFastIC1SyncReset() {
-        return fastic1_rstcnt_n.read();
-    }
-
-    bool getFastIC2SyncReset() {
-        return fastic2_rstcnt_n.read();
-    }
-
-    void setFastIC1SyncReset(uint8_t value) {
-        if(value) {
-            fastic1_rstcnt_n.set();
+    // FastIC reset pins are 1V8 logic - this voltage is not sufficient to drive the 3V3 input of the STM to high level, thus it would always report a low level when reading the port
+    // The best we can do here is report the state of the ODR, though it is not the actual state of the pin
+    
+    bool getFastICSyncReset(identifier id) {
+        if(id == identifier::FASTIC1) {
+            return fastic1_rstcnt_n.getIntendedState();
         } else {
-            fastic1_rstcnt_n.clear();
+            return fastic2_rstcnt_n.getIntendedState();
         }
     }
 
-    void setFastIC2SyncReset(uint8_t value) {
+
+    void setFastICSyncReset(identifier id, uint8_t value) {
         if(value) {
-            fastic2_rstcnt_n.set();
+            if(id == identifier::FASTIC1) {
+                fastic1_rstcnt_n.set();
+            } else {
+                fastic2_rstcnt_n.set();
+            }
         } else {
-            fastic2_rstcnt_n.clear();
+            if(id == identifier::FASTIC1) {
+                fastic1_rstcnt_n.clear();
+            } else {
+                fastic2_rstcnt_n.clear();
+            }
         }
     }
 
-    bool getFastIC1Time() {
-        return fastic1_time.read();
+    bool getFastICTime(identifier id) {
+        if(id == identifier::FASTIC1) {
+            return fastic1_time.read();
+        } else {
+            return fastic2_time.read();
+        }
     }
 
-    bool getFastIC2Time() {
-        return fastic2_time.read();
+    uint8_t getFastICRegister(identifier id, uint8_t address) {
+        if(id == identifier::FASTIC1) {
+            return fastic1_i2c.readRegister(address, fastic1_address);
+        } else {
+            return fastic2_i2c.readRegister(address, fastic2_address);
+        }
     }
 
-    uint8_t getFastIC1Register(uint8_t address) {
-        return fastic1_i2c.readRegister(address, fastic1_address);
-    }
+    bool setFastICRegister(identifier id, uint8_t address, uint8_t value) {
+        if(id == identifier::FASTIC1) {
+            fastic1_i2c.writeRegister(address, value, fastic1_address);
+        } else {
+            fastic2_i2c.writeRegister(address, value, fastic2_address);
+        }
 
-    bool setFastIC1Register(uint8_t address, uint8_t value) {
-        fastic1_i2c.writeRegister(address, value, fastic1_address);
-        return true;
-    }
-
-    uint8_t getFastIC2Register(uint8_t address) {
-        return fastic2_i2c.readRegister(address, fastic2_address);
-    }
-
-    bool setFastIC2Register(uint8_t address, uint8_t value) {
-        fastic2_i2c.writeRegister(address, value, fastic2_address);
         return true;
     }
 
@@ -352,6 +356,7 @@ namespace fastic {
             return true;
         } else return false;
     }
+    
 }
 
 extern "C" void DMA_STR1_IRQHandler(){

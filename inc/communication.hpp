@@ -4,6 +4,8 @@
 #include <array>
 #include <cstdint>
 
+#define DEBUG_COMMANDS
+
 namespace communication {
 
     enum class direction {
@@ -25,12 +27,19 @@ namespace communication {
         FASTIC_TIME,
         FASTIC_AURORA,
         USERBOARD_STATUS,
-        USERBOARD_REGISTER,
-        USERBOARD_ID,
+        USERBOARD_INIT,
+        USERBOARD_UID,
         USERBOARD_NAME,
+        USERBOARD_WRITEPROTECT,
         USERBOARD_VOLTAGE,
+        USERBOARD_REGISTER,
         USERBOARD_TOMEMORY,
         USERBOARD_FROMMEMORY,
+
+        #ifdef DEBUG_COMMANDS
+        HV_PID,
+        #endif
+
         UNKNOWN
     };
     

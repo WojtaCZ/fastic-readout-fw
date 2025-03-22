@@ -6,20 +6,21 @@
 extern uint8_t fastic1_buffers[2][1024];
 
 namespace fastic {
+
+    enum class identifier {
+        FASTIC1,
+        FASTIC2
+    };
+
     void init();
     void syncClock();
     void initInjectionChannels();
-    bool getFastIC1SyncReset();
-    bool getFastIC2SyncReset();
-    void setFastIC1SyncReset(uint8_t value);
-    void setFastIC2SyncReset(uint8_t value);
-    bool getFastIC1Time();
-    bool getFastIC2Time();
+    bool getFastICSyncReset(identifier id);
+    void setFastICSyncReset(identifier id, uint8_t value);
+    bool getFastICTime(identifier id);
 
-    uint8_t getFastIC1Register(uint8_t address);
-    bool setFastIC1Register(uint8_t address, uint8_t value);
-    uint8_t getFastIC2Register(uint8_t address);
-    bool setFastIC2Register(uint8_t address, uint8_t value);
+    uint8_t getFastICRegister(identifier id, uint8_t address);
+    bool setFastICRegister(identifier id, uint8_t address, uint8_t value);
 
     bool registerRequireForce(uint8_t address);
     bool registerIsInRange(uint8_t address); 

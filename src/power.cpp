@@ -86,23 +86,25 @@ namespace hv {
     stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel2> dmamux1ch2(stmcpp::dmamux1::request::adc1_dma);
     stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream2> adc1_dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::word, false, static_cast<uint32_t>(ADC1_BASE) + offsetof(ADC_TypeDef, DR), stmcpp::dma::datasize::word, true, (uint32_t)&adcMeasurements[0], 0, adcMeasurementsSize, stmcpp::dma::priority::low, true, stmcpp::dma::pincOffset::psize, false);
 
-    float hvVoltage;
-    float hvCurrent;
+    float hvVoltage_;
+    float hvCurrent_;
 
-    static constexpr float hvVoltageMax = 75;
-    static constexpr float hvVoltageMin = 0;
+    static constexpr float hvVoltageMax_ = 75;
+    static constexpr float hvVoltageMin_ = 0;
 
     // PID controller setup
-    static constexpr float P = 2;
-    static constexpr float I = .5;
-    static constexpr float D = 0;
-    float pidSetPoint = 0;
+    /*static constexpr*/ float P_ = 50;
+    /*static constexpr*/ float I_ = 0.5;
+    /*static constexpr*/ float D_ = 0;
+    static float pidSetPoint_ = 0;
+    static float measurementOld_ = 0;
+    static float integral_ = 0;
 
     void init(){
 
-        // Set up timer 15 used to trigger the ADCs to generate an event at 100Hz
+        // Set up timer 15 used to trigger the ADCs to generate an event at 1000Hz
         stmcpp::reg::write(std::ref(TIM12->PSC), 240-1);   
-        stmcpp::reg::write(std::ref(TIM12->ARR), 10000-1);
+        stmcpp::reg::write(std::ref(TIM12->ARR), 1000-1);
 
         // Calibrate the ADC
         adc1.calibrate(stmcpp::adc::calibration::singleEnded, true);
@@ -125,9 +127,12 @@ namespace hv {
         adc1_dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
         NVIC_EnableIRQ(DMA1_Stream2_IRQn);
 
+        // Enable the DAC
         dac1_ch1.enable();
         dac1_ch1.setValue(0);
-        shutdown_n.set();
+
+        // Keep the HV supply disabled
+        shutdown_n.clear();
 
         // Start the timer to begin sampling
         stmcpp::reg::set(std::ref(TIM12->CR1), TIM_CR1_CEN);
@@ -147,35 +152,49 @@ namespace hv {
     }
 
     float getVoltage() {
-        return hvVoltage;
+        return hvVoltage_;
     }
 
     float getCurrent() {
-        return hvCurrent;
+        return hvCurrent_;
+    }
+
+    void setPID(float P, float I, float D){
+        P_ = P;
+        I_ = I;
+        D_ = D;
+    }
+
+    void getPID(float & P, float & I, float & D){
+        P = P_;
+        I = I_; 
+        D = D_;
     }
 
     bool setVoltage(float value){
         // Check the bounds
-        if (value < hvVoltageMin || value > hvVoltageMax) {
+        if (value < hvVoltageMin_ || value > hvVoltageMax_) {
             return false;
         }
 
-        pidSetPoint = value;
+        // Update the setpoint
+        pidSetPoint_ = value;
 
         return true;
     }
 
-    float pidProcess(float setpoint, float processValue){
-        static float lastProcessValue = 0;
-        static float integral = 0;
+    float pidProcess(float setpoint, float measurement){
+        // Calculate the error from the setpoint
+        float error = setpoint - measurement;
+        // Integrate the error
+        integral_ += error;
+        // Calculate the derivative
+        float derivative = measurement - measurementOld_;
+        // Update the old measurement
+        measurementOld_ = measurement;
 
-        float error = setpoint - processValue;
-        integral += error;
-        float derivative = processValue - lastProcessValue;
-
-        lastProcessValue = processValue;
-
-        uint16_t output = (float)(P * error + I * integral + D * derivative);
+        // Calculate the output
+        uint16_t output = (float)(P_ * error + I_ * integral_ + D_ * derivative);
 
         // Limit the output to 12-bit (0 to 4095)
         if (output < 0) {
@@ -193,11 +212,12 @@ extern "C" void DMA_STR2_IRQHandler(){
     hv::adc1_dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
     NVIC_ClearPendingIRQ(DMA1_Stream2_IRQn);
 
-    hv::hvVoltage = hv::adcMeasurements[1] * analog::getVoltageMultiplier() * 51;
-    hv::hvCurrent = hv::adcMeasurements[0] * analog::getVoltageMultiplier() * 5000;
+    // Get the float voltages
+    hv::hvVoltage_ = hv::adcMeasurements[1] * analog::getVoltageMultiplier() * 51;
+    hv::hvCurrent_ = hv::adcMeasurements[0] * analog::getVoltageMultiplier() * 5000;
 
     // Set the DAC based on the setpoint
-    hv::dac1_ch1.setValue(hv::pidProcess(hv::pidSetPoint, hv::hvVoltage));
+    hv::dac1_ch1.setValue(hv::pidProcess(hv::pidSetPoint_, hv::hvVoltage_));
     
 }
 

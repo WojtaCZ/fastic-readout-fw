@@ -27,5 +27,9 @@ namespace hv{
     float getVoltage();
     float getCurrent();
     bool setVoltage(float voltage);
+    
+    void setPID(float P, float I, float D);
+    void getPID(float & P, float & I, float & D);
+
 }
 #endif

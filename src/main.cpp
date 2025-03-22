@@ -27,10 +27,11 @@
 #include "fastic.hpp"
 #include "readout.hpp"
 #include "power.hpp"
-#include "memory.hpp"
+#include "board.hpp"
 #include "analog.hpp"
 #include "scheduler.hpp"
 #include "communication.hpp"
+#include "userboard.hpp"
 
 #include <tinyusb/src/device/usbd.h>
 #include <tinyusb/src/class/cdc/cdc_device.h>
@@ -49,7 +50,7 @@ void keepalive(){
 }
 
 void log(){
-	printf("Voltages: FastIC1: %f, FastIC2: %f, Vbat: %f, Temperature: %f\n\r", analog::getFastIC1Voltage(), analog::getFastIC2Voltage(), analog::getVbatVoltage(), analog::getTemperature());
+	//printf("Voltages: FastIC1: %f, FastIC2: %f, Vbat: %f, Temperature: %f\n\r", analog::getFastIC1Voltage(), analog::getFastIC2Voltage(), analog::getVbatVoltage(), analog::getTemperature());
 	
 
 }
@@ -107,6 +108,7 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::adc3,
 		stmcpp::clock::peripheral::dac12,
 		stmcpp::clock::peripheral::vrefbuf,
+		stmcpp::clock::peripheral::rng,
 		// SPI and DMA used for aurora stream reception
 		stmcpp::clock::peripheral::spi1,
 		stmcpp::clock::peripheral::spi2,
@@ -146,6 +148,7 @@ extern "C" int main(void){
 	uint32_t aval;
 
 	int t1, t2;
+
 	
 	while(1){
 		tud_task();	
@@ -218,6 +221,13 @@ void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
 		case stmcpp::error::moduleHash("stmcpp::i2c"):
 				{
 				stmcpp::i2c::error err = static_cast<stmcpp::i2c::error>(code);
+				printf("I2C error: %d %d\n\r", err, I2C2->ISR);
+
+				while (true)
+				{
+					tud_task();	
+				}
+				
 				__ASM volatile("bkpt");
 				}
 			break;

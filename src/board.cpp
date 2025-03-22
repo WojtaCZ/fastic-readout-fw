@@ -1,4 +1,9 @@
-#include "memory.hpp"
+#include "board.hpp"
+
+#include "stm32h753xx.h"
+#include "core_cm7.h"
+#include "cmsis_compiler.h"
+
 #include <stmcpp/register.hpp>
 
 namespace memory{
@@ -70,5 +75,19 @@ namespace memory{
     
         __ASM volatile("dsb");
         __ASM volatile("isb");
+    }
+}
+
+namespace rng{
+    void init(){
+        // Enable the generator
+        stmcpp::reg::set(std::ref(RNG->CR), RNG_CR_RNGEN);
+    }
+
+    std::uint32_t get(){
+        // Wait for the data to be ready
+        while(!stmcpp::reg::read(std::ref(RNG->SR), RNG_SR_DRDY_Msk));
+
+        return stmcpp::reg::read(std::ref(RNG->DR));
     }
 }

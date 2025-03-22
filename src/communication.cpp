@@ -24,6 +24,7 @@ set userboard config
 #include "fastic.hpp"
 #include "git.hpp"
 #include "si5340.hpp"
+#include "userboard.hpp"
 
 #include <errno.h>
 
@@ -47,10 +48,12 @@ namespace communication {
         "fastic time",
         "fastic aurora",
         "userboard status",
-        "userboard register",
-        "userboard id",
+        "usertboard init",
+        "userboard uid",
         "userboard name",
+        "userboard writeprotect",
         "userboard voltage",
+        "userboard register",
         "userboard tomemory",
         "userboard frommemory"
     };
@@ -134,9 +137,9 @@ namespace communication {
     }*/
 
     bool parseHexNumber(char * string, char ** endptr, uint32_t &number){
+        errno = 0;
         number = strtol(string, endptr, 16);
-
-        if(*endptr == string || (number == 0 && errno != 0)){
+        if((*endptr == string) || ((number == 0) && (errno != 0))){
             return false;
         } else {
             return true;
@@ -203,10 +206,14 @@ namespace communication {
                     return command::USERBOARD_STATUS;
                 case 'r':
                     return command::USERBOARD_REGISTER;
-                case 'i':
-                    return command::USERBOARD_ID;
+                case 'u':
+                    return command::USERBOARD_UID;
                 case 'n':
                     return command::USERBOARD_NAME;
+                case 'w':
+                    return command::USERBOARD_WRITEPROTECT;
+                case 'i':
+                    return command::USERBOARD_INIT;
                 case 'v':
                     return command::USERBOARD_VOLTAGE;
                 case 't':
@@ -332,17 +339,17 @@ namespace communication {
                         uint32_t address;
                         char * endptr;
 
-                        if(!parseHexNumber(params + 2, &endptr, &address)) {
+                        if(!parseHexNumber(params + 2, &endptr, address)) {
                             printf("Invalid parameter!\n\r");
                             return false;
                         }
 
-                        if(!registerIsInRange(address)) {
+                        if(!fastic::registerIsInRange(address)) {
                             printf("Register address out of range!\n\r");
                             return false;
                         }
 
-                        printf("FastIC 1 register 0x%02x has a value of 0x%02x\n\r", address, fastic::getFastIC1Register(address));
+                        printf("FastIC 1 register 0x%02x has a value of 0x%02x\n\r", address, fastic::getFastICRegister(fastic::identifier::FASTIC1, address));
                         return true;
 
                     } else if (params[0] == '2'){
@@ -350,17 +357,17 @@ namespace communication {
                         uint32_t address;
                         char * endptr;
 
-                        if(!parseHexNumber(params + 2, &endptr, &address)) {
+                        if(!parseHexNumber(params + 2, &endptr, address)) {
                             printf("Invalid parameter!\n\r");
                             return false;
                         }
 
-                        if(!registerIsInRange(address)) {
+                        if(!fastic::registerIsInRange(address)) {
                             printf("Register address out of range!\n\r");
                             return false;
                         }
 
-                        printf("FastIC 2 register 0x%02x has a value of 0x%02x\n\r", address, fastic::getFastIC2Register(address));
+                        printf("FastIC 2 register 0x%02x has a value of 0x%02x\n\r", address, fastic::getFastICRegister(fastic::identifier::FASTIC2, address));
                         return true;
 
                     } else {
@@ -371,19 +378,20 @@ namespace communication {
                     if(params[0] == '1'){
 
                         uint32_t address, value;
-                        char * endptr, nextptr;
+                        char * endptr;
+                        char * nextptr;
 
-                        if(!parseHexNumber(params + 2, &endptr, &address)) {
+                        if(!parseHexNumber(params + 2, &nextptr, address)) {
                             printf("Invalid parameter!\n\r");
                             return false;
                         }
 
-                        if(!registerIsInRange(address)) {
+                        if(!fastic::registerIsInRange(address)) {
                             printf("Register address out of range!\n\r");
                             return false;
                         }
 
-                        if(!parseHexNumber(params + 5 , &endptr, &value)) {
+                        if(!parseHexNumber(nextptr , &endptr, value)) {
                             printf("Invalid parameter!\n\r");
                             return false;
                         }
@@ -393,30 +401,31 @@ namespace communication {
                             return false;
                         }
                        
-                        if(registerRequireForce(address) && params[strlen(params) - 1] != 'f'){
+                        if(fastic::registerRequireForce(address) && endptr[1] != 'f'){
                             printf("This register can and probably will affect the function of the FastIC in a way that can break stream reception. Please modify this register carefully. The command needs to end with letter 'f' in order to force this register write.\n\r");
                             return false;
                         }
                         
-                        fastic::setFastIC1Register(address, value);
-                        printf("FastIC 1 register 0x%x has been set to a value of 0x%x\n\r", address, fastic::getFastIC1Register(address));
+                        fastic::setFastICRegister(fastic::identifier::FASTIC1, address, value);
+                        printf("FastIC 1 register 0x%02x has been set to a value of 0x%02x\n\r", address, fastic::getFastICRegister(fastic::identifier::FASTIC1, address));
                         return true;
 
                     } else if (params[0] == '2'){
                         uint32_t address, value;
-                        char * endptr, nextptr;
+                        char * endptr;
+                        char * nextptr;
 
-                        if(!parseHexNumber(params + 2, &endptr, &address)) {
+                        if(!parseHexNumber(params + 2, &nextptr, address)) {
                             printf("Invalid parameter!\n\r");
                             return false;
                         }
 
-                        if(!registerIsInRange(address)) {
+                        if(!fastic::registerIsInRange(address)) {
                             printf("Register address out of range!\n\r");
                             return false;
                         }
 
-                        if(!parseHexNumber(params + 5 , &endptr, &value)) {
+                        if(!parseHexNumber(nextptr , &endptr, value)) {
                             printf("Invalid parameter!\n\r");
                             return false;
                         }
@@ -426,13 +435,13 @@ namespace communication {
                             return false;
                         }
                        
-                        if(registerRequireForce(address) && params[strlen(params) - 1] != 'f'){
+                        if(fastic::registerRequireForce(address) && endptr[1] != 'f'){
                             printf("This register can and probably will affect the function of the FastIC in a way that can break stream reception. Please modify this register carefully. The command needs to end with letter 'f' in order to force this register write.\n\r");
                             return false;
                         }
                         
-                        fastic::setFastIC2Register(address, value);
-                        printf("FastIC 2 register 0x%x has been set to a value of 0x%x\n\r", address, fastic::getFastIC2Register(address));
+                        fastic::setFastICRegister(fastic::identifier::FASTIC2, address, value);
+                        printf("FastIC 2 register 0x%02x has been set to a value of 0x%02x\n\r", address, fastic::getFastICRegister(fastic::identifier::FASTIC2, address));
                         return true;
 
                     } else {
@@ -447,10 +456,10 @@ namespace communication {
                 if (dir == direction::GET) {
 
                     if(params[0] == '1'){
-                        printf("FastIC 1 VMON voltage: %.3f [V]\n\r", analog::getFastIC1Voltage());
+                        printf("FastIC 1 VMON voltage: %.2f [mV]\n\r", analog::getFastICVoltage(fastic::identifier::FASTIC1)*1000);
                         return true;
                     } else if (params[0] == '2'){
-                        printf("FastIC 2 VMON voltage: %.3f [V]\n\r", analog::getFastIC2Voltage());
+                        printf("FastIC 2 VMON voltage: %.2f [mV]\n\r", analog::getFastICVoltage(fastic::identifier::FASTIC2)*1000);
                         return true;
                     } else {
                         printf("Invalid parameter!\n\r");
@@ -469,10 +478,10 @@ namespace communication {
 
                 if (dir == direction::GET) {
                     if(params[0] == '1'){
-                        printf("FastIC 1 synchronous reset is %s\n\r", fastic::getFastIC1SyncReset() ? "high" : "low");
+                        printf("FastIC 1 synchronous reset is %s\n\r", fastic::getFastICSyncReset(fastic::identifier::FASTIC1) ? "high" : "low");
                         return true;
                     } else if (params[0] == '2'){
-                        printf("FastIC 2 synchronous reset is %s\n\r", fastic::getFastIC2SyncReset() ? "high" : "low");
+                        printf("FastIC 2 synchronous reset is %s\n\r", fastic::getFastICSyncReset(fastic::identifier::FASTIC2) ? "high" : "low");
                         return true;
                     } else {
                         printf("Invalid parameter!\n\r");
@@ -482,11 +491,11 @@ namespace communication {
                 } else {
                     if(params[0] == '1'){
                         if(params[2] == 'h'){
-                            fastic::setFastIC1SyncReset(1);
+                            fastic::setFastICSyncReset(fastic::identifier::FASTIC1, 1);
                             printf("FastIC 1 synchronous reset set to high\n\r");
                             return true;
                         } else if (params[2] == 'l'){
-                            fastic::setFastIC1SyncReset(0);
+                            fastic::setFastICSyncReset(fastic::identifier::FASTIC1, 0);
                             printf("FastIC 1 synchronous reset set to low\n\r");
                             return true;
                         } else {
@@ -495,11 +504,11 @@ namespace communication {
                         }
                     } else if (params[0] == '2'){
                         if(params[2] == 'h'){
-                            fastic::setFastIC2SyncReset(1);
+                            fastic::setFastICSyncReset(fastic::identifier::FASTIC2, 1);
                             printf("FastIC 2 synchronous reset set to high\n\r");
                             return true;
                         } else if (params[2] == 'l'){
-                            fastic::setFastIC2SyncReset(0);
+                            fastic::setFastICSyncReset(fastic::identifier::FASTIC2, 0);
                             printf("FastIC 2 synchronous reset set to low\n\r");
                             return true;
                         } else {
@@ -525,10 +534,10 @@ namespace communication {
             case command::FASTIC_TIME:
                 if (dir == direction::GET) {
                     if(params[0] == '1'){
-                        printf("FastIC 1 time ouptut is %s\n\r", fastic::getFastIC1Time() ? "high" : "low");
+                        printf("FastIC 1 time ouptut is %s\n\r", fastic::getFastICTime(fastic::identifier::FASTIC1) ? "high" : "low");
                         return true;
                     } else if (params[0] == '2'){
-                        printf("FastIC 1 time ouptut is %s\n\r", fastic::getFastIC2Time() ? "high" : "low");
+                        printf("FastIC 2 time ouptut is %s\n\r", fastic::getFastICTime(fastic::identifier::FASTIC2) ? "high" : "low");
                         return true;
                     } else {
                         printf("Invalid parameter!\n\r");
@@ -540,6 +549,7 @@ namespace communication {
                 }
                 break;
             case command::FASTIC_AURORA:
+                userboard::writeByte(0, 0xFF);
                 printf("This command is not implemented yet!\n\r");
                 return false;
                 /*if (dir == direction::GET) {
@@ -557,34 +567,178 @@ namespace communication {
                     return false;
                 }
                 break;
-            case command::USERBOARD_REGISTER:
+            case command::USERBOARD_UID:
                 if (dir == direction::GET) {
-                    // Process get userboard register command
-                } else {
-                    // Process set userboard register command
-                } 
-                break;
-            case command::USERBOARD_ID:
-                if (dir == direction::GET) {
+                    std::vector<uint8_t> longID;
+
+                    {
+                        uint8_t shortID = userboard::getShortID();
+    
+                        if(shortID == 0x0){
+                            printf("Userboard is not connected!\n\r");
+                            return false;
+                        }
+    
+                        if(shortID != 0xF){
+                            printf("Userboard does not contain an EEPROM!\n\r");
+                            return false;
+                        }
+
+                        if(!userboard::isInitialized()){
+                            printf("Userboard is not initialized! Please initialize it first.\n\r");
+                            return false;
+                        }
+    
+                        if(userboard::getUID(longID)){
+                            sprintf(printBuffer, "Userboard short ID: 0x%01X (EEPROM present)\n\rUserboard UID: 0x%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\n\r",
+                                shortID,
+                                longID.at(0), longID.at(1), longID.at(2), longID.at(3),
+                                longID.at(4), longID.at(5), longID.at(6), longID.at(7),
+                                longID.at(8), longID.at(9), longID.at(10), longID.at(11),
+                                longID.at(12), longID.at(13), longID.at(14), longID.at(15)
+                            );
+        
+                            tud_cdc_write(printBuffer, strlen(printBuffer));
+                            tud_cdc_write_flush();
+                        } else {
+                            printf("Could not get userboard UID.\n\r");
+                        }
+
+                        return true;
+                    
+                    }
+
                     // Process get userboard ID command
                 } else {
-                    // Invalid direction for this command
+                    printf("This command does not support SET!\n\r");
                     return false;
                 }
                 break;
             case command::USERBOARD_NAME:
-                if (dir == direction::GET) {
-                    // Process get userboard name command
-                } else {
-                    // Invalid direction for this command
+                {
+                    uint8_t shortID = userboard::getShortID();
+
+                    if(shortID == 0x0){
+                        printf("Userboard is not connected!\n\r");
+                        return false;
+                    }
+
+                    if(shortID != 0xF){
+                        printf("Userboard does not contain an EEPROM!\n\r");
+                        return false;
+                    }
+                }
+
+                if(!userboard::isInitialized()){
+                    printf("Userboard is not initialized! Please initialize it first.\n\r");
                     return false;
                 }
+
+                if (dir == direction::GET) {
+                    if(userboard::getName(printBuffer, 64)){
+                        printf("Userboard name: %s\n\r", printBuffer);
+                    } else {
+                        printf("Userboard name is not set!\n\r");
+                    }
+
+                    // Process get userboard name command
+                } else {
+                    // Terminate with zero character
+                    params[strlen(params) - 2] = '\0';
+                    if(userboard::setName(params, strlen(params) + 1)){
+                        printf("Userboard name set to: %s\n\r", params);
+                    } else {
+                        printf("Could not set the userboard name!\n\r");
+                    }
+
+                    return true;
+                }
+                break;
+
+            case command::USERBOARD_WRITEPROTECT:
+                {
+                    uint8_t shortID = userboard::getShortID();
+
+                    if(shortID == 0x0){
+                        printf("Userboard is not connected!\n\r");
+                        return false;
+                    }
+
+                    if(shortID != 0xF){
+                        printf("Userboard does not contain an EEPROM!\n\r");
+                        return false;
+                    }
+                }
+
+                if(!userboard::isInitialized()){
+                    printf("Userboard is not initialized! Please initialize it first.\n\r");
+                    return false;
+                }
+
+                if (dir == direction::GET) {
+                    printf("Userboard write protect: %s\n\r", userboard::getWriteProtect() ? "true" : "false");
+                } else {
+                    if(params[0] == 't'){
+                        userboard::setWriteProtect(true);
+                        printf("Userboard write protect set to true\n\r");
+                        return true;
+                    } else if (params[0] == 'f'){
+                        userboard::setWriteProtect(false);
+                        printf("Userboard write protect set to false\n\r");
+                        return true;
+                    } else {
+                        printf("Invalid parameter!\n\r");
+                        return false;
+                    }
+                } 
+                
+                break;
+
+            case command::USERBOARD_INIT:
+                {
+                    uint8_t shortID = userboard::getShortID();
+
+                    if(shortID == 0x0){
+                        printf("Userboard is not connected!\n\r");
+                        return false;
+                    }
+
+                    if(shortID != 0xF){
+                        printf("Userboard does not contain an EEPROM!\n\r");
+                        return false;
+                    }
+                }
+
+                if (dir == direction::GET) {
+                    if(userboard::isInitialized()){
+                        printf("Userboard is already initialized.\n\r");
+                        return true;
+                    } else {
+                        printf("Userboard is not initialized.\n\r");
+                        return true;
+                    }
+                } else {
+                    if(userboard::initHeader()){
+                        printf("Userboard initialized successfully!\n\r");
+                        return true;
+                    } else {
+                        printf("Userboard is already initialized!\n\r");
+                        return false;
+                    }
+                } 
                 break;
             case command::USERBOARD_VOLTAGE:
                 if (dir == direction::GET) {
                     // Process get userboard voltage command
                 } else {
                     // Process set userboard voltage command
+                } 
+                break;
+            case command::USERBOARD_REGISTER:
+                if (dir == direction::GET) {
+                    // Process get userboard register command
+                } else {
+                    // Process set userboard register command
                 } 
                 break;
             case command::USERBOARD_TOMEMORY:
@@ -732,10 +886,10 @@ namespace communication {
                 if (dir == direction::GET) {
 
                     if(params[0] == '1'){
-                        printf("FastIC 1 VMON voltage: %.3f [V]\n\r", analog::getFastIC1Voltage());
+                        printf("FastIC 1 VMON voltage: %.3f [V]\n\r", analog::getFastICVoltage(fastic::identifier::FASTIC1));
                         return true;
                     } else if (params[0] == '2'){
-                        printf("FastIC 2 VMON voltage: %.3f [V]\n\r", analog::getFastIC2Voltage());
+                        printf("FastIC 2 VMON voltage: %.3f [V]\n\r", analog::getFastICVoltage(fastic::identifier::FASTIC2));
                         return true;
                     } else {
                         printf("Invalid parameter!\n\r");
@@ -754,10 +908,10 @@ namespace communication {
 
                 if (dir == direction::GET) {
                     if(params[0] == '1'){
-                        printf("FastIC 1 synchronous reset is %s\n\r", fastic::getFastIC1SyncReset() ? "high" : "low");
+                        printf("FastIC 1 synchronous reset is %s\n\r", fastic::getFastICSyncReset(fastic::identifier::FASTIC1) ? "high" : "low");
                         return true;
                     } else if (params[0] == '2'){
-                        printf("FastIC 2 synchronous reset is %s\n\r", fastic::getFastIC2SyncReset() ? "high" : "low");
+                        printf("FastIC 2 synchronous reset is %s\n\r", fastic::getFastICSyncReset(fastic::identifier::FASTIC2) ? "high" : "low");
                         return true;
                     } else {
                         printf("Invalid parameter!\n\r");
@@ -767,11 +921,11 @@ namespace communication {
                 } else {
                     if(params[0] == '1'){
                         if(params[2] == 'h'){
-                            fastic::setFastIC1SyncReset(1);
+                            fastic::setFastICSyncReset(fastic::identifier::FASTIC1, 1);
                             printf("FastIC 1 synchronous reset set to high\n\r");
                             return true;
                         } else if (params[2] == 'l'){
-                            fastic::setFastIC1SyncReset(0);
+                            fastic::setFastICSyncReset(fastic::identifier::FASTIC1, 0);
                             printf("FastIC 1 synchronous reset set to low\n\r");
                             return true;
                         } else {
@@ -780,11 +934,11 @@ namespace communication {
                         }
                     } else if (params[0] == '2'){
                         if(params[2] == 'h'){
-                            fastic::setFastIC2SyncReset(1);
+                            fastic::setFastICSyncReset(fastic::identifier::FASTIC2, 1);
                             printf("FastIC 2 synchronous reset set to high\n\r");
                             return true;
                         } else if (params[2] == 'l'){
-                            fastic::setFastIC2SyncReset(0);
+                            fastic::setFastICSyncReset(fastic::identifier::FASTIC2, 0);
                             printf("FastIC 2 synchronous reset set to low\n\r");
                             return true;
                         } else {
@@ -810,10 +964,10 @@ namespace communication {
             case command::FASTIC_TIME:
                 if (dir == direction::GET) {
                     if(params[0] == '1'){
-                        printf("FastIC 1 time ouptut is %s\n\r", fastic::getFastIC1Time() ? "high" : "low");
+                        printf("FastIC 1 time ouptut is %s\n\r", fastic::getFastICTime(fastic::identifier::FASTIC1) ? "high" : "low");
                         return true;
                     } else if (params[0] == '2'){
-                        printf("FastIC 1 time ouptut is %s\n\r", fastic::getFastIC2Time() ? "high" : "low");
+                        printf("FastIC 1 time ouptut is %s\n\r", fastic::getFastICTime(fastic::identifier::FASTIC2) ? "high" : "low");
                         return true;
                     } else {
                         printf("Invalid parameter!\n\r");
@@ -839,22 +993,26 @@ namespace communication {
                     // Process get userboard status command
                 } else {
                     // Invalid direction for this command
-                    return false;
+                    return true;
                 }
                 break;
             case command::USERBOARD_REGISTER:
                 if (dir == direction::GET) {
                     // Process get userboard register command
                 } else {
+
+                    return true;
                     // Process set userboard register command
                 } 
                 break;
-            case command::USERBOARD_ID:
+            case command::USERBOARD_UID:
                 if (dir == direction::GET) {
                     // Process get userboard ID command
                 } else {
-                    // Invalid direction for this command
+
                     return false;
+                    // Invalid direction for this command
+
                 }
                 break;
             case command::USERBOARD_NAME:
@@ -889,6 +1047,41 @@ namespace communication {
                 }
                 break;
 
+            #ifdef DEBUG_COMMANDS
+
+            case command::HV_PID:
+                if (dir == direction::GET) {
+
+                    float PID[3];
+                    hv::getPID(PID[0], PID[1], PID[2]);
+
+                    memcpy(params, PID, sizeof(float)*3);
+                    *length = sizeof(float)*3;
+
+                    return true;
+
+                } else {
+
+                    float P = std::bit_cast<float>(params[0] | (params[1] << 8) | (params[2] << 16) | (params[3] << 24));
+                    float I = std::bit_cast<float>(params[4] | (params[5] << 8) | (params[6] << 16) | (params[7] << 24));
+                    float D = std::bit_cast<float>(params[8] | (params[9] << 8) | (params[10] << 16) | (params[11] << 24));
+
+                    hv::setPID(P, I, D);
+                    return true;
+                }
+
+                break;
+            
+                /*case command::USERBOARD_REGISTER:
+                    if (dir == direction::GET) {
+                        // Process get userboard register command
+                    } else {
+                        // Process set userboard register command
+                    }
+
+                break;*/
+
+            #endif
             default:
                 // Unknown command
                 return false;
