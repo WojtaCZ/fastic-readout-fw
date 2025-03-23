@@ -68,6 +68,7 @@ set(SOURCES
 	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/typec/usbc.c
 
 	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/portable/synopsys/dwc2/dcd_dwc2.c
+	${CMAKE_SOURCE_DIR}/lib/tinyusb/src/portable/synopsys/dwc2/dwc2_common.c
 
 	
 

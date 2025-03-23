@@ -549,8 +549,32 @@ namespace communication {
                 }
                 break;
             case command::FASTIC_AURORA:
-                userboard::writeByte(0, 0xFF);
-                printf("This command is not implemented yet!\n\r");
+            if (dir == direction::GET) {
+                return true;
+            } else {
+                if(params[0] == '1'){
+                   if(params[2] == 'e'){
+                        //if(tud_vendor_n_mounted(0)){
+                            fastic1::enableStream();
+                        //}
+                        return true;
+                    } else if (params[2] == 'd'){
+                        fastic1::disableStream();
+                        return true;
+                    } else {
+                        printf("Invalid parameter!\n\r");
+                        return false;
+                    }
+                    return false;
+                } else if (params[0] == '2'){
+                    return true;
+                } else {
+                    printf("Invalid parameter!\n\r");
+                    return false;
+                }
+            }
+
+                
                 return false;
                 /*if (dir == direction::GET) {
                     // Process get FastIC aurora command

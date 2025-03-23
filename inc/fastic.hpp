@@ -3,7 +3,14 @@
 
 #include<cstdint>
 
-extern uint8_t fastic1_buffers[2][1024];
+
+namespace fastic1 {
+    bool init();
+    void forceWordMode(uint32_t word);
+    void enableStream();
+    void disableStream();
+}
+
 
 namespace fastic {
 

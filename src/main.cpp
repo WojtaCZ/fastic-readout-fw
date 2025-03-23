@@ -64,6 +64,7 @@ void log2(){
 scheduler keepaliveScheduler = scheduler(200, &keepalive, scheduler::PERIODICAL | scheduler::ACTIVE);
 scheduler logScheduler = scheduler(100, &log2, scheduler::PERIODICAL | scheduler::ACTIVE);
 
+
 bool s = false;
 
 extern "C" void SystemInit(void){
@@ -126,6 +127,12 @@ extern "C" void SystemInit(void){
 float f = 20.0;
 uint32_t i = (uint32_t)f;
 
+bool wren = false;	
+
+static constexpr std::size_t bsize = 1024;
+__attribute__((section(".dma_buffer")))  uint8_t testBuffer[bsize];
+__attribute__((section(".dma_buffer")))  uint8_t buff2[bsize];
+
 extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
@@ -133,6 +140,9 @@ extern "C" int main(void){
 	//setvbuf(stdout, NULL, _IONBF, 0);
 
 	usb::init();
+
+	testBuffer[0] = 0xAB;
+	testBuffer[1] = 0xCD;
 
 	//usart4.enableTx();
 	//usart4.enable();
@@ -144,36 +154,44 @@ extern "C" int main(void){
 	hv::init();
 	//fastic::initInjectionChannels();
 
+	fastic1::init();
+	//
+
 	ledRed.set();
 	uint32_t aval;
 
 	int t1, t2;
-
 	
 	while(1){
 		tud_task();	
 		communication::process();
-		//cdc_task();
-		
 		keepaliveScheduler.dispatch();
 		logScheduler.dispatch();
-		//tud_vendor_n_write(, "Hello", 5);
-		
-		/*if(tud_vendor_mounted()){
-			t1 = stmcpp::clock::systick::getTicks();
-			tud_vendor_n_write(0, fastic1_buffers[0], 1024);
-			t2 = stmcpp::clock::systick::getTicks();
+
+		/*if(tud_vendor_n_write_available(0) > 1024){
+			tud_vendor_n_write(0, testBuffer, 1024);
+			//tud_vendor_n_write_flush(0);
 		}*/
+
 		
 	}
 	
 }
+
 
 // Increment the systick timer
 extern "C" void SysTick_Handler(){
     stmcpp::clock::systick::increment();
 	keepaliveScheduler.increment();
 	logScheduler.increment();
+}
+
+extern "C" void tusb_time_delay_ms_api(uint32_t ms){
+	stmcpp::clock::systick::waitBlocking(stmcpp::units::duration::fromMilliSeconds(ms));
+}
+
+extern "C" uint32_t tusb_time_millis_api(void) {
+	return stmcpp::clock::systick::getDuration().toMilliSeconds();
 }
 
 extern "C" void NMI_Handler(void) {
@@ -188,8 +206,8 @@ extern "C" void NMI_Handler(void) {
 
 extern "C" int _write(int file, char* ptr, int len){
 
-	tud_cdc_write(ptr, len);
-    tud_cdc_write_flush();
+	//tud_cdc_write(ptr, len);
+	//tud_cdc_write_flush();
 
 	/*for(int i = 0; i < len; i++){
 		usart4.transmit(ptr[i]);

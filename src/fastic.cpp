@@ -16,10 +16,132 @@
 
 #include <tinyusb/src/class/vendor/vendor_device.h>
 #include <tinyusb/src/device/usbd.h>
+#include <tinyusb/src/class/cdc/cdc_device.h>
 
-__attribute__((section(".dma_buffer"))) uint8_t fastic1_buffers[2][1024];
 
-uint32_t stat = 0;
+uint32_t cntr = 0;
+
+uint8_t tbuf[1024];
+
+namespace fastic1{
+    using namespace stmcpp::units;
+
+    static constexpr uint32_t bufferSize = 4096;
+    // These buffers need to be placed a memory that is accessible by the DMA
+    /// RAM_D2 is chosen for the best possible performance
+    __attribute__((section(".dma_buffer"))) uint32_t buffers[2][bufferSize];
+
+    stmcpp::gpio::pin<stmcpp::gpio::port::porth, 11>  rst_n    (stmcpp::gpio::mode::output, stmcpp::gpio::otype::openDrain, stmcpp::gpio::pull::noPull);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porth, 12>  rstcnt_n (stmcpp::gpio::mode::output, stmcpp::gpio::otype::openDrain, stmcpp::gpio::pull::noPull);
+    
+    // I2C3 is used for FastIC2
+    stmcpp::gpio::pin<stmcpp::gpio::port::porth, 7> scl      (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::high);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porth, 8> sda      (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::high);
+    
+    // SPI2 is used for FastIC2
+    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 3>  mosi   (stmcpp::gpio::mode::af5);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 1>  clk    (stmcpp::gpio::mode::af5);
+    
+    // ADC3_INP13
+    stmcpp::gpio::pin<stmcpp::gpio::port::porth, 2>  vmon (stmcpp::gpio::mode::analog);
+    
+    // TIME input
+    stmcpp::gpio::pin<stmcpp::gpio::port::porta, 15>  time (stmcpp::gpio::mode::input);
+    
+    // Injection output
+    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 14>  inj (stmcpp::gpio::mode::af1, stmcpp::gpio::otype::pushPull, stmcpp::gpio::speed::veryHigh);
+
+    // Set up the I2C peripheral
+    stmcpp::i2c::i2c<stmcpp::i2c::peripheral::i2c3> i2c (0x3, 0x4, 0x2, 0xF, 0x13);
+    stmcpp::i2c::address address (0x10);
+   
+    // Set up the SPI
+    stmcpp::spi::spi<stmcpp::spi::peripheral::spi2> spi (stmcpp::spi::role::slave, stmcpp::spi::mode::rxSimplex, 8, stmcpp::spi::masterDivider::div2, stmcpp::spi::protocol::motorola, stmcpp::spi::bitOrder::msbFirst, stmcpp::spi::clockPol::idleLow, stmcpp::spi::clockPhase::firstTransition);
+       
+    // Set up the DMA
+    stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel1> dmamux1ch1(stmcpp::dmamux1::request::spi2_rx_dma);
+    stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream1> dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::byte, false, static_cast<uint32_t>(SPI2_BASE) + offsetof(SPI_TypeDef, RXDR), stmcpp::dma::datasize::word, true, (uint32_t)&buffers[0][0], (uint32_t)&buffers[1][0], bufferSize, stmcpp::dma::priority::veryHigh, true, stmcpp::dma::pincOffset::psize, true);
+    
+    bool init() {
+
+        // Check the power domains
+        if(!power::isPowerGood(power::ldo::D1V2)) return false;
+        if(!power::isPowerGood(power::ldo::T1V2)) return false;
+        if(!power::isPowerGood(power::ldo::A1V2)) return false;
+
+        
+        // Deassert reset pin
+        rst_n.set();
+        stmcpp::clock::systick::waitBlocking(1_ms);
+        
+        // Enable I2C
+        i2c.enable();
+ 
+        // Read out the ASIC version to check communication
+        if(i2c.readRegister(0x7f, address) == 0x00) return false;
+
+        // Reduce the serializer clock speed to 40MHz (80Mbps)
+        i2c.writeRegister(0xb9,  (0x02 | (0x04 << 3)) , address);
+        
+        // Configure the DMA
+        dma.setNumberOfData(4*bufferSize);
+        dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
+        NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+
+        // Configure SPI
+        spi.setNumberOfData(4*bufferSize);
+        spi.enableSoftwareSS();
+        spi.enableRxDma();
+        
+        // Enable the DMA (SPI is enabled separately by a command)
+        dma.enable();
+
+        //forceWordMode(0x12345678);
+          // Disable scrambling on the aurora bus
+          fastic1::i2c.writeRegister(0x89, 0x00, fastic1::address);
+
+        return true;
+        //fastic_spi.enable();
+ 
+    }
+
+    void enableStream(){
+        spi.enable();
+    }
+
+    void disableStream(){
+        spi.disable();
+    }
+
+    void forceWordMode(uint32_t word) {
+        fastic1::i2c.writeRegister(0xA6, word & 0xFF, fastic1::address);
+        fastic1::i2c.writeRegister(0xA5, (word >> 8) & 0xFF, fastic1::address);
+        fastic1::i2c.writeRegister(0xA4, (word >> 16) & 0xFF, fastic1::address);
+        fastic1::i2c.writeRegister(0xA3, (word >> 24) & 0xFF, fastic1::address);
+
+        // Force contnuous serializer word
+        fastic1::i2c.writeRegister(0x87, (0x3F | 0x80) , fastic1::address);
+        
+        // Disable scrambling on the aurora bus
+        fastic1::i2c.writeRegister(0x89, 0x00, fastic1::address);
+    }
+
+    extern "C" void DMA_STR1_IRQHandler(){
+        //dma.disable();
+        /*cntr++;
+        fastic1::buffers[((~DMA1_Stream1->CR) & DMA_SxCR_CT_Msk) >> 19][0] = cntr;*/
+        tud_vendor_n_write(0, (uint8_t *)fastic1::buffers[((~DMA1_Stream1->CR) & DMA_SxCR_CT_Msk) >> 19], fastic1::bufferSize*4);
+        //dma.enable();
+        //tud_vendor_n_write_flush(0);
+
+
+        //printf("%d %01d\n\r", stmcpp::clock::systick::getTicks(), ((~DMA1_Stream1->CR) & DMA_SxCR_CT_Msk) >> 19);
+        
+        fastic1::dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
+        NVIC_ClearPendingIRQ(DMA1_Stream1_IRQn);
+    }
+}
+
 namespace fastic {
     using namespace stmcpp::units;
     static constexpr uint16_t fasticBufferSize = 1024;
@@ -34,33 +156,14 @@ namespace fastic {
 
 
     
-    aurora::rx fastic1(&fastic2_buffers[0][0], 1000);
-    aurora::rx fastic2(&fastic2_buffers[0][0], 1000);
+
 
     /**;
      * 
      * FASTIC1 GPIO CONFIGURATION
      * 
      */
-    stmcpp::gpio::pin<stmcpp::gpio::port::porth, 11>  fastic1_rst_n    (stmcpp::gpio::mode::output, stmcpp::gpio::otype::openDrain, stmcpp::gpio::pull::noPull);
-    stmcpp::gpio::pin<stmcpp::gpio::port::porth, 12>  fastic1_rstcnt_n (stmcpp::gpio::mode::output, stmcpp::gpio::otype::openDrain, stmcpp::gpio::pull::noPull);
     
-    // I2C3 is used for FastIC2
-    stmcpp::gpio::pin<stmcpp::gpio::port::porth, 7> fastic1_scl      (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::high);
-    stmcpp::gpio::pin<stmcpp::gpio::port::porth, 8> fastic1_sda      (stmcpp::gpio::mode::af4, stmcpp::gpio::otype::openDrain, stmcpp::gpio::speed::high);
-    
-    // SPI2 is used for FastIC2
-    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 3>  fastic1_mosi   (stmcpp::gpio::mode::af5);
-    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 1>  fastic1_clk    (stmcpp::gpio::mode::af5);
-    
-    // ADC3_INP13
-    stmcpp::gpio::pin<stmcpp::gpio::port::porth, 2>  fastic1_vmon (stmcpp::gpio::mode::analog);
-    
-    // TIME input
-    stmcpp::gpio::pin<stmcpp::gpio::port::porta, 15>  fastic1_time (stmcpp::gpio::mode::input);
-    
-    // Injection output
-    stmcpp::gpio::pin<stmcpp::gpio::port::portb, 14>  fastic1_inj (stmcpp::gpio::mode::af1, stmcpp::gpio::otype::pushPull, stmcpp::gpio::speed::veryHigh);
     
     /**
      * 
@@ -68,17 +171,7 @@ namespace fastic {
      * 
      */
 
-    // Set up the I2C peripheral
-    stmcpp::i2c::i2c<stmcpp::i2c::peripheral::i2c3> fastic1_i2c (0x3, 0x4, 0x2, 0xF, 0x13);
-    stmcpp::i2c::address fastic1_address (0x10);
-
-    // Set up the SPI
-    stmcpp::spi::spi<stmcpp::spi::peripheral::spi2> fastic1_spi (stmcpp::spi::role::slave, stmcpp::spi::mode::rxSimplex, 8, stmcpp::spi::masterDivider::div2, stmcpp::spi::protocol::motorola, stmcpp::spi::bitOrder::msbFirst, stmcpp::spi::clockPol::idleLow, stmcpp::spi::clockPhase::firstTransition);
-    
-    // Set up the DMA
-    stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel1> dmamux1ch1(stmcpp::dmamux1::request::spi2_rx_dma);
-    stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream1> fastic1_dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::byte, false, static_cast<uint32_t>(SPI2_BASE) + offsetof(SPI_TypeDef, RXDR), stmcpp::dma::datasize::byte, true, (uint32_t)&fastic1_buffers[0][0], (uint32_t)&fastic1_buffers[1][0], fasticBufferSize, stmcpp::dma::priority::veryHigh, false, stmcpp::dma::pincOffset::psize, true);
-
+ 
     /**
      * 
      * FASTIC2 GPIO CONFIGURATION
@@ -172,25 +265,21 @@ namespace fastic {
         s = power::isPowerGood(power::ldo::T1V2);
         s = power::isPowerGood(power::ldo::A1V2);*/
 
-        fastic1_rst_n.set();
         fastic2_rst_n.set();
 
         stmcpp::clock::systick::waitBlocking(10_ms);
 
-        fastic1_i2c.enable();
         fastic2_i2c.enable();
 
         // Read out the ASIC version to check communication
         //tmpReg = fastic1_i2c.readRegister(0x7f,fastic1_address);
 
         // Read out the ASIC version to check communication
-        tmpReg = fastic1_i2c.readRegister(0x7f, fastic1_address);
         tmpReg = fastic2_i2c.readRegister(0x7f, fastic2_address);
 
         // Reduce the serializer speed to the minimum
         static constexpr uint8_t speed = 0x04;
         static constexpr uint8_t spReg = 0x02 | (speed << 3); 
-        fastic1_i2c.writeRegister(0xb9, spReg , fastic1_address);
         fastic2_i2c.writeRegister(0xb9, spReg , fastic2_address);
 
       
@@ -202,100 +291,40 @@ namespace fastic {
         fastic1_i2c.writeRegister(0x87, (0x3F | 0x80) , fastic2_address);*/
         
         // Disable scrambling on the aurora bus
-        fastic1_i2c.writeRegister(0x89, 0x00, fastic1_address);
 
 
         //syncClock();
         
-        fastic1_dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
         fastic2_dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
         NVIC_EnableIRQ(DMA1_Stream1_IRQn);
         NVIC_EnableIRQ(DMA1_Stream0_IRQn);
-        fastic1_dma.setNumberOfData(fasticBufferSize);
+
         fastic2_dma.setNumberOfData(2*fasticBufferSize);
-        fastic1_dma.disableDoubleBuffer();
+
         fastic2_dma.disableDoubleBuffer();
 
-        fastic1_spi.setNumberOfData(fasticBufferSize);
+
         fastic2_spi.setNumberOfData(2*fasticBufferSize);
 
-        fastic1_spi.enableSoftwareSS();
+
         fastic2_spi.enableSoftwareSS();
-        fastic1_spi.enableRxDma();
+
         fastic2_spi.enableRxDma();
 
-        fastic1_dma.enable();
+
         fastic2_dma.enable();
-        fastic1_spi.enable();
+
         //fastic2_spi.enable();
 
     }
 
-    void syncClock() {
-
-      /*  fastic2_spi.enableInterrupt(stmcpp::spi::interrupt::overrun);
-        fastic2_spi.enableInterrupt(stmcpp::spi::interrupt::modeFault);
-        fastic2_spi.enableInterrupt(stmcpp::spi::interrupt::duplexPacket);*/
-
-        // Force the FastIC+ to output a known serializer word (a square wave in this case)
-        // Serializer word (MSB to LSB)
-        fastic2_i2c.writeRegister(0xA3, 0x55, fastic2_address);
-        fastic2_i2c.writeRegister(0xA4, 0x55, fastic2_address);
-        fastic2_i2c.writeRegister(0xA5, 0x55, fastic2_address);
-        fastic2_i2c.writeRegister(0xA6, 0x55, fastic2_address);
-        // Force contnuous serializer word
-        fastic2_i2c.writeRegister(0x87, (0x3F | 0x80) , fastic2_address);
-
- 
-       
-        /*ad9510::setChannelDelayCoarse(ad9510::channel::out6, ad9510::rampCaps::c4, ad9510::rampCurrent::u200);
-        ad9510::setChannelDelayFine(ad9510::channel::out6, 10);
-        ad9510::enableChannelDelay(ad9510::channel::out6);
-        stmcpp::clock::systick::waitBlocking(100_ms);*/
-
-        /*fastic2_spi.disable();
-        fastic2_dma.disable();
-
-        fastic2_dma.disableDoubleBuffer();
-        fastic2_dma.setNumberOfData(1);
-
-        fastic2_spi.setNumberOfData(0);
-        fastic2_spi.enableIoSwap();
-        fastic2_spi.enableSoftwareSS();
-        fastic2_spi.enableRxDma();
-
-        fastic2_dma.enable();
-        fastic2_spi.enable();
-
-
-
-        //fastic2_spi.setInternalSs();
-
-        while(true){
-                if(fastic2_buffers[0][0] == 0x12345678){
-                    __ASM volatile("bkpt");
-                    break;
-                } else {
-                    fastic2_spi.disable();
-                    fastic2_spi.enable();
-                }
-        }
-
-        
-
-        fastic2_dma.disable();
-        fastic2_dma.enableDoubleBuffer();
-        fastic2_dma.setNumberOfData(fasticBufferSize);
-        fastic2_dma.enable();
-        */
-    }
 
     // FastIC reset pins are 1V8 logic - this voltage is not sufficient to drive the 3V3 input of the STM to high level, thus it would always report a low level when reading the port
     // The best we can do here is report the state of the ODR, though it is not the actual state of the pin
     
     bool getFastICSyncReset(identifier id) {
         if(id == identifier::FASTIC1) {
-            return fastic1_rstcnt_n.getIntendedState();
+            return fastic1::rstcnt_n.getIntendedState();
         } else {
             return fastic2_rstcnt_n.getIntendedState();
         }
@@ -305,13 +334,13 @@ namespace fastic {
     void setFastICSyncReset(identifier id, uint8_t value) {
         if(value) {
             if(id == identifier::FASTIC1) {
-                fastic1_rstcnt_n.set();
+                fastic1::rstcnt_n.set();
             } else {
                 fastic2_rstcnt_n.set();
             }
         } else {
             if(id == identifier::FASTIC1) {
-                fastic1_rstcnt_n.clear();
+                fastic1::rstcnt_n.clear();
             } else {
                 fastic2_rstcnt_n.clear();
             }
@@ -320,7 +349,7 @@ namespace fastic {
 
     bool getFastICTime(identifier id) {
         if(id == identifier::FASTIC1) {
-            return fastic1_time.read();
+            return fastic1::time.read();
         } else {
             return fastic2_time.read();
         }
@@ -328,7 +357,7 @@ namespace fastic {
 
     uint8_t getFastICRegister(identifier id, uint8_t address) {
         if(id == identifier::FASTIC1) {
-            return fastic1_i2c.readRegister(address, fastic1_address);
+            return fastic1::i2c.readRegister(address, fastic1::address);
         } else {
             return fastic2_i2c.readRegister(address, fastic2_address);
         }
@@ -336,7 +365,7 @@ namespace fastic {
 
     bool setFastICRegister(identifier id, uint8_t address, uint8_t value) {
         if(id == identifier::FASTIC1) {
-            fastic1_i2c.writeRegister(address, value, fastic1_address);
+            fastic1::i2c.writeRegister(address, value, fastic1::address);
         } else {
             fastic2_i2c.writeRegister(address, value, fastic2_address);
         }
@@ -359,30 +388,17 @@ namespace fastic {
     
 }
 
-extern "C" void DMA_STR1_IRQHandler(){
-    fastic::fastic1_dma.disable();
-   //__ASM volatile("bkpt");
-    //fastic::fastic1_dma.disableInterrupt(stmcpp::dma::interrupt::transferComplete);
-    fastic::fastic1_dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
-    NVIC_DisableIRQ(DMA1_Stream1_IRQn);
-    NVIC_ClearPendingIRQ(DMA1_Stream1_IRQn);
-  /*if(!fastic::fastic1.synchronize()){
-		__ASM volatile("bkpt");
-	}else{
-        fastic::slip = fastic::fastic1.getBitSlip();
-	}*/
 
-}
 
 extern "C" void DMA_STR0_IRQHandler(){
-    fastic::fastic2_dma.disable();
+   /* fastic::fastic2_dma.disable();
    __ASM volatile("bkpt");
 
    if(!fastic::fastic2.synchronize()){
 		__ASM volatile("bkpt");
 	}else{
         fastic::slip = fastic::fastic2.getBitSlip();
-	}
+	}*/
         
     /*fastic::fastic2.processBuffer();
     auto packets = fastic::fastic2.getPacketBuffer();
