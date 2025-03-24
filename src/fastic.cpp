@@ -26,7 +26,7 @@ uint8_t tbuf[1024];
 namespace fastic1{
     using namespace stmcpp::units;
 
-    static constexpr uint32_t bufferSize = 4096;
+    static constexpr uint32_t bufferSize = 1024;
     // These buffers need to be placed a memory that is accessible by the DMA
     /// RAM_D2 is chosen for the best possible performance
     __attribute__((section(".dma_buffer"))) uint32_t buffers[2][bufferSize];
@@ -55,12 +55,12 @@ namespace fastic1{
     stmcpp::i2c::i2c<stmcpp::i2c::peripheral::i2c3> i2c (0x3, 0x4, 0x2, 0xF, 0x13);
     stmcpp::i2c::address address (0x10);
    
-    // Set up the SPI
+    // Set up the SPI;
     stmcpp::spi::spi<stmcpp::spi::peripheral::spi2> spi (stmcpp::spi::role::slave, stmcpp::spi::mode::rxSimplex, 8, stmcpp::spi::masterDivider::div2, stmcpp::spi::protocol::motorola, stmcpp::spi::bitOrder::msbFirst, stmcpp::spi::clockPol::idleLow, stmcpp::spi::clockPhase::firstTransition);
        
     // Set up the DMA
     stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel1> dmamux1ch1(stmcpp::dmamux1::request::spi2_rx_dma);
-    stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream1> dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::byte, false, static_cast<uint32_t>(SPI2_BASE) + offsetof(SPI_TypeDef, RXDR), stmcpp::dma::datasize::word, true, (uint32_t)&buffers[0][0], (uint32_t)&buffers[1][0], bufferSize, stmcpp::dma::priority::veryHigh, true, stmcpp::dma::pincOffset::psize, true);
+    stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream1> dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::byte, false, static_cast<uint32_t>(SPI2_BASE) + offsetof(SPI_TypeDef, RXDR), stmcpp::dma::datasize::word, true, (uint32_t)&buffers[0][0], (uint32_t)&buffers[1][0], 4*bufferSize, stmcpp::dma::priority::veryHigh, true, stmcpp::dma::pincOffset::psize, true);
     
     bool init() {
 
@@ -96,9 +96,9 @@ namespace fastic1{
         // Enable the DMA (SPI is enabled separately by a command)
         dma.enable();
 
-        //forceWordMode(0x12345678);
+        forceWordMode(0x12345678);
           // Disable scrambling on the aurora bus
-          fastic1::i2c.writeRegister(0x89, 0x00, fastic1::address);
+        fastic1::i2c.writeRegister(0x89, 0x00, fastic1::address);
 
         return true;
         //fastic_spi.enable();
@@ -127,6 +127,8 @@ namespace fastic1{
     }
 
     extern "C" void DMA_STR1_IRQHandler(){
+        fastic1::dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
+        NVIC_ClearPendingIRQ(DMA1_Stream1_IRQn);
         //dma.disable();
         /*cntr++;
         fastic1::buffers[((~DMA1_Stream1->CR) & DMA_SxCR_CT_Msk) >> 19][0] = cntr;*/
@@ -137,8 +139,7 @@ namespace fastic1{
 
         //printf("%d %01d\n\r", stmcpp::clock::systick::getTicks(), ((~DMA1_Stream1->CR) & DMA_SxCR_CT_Msk) >> 19);
         
-        fastic1::dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
-        NVIC_ClearPendingIRQ(DMA1_Stream1_IRQn);
+
     }
 }
 
