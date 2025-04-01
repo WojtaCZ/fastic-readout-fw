@@ -24,7 +24,6 @@ set(SOURCES
 	${SOURCE_BASE}/readout.cpp
 	${SOURCE_BASE}/clock.cpp
 	${SOURCE_BASE}/si5340.cpp
-	${SOURCE_BASE}/ad9510.cpp
 	${SOURCE_BASE}/usb.cpp
 	${SOURCE_BASE}/fastic.cpp
 	${SOURCE_BASE}/power.cpp

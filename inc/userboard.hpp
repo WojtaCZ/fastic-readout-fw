@@ -10,6 +10,7 @@ namespace userboard {
     // Define the memory structure of the eeprom
     struct memoryHeader {
         uint8_t uid[16];
+        uint32_t writeCycles;
         uint8_t writeProtect : 1;
         uint8_t uidInited : 1;
         uint8_t nameInited : 1;
@@ -17,9 +18,9 @@ namespace userboard {
         uint8_t fastic1Inited : 1;
         uint8_t fastic2Inited : 1;
         uint8_t reservedStatus : 2;
-        uint32_t writeCycles;
         uint8_t reserved[16];
         char name[64];
+        float voltage;
     } __attribute__((packed));
 
     struct memory {

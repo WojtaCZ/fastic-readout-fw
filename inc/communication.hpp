@@ -1,7 +1,6 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
-#include <array>
 #include <cstdint>
 
 #define DEBUG_COMMANDS
@@ -16,7 +15,7 @@ namespace communication {
 
     enum class command {
         READOUT_STATUS,
-        READOUT_ID,
+        READOUT_UID,
         HV_ENABLE,
         HV_CURRENT,
         HV_VOLTAGE,

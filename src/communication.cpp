@@ -37,7 +37,7 @@ namespace communication {
 
     const char* commands[] = {
         "readout status",
-        "readout id",
+        "readout uid",
         "hv enable",
         "hv current",
         "hv voltage",
@@ -164,8 +164,8 @@ namespace communication {
             switch (textCommand[strlen("readout") + 5]){
                 case 's':
                     return command::READOUT_STATUS;
-                case 'i':
-                    return command::READOUT_ID;
+                case 'u':
+                    return command::READOUT_UID;
                 default:
                     return command::UNKNOWN;
             }
@@ -256,7 +256,7 @@ namespace communication {
                     return false;
                 }
                 break;
-            case command::READOUT_ID:
+            case command::READOUT_UID:
 
                 if (dir == direction::GET) {
                     
@@ -875,7 +875,7 @@ namespace communication {
                     return false;
                 }
                 break;
-            case command::READOUT_ID:
+            case command::READOUT_UID:
 
                 if (dir == direction::GET) {
                     

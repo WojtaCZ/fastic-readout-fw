@@ -87,18 +87,19 @@ namespace fastic1{
         dma.setNumberOfData(4*bufferSize);
         dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
         NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+        //NVIC_SetPriority(DMA1_Stream1_IRQn, 1);
 
         // Configure SPI
-        spi.setNumberOfData(4*bufferSize);
+        //spi.setNumberOfData(4*bufferSize);
         spi.enableSoftwareSS();
         spi.enableRxDma();
         
         // Enable the DMA (SPI is enabled separately by a command)
         dma.enable();
 
-        forceWordMode(0x12345678);
+        //forceWordMode(0x12345678);
           // Disable scrambling on the aurora bus
-        fastic1::i2c.writeRegister(0x89, 0x00, fastic1::address);
+        //fastic1::i2c.writeRegister(0x89, 0x00, fastic1::address);
 
         return true;
         //fastic_spi.enable();
@@ -127,12 +128,20 @@ namespace fastic1{
     }
 
     extern "C" void DMA_STR1_IRQHandler(){
-        fastic1::dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
-        NVIC_ClearPendingIRQ(DMA1_Stream1_IRQn);
+       
         //dma.disable();
         /*cntr++;
         fastic1::buffers[((~DMA1_Stream1->CR) & DMA_SxCR_CT_Msk) >> 19][0] = cntr;*/
         tud_vendor_n_write(0, (uint8_t *)fastic1::buffers[((~DMA1_Stream1->CR) & DMA_SxCR_CT_Msk) >> 19], fastic1::bufferSize*4);
+
+        /*if(((~DMA1_Stream1->CR) & DMA_SxCR_CT_Msk) >> 19) {
+            fastic1::spi.disable();
+            fastic1::dma.disable();
+            __ASM volatile("bkpt");
+        }*/
+            
+        fastic1::dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
+        NVIC_ClearPendingIRQ(DMA1_Stream1_IRQn);
         //dma.enable();
         //tud_vendor_n_write_flush(0);
 
