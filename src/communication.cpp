@@ -520,16 +520,27 @@ namespace communication {
                 }
                 break;
             case command::FASTIC_CALPULSE:
-                printf("This command is not implemented yet!\n\r");
-                return false;
-               /* if (dir == direction::GET) {
+               if (dir == direction::GET) {
 
                     return false;
                     // Process set FastIC calibration pulse command
                 } else {
-                    // Invalid direction for this command
-                    return false;
-                }*/
+
+                    if(params[0] == 'e'){
+                        fastic::enableInjection();
+                        printf("Calpulse enabled\n\r");
+                        return true;
+                    } else if (params[0] == 'd'){
+                        fastic::disableInjection();
+                        printf("Calpulse disabled\n\r");
+                        return true;
+                    } else {
+                        printf("Invalid parameter!\n\r");
+                        return false;
+                    }
+
+                    return true;
+                }
                 break;
             case command::FASTIC_TIME:
                 if (dir == direction::GET) {
@@ -1033,14 +1044,15 @@ namespace communication {
             case command::FASTIC_CALPULSE:
                 printf("This command is not implemented yet!\n\r");
                 return false;
-               /* if (dir == direction::GET) {
+                if (dir == direction::GET) {
 
                     return false;
                     // Process set FastIC calibration pulse command
                 } else {
-                    // Invalid direction for this command
+                    
                     return false;
-                }*/
+                    
+                }
                 break;
             case command::FASTIC_TIME:
                 if (dir == direction::GET) {

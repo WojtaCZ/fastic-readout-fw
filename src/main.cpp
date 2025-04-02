@@ -206,8 +206,8 @@ extern "C" void NMI_Handler(void) {
 
 extern "C" int _write(int file, char* ptr, int len){
 
-	//tud_cdc_write(ptr, len);
-	//tud_cdc_write_flush();
+	tud_cdc_write(ptr, len);
+	tud_cdc_write_flush();
 
 	/*for(int i = 0; i < len; i++){
 		usart4.transmit(ptr[i]);

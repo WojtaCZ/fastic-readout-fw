@@ -31,6 +31,9 @@ namespace fastic {
 
     bool registerRequireForce(uint8_t address);
     bool registerIsInRange(uint8_t address); 
+
+    void enableInjection();
+    void disableInjection();
     
 }
 
