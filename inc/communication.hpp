@@ -3,7 +3,6 @@
 
 #include <cstdint>
 
-#define DEBUG_COMMANDS
 
 namespace communication {
 
@@ -19,6 +18,7 @@ namespace communication {
         HV_ENABLE,
         HV_CURRENT,
         HV_VOLTAGE,
+        HV_PID,
         FASTIC_REGISTER,
         FASTIC_VOLTAGE,
         FASTIC_SYNCRESET,
@@ -34,11 +34,6 @@ namespace communication {
         USERBOARD_REGISTER,
         USERBOARD_TOMEMORY,
         USERBOARD_FROMMEMORY,
-
-        #ifdef DEBUG_COMMANDS
-        HV_PID,
-        #endif
-
         UNKNOWN
     };
     
@@ -47,7 +42,7 @@ namespace communication {
     command parseTextCommand(char *command);
     direction parseDirection(char * textCommand);
     bool processTextCommand(command &cmd, direction &dir, char * params);
-    bool processBinaryCommand(command cmd, direction dir, char * params, uint32_t * length);
+    bool processBinaryCommand(command cmd, direction dir, uint16_t index, uint16_t value, char * params, uint32_t * length);
 
     void process();
     void sendStatus();

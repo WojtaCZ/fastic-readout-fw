@@ -102,8 +102,8 @@ namespace analog
         return voltageMultiplier;
     }
 
-    float getFastICVoltage(fastic::identifier id){
-        if(id == fastic::identifier::FASTIC1){
+    float getFastICVoltage(uint8_t id){
+        if(id == 1){
             return adc3_measurements[0] * voltageMultiplier * 2.0/3.0;
         } else {
             return adc2_measurements[0] * voltageMultiplier * 2.0/3.0;

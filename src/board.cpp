@@ -5,6 +5,7 @@
 #include "cmsis_compiler.h"
 
 #include <stmcpp/register.hpp>
+#include <stmcpp/gpio.hpp>
 
 namespace memory{
     void disableCachingD2(){
@@ -89,5 +90,49 @@ namespace rng{
         while(!stmcpp::reg::read(std::ref(RNG->SR), RNG_SR_DRDY_Msk));
 
         return stmcpp::reg::read(std::ref(RNG->DR));
+    }
+}
+
+namespace board {
+    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 5> ledRed(stmcpp::gpio::mode::output);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 6> ledGreen(stmcpp::gpio::mode::output);
+    stmcpp::gpio::pin<stmcpp::gpio::port::porti, 7> ledBlue(stmcpp::gpio::mode::output);
+    stmcpp::gpio::pin<stmcpp::gpio::port::portd, 10> ledUSB(stmcpp::gpio::mode::output);
+
+    status status_ = status::OK;
+    uint8_t processCount = 0;
+
+    status getStatus() {
+        return status_;
+    }
+
+    void setStatus(status s) {
+        status_ = s;
+    }
+
+    void processStatus() {
+        if(status_ == status::OK) {
+            if(processCount % 4 == 0) {
+                ledRed.clear();
+                ledGreen.set();
+                ledBlue.clear();
+            } else {
+                ledRed.clear();
+                ledGreen.clear();
+                ledBlue.clear();
+            }
+        } else if (status_ == status::STREAMING) {
+                ledRed.clear();
+                ledGreen.clear();
+                ledBlue.clear();
+        } else if (status_ == status::ERROR) {
+            ledRed.toggle();
+        }
+
+        processCount++;
+
+        if(processCount == 4) {
+            processCount = 0;
+        }
     }
 }

@@ -25,7 +25,6 @@
 #include "ad9510.hpp"
 #include "usb.hpp"
 #include "fastic.hpp"
-#include "readout.hpp"
 #include "power.hpp"
 #include "board.hpp"
 #include "analog.hpp"
@@ -37,35 +36,14 @@
 #include <tinyusb/src/class/cdc/cdc_device.h>
 #include <tinyusb/src/class/vendor/vendor_device.h>
 
-stmcpp::gpio::pin<stmcpp::gpio::port::porti, 5> ledRed(stmcpp::gpio::mode::output);
-stmcpp::gpio::pin<stmcpp::gpio::port::porti, 6> ledGreen(stmcpp::gpio::mode::output);
-stmcpp::gpio::pin<stmcpp::gpio::port::porti, 7> ledBlue(stmcpp::gpio::mode::output);
-stmcpp::gpio::pin<stmcpp::gpio::port::portd, 10> ledUSB(stmcpp::gpio::mode::output);
+
     
 
 using namespace stmcpp::units;
 
-void keepalive(){
-	ledGreen.toggle();
-}
 
-void log(){
-	//printf("Voltages: FastIC1: %f, FastIC2: %f, Vbat: %f, Temperature: %f\n\r", analog::getFastIC1Voltage(), analog::getFastIC2Voltage(), analog::getVbatVoltage(), analog::getTemperature());
-	
+scheduler statusLedScheduler = scheduler(100, &board::processStatus, scheduler::PERIODICAL | scheduler::ACTIVE);
 
-}
-
-void log2(){
-
-	//communication::sendStatus();
-	//printf("HV: V: %f [V], I: %f [uA]\n\r", hv::getVoltage(), hv::getCurrent());
-}
-
-scheduler keepaliveScheduler = scheduler(200, &keepalive, scheduler::PERIODICAL | scheduler::ACTIVE);
-scheduler logScheduler = scheduler(100, &log2, scheduler::PERIODICAL | scheduler::ACTIVE);
-
-
-bool s = false;
 
 extern "C" void SystemInit(void){
 	// Enable the FPU if needed
@@ -105,6 +83,7 @@ extern "C" void SystemInit(void){
 		stmcpp::clock::peripheral::tim1,
 		stmcpp::clock::peripheral::tim15,
 		stmcpp::clock::peripheral::tim12,
+		stmcpp::clock::peripheral::tim4,
 		stmcpp::clock::peripheral::adc12,
 		stmcpp::clock::peripheral::adc3,
 		stmcpp::clock::peripheral::dac12,
@@ -124,56 +103,26 @@ extern "C" void SystemInit(void){
 	);
 }
 
-float f = 20.0;
-uint32_t i = (uint32_t)f;
-
-bool wren = false;	
-
-static constexpr std::size_t bsize = 1024;
-__attribute__((section(".dma_buffer")))  uint8_t testBuffer[bsize];
-__attribute__((section(".dma_buffer")))  uint8_t buff2[bsize];
-
 extern "C" int main(void){
 	// Enable the systick to run at 1ms
 	stmcpp::clock::systick::enable(480_MHz, 1_ms);
 
-	//setvbuf(stdout, NULL, _IONBF, 0);
-
 	usb::init();
-
-	testBuffer[0] = 0xAB;
-	testBuffer[1] = 0xCD;
-
-	//usart4.enableTx();
-	//usart4.enable();
-
-	
 	si5340::init();
-	fastic::init();
+	fastic::common::init();
 	analog::init();
 	hv::init();
-	//fastic::initInjectionChannels();
+
 
 	fastic1::init();
-	//
+	fastic2::init();
 
-	ledRed.set();
-	uint32_t aval;
-
-	int t1, t2;
+	board::setStatus(board::status::OK);
 	
 	while(1){
 		tud_task();	
 		communication::process();
-		keepaliveScheduler.dispatch();
-		logScheduler.dispatch();
-
-		/*if(tud_vendor_n_write_available(0) > 1024){
-			tud_vendor_n_write(0, testBuffer, 1024);
-			//tud_vendor_n_write_flush(0);
-		}*/
-
-		
+		statusLedScheduler.dispatch();
 	}
 	
 }
@@ -182,8 +131,7 @@ extern "C" int main(void){
 // Increment the systick timer
 extern "C" void SysTick_Handler(){
     stmcpp::clock::systick::increment();
-	keepaliveScheduler.increment();
-	logScheduler.increment();
+	statusLedScheduler.increment();
 }
 
 extern "C" void tusb_time_delay_ms_api(uint32_t ms){
@@ -209,86 +157,69 @@ extern "C" int _write(int file, char* ptr, int len){
 	tud_cdc_write(ptr, len);
 	tud_cdc_write_flush();
 
-	/*for(int i = 0; i < len; i++){
-		usart4.transmit(ptr[i]);
-
-		duration timestamp_ = stmcpp::clock::systick::getDuration();
-
-		while (!usart4.getStatusFlag(stmcpp::usart::flag::txFree)) {
-			if(stmcpp::clock::systick::getDuration() > (timestamp_ + 500_ms)) {
-				stmcpp::error::globalFaultHandler(0,0);
-			}
-		}
-	}*/
-
 	// Implement for printf redirection
 	return 0;
 }
 
 
 void stmcpp::error::globalFaultHandler(std::uint32_t hash, std::uint32_t code) {
+	// Disable interrupts)
+	__disable_irq();
+
+	board::setStatus(board::status::ERROR);
+	board::processStatus();
+
 	//There has been an error caused by the handler, try to figure out what happened
 	switch (hash) {
 		case stmcpp::error::moduleHash("stmcpp::clock"):
 				{
 				stmcpp::clock::error err = static_cast<stmcpp::clock::error>(code);
-				__ASM volatile("bkpt");
 				}
 			break;
 
 		case stmcpp::error::moduleHash("stmcpp::i2c"):
 				{
 				stmcpp::i2c::error err = static_cast<stmcpp::i2c::error>(code);
-				printf("I2C error: %d %d\n\r", err, I2C2->ISR);
-
-				while (true)
-				{
-					tud_task();	
-				}
-				
-				__ASM volatile("bkpt");
 				}
 			break;
 		
 		case stmcpp::error::moduleHash("stmcpp::adc"):
 				{
 				stmcpp::adc::error err = static_cast<stmcpp::adc::error>(code);
-				__ASM volatile("bkpt");
 				}
 			break;
 
 		case stmcpp::error::moduleHash("stmcpp::dac"):
 				{
 				stmcpp::dac::error err = static_cast<stmcpp::dac::error>(code);
-				__ASM volatile("bkpt");
 				}
 			break;
 
 		case stmcpp::error::moduleHash("ad9510"):
 				{
 				ad9510::error err = static_cast<ad9510::error>(code);
-				__ASM volatile("bkpt");
 				}
 			break;
 		
 		case stmcpp::error::moduleHash("si5340"):
 				{
 				si5340::error err = static_cast<si5340::error>(code);
-				__ASM volatile("bkpt");
 				}
 			break;
 		
 		case stmcpp::error::moduleHash("usb"):
 				{
 				usb::error err = static_cast<usb::error>(code);
-				__ASM volatile("bkpt");
 				}
 			break;
 		
 		default:
-			__ASM volatile("bkpt");
 			break;
 	}
+
+	
+
+	while (true) {}
 }
 
 

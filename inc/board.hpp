@@ -13,4 +13,17 @@ namespace rng {
     uint32_t get();
 }
 
+namespace board {
+    enum class status {
+        OK,
+        STREAMING,
+        ERROR
+    };
+
+    void processStatus();
+    status getStatus();
+    void setStatus(status s);
+}
+
+    
 #endif

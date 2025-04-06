@@ -93,16 +93,16 @@ namespace hv {
     static constexpr float hvVoltageMin_ = 0;
 
     // PID controller setup
-    /*static constexpr*/ float P_ = 50;
-    /*static constexpr*/ float I_ = 0.5;
-    /*static constexpr*/ float D_ = 0;
+    /*static constexpr*/ float P_ = 150;
+    /*static constexpr*/ float I_ = 3;
+    /*static constexpr*/ float D_ = 10;
     static float pidSetPoint_ = 0;
     static float measurementOld_ = 0;
     static float integral_ = 0;
 
     void init(){
 
-        // Set up timer 15 used to trigger the ADCs to generate an event at 1000Hz
+        // Set up timer 12 used to trigger the ADCs to generate an event at 1000Hz
         stmcpp::reg::write(std::ref(TIM12->PSC), 240-1);   
         stmcpp::reg::write(std::ref(TIM12->ARR), 1000-1);
 
@@ -194,7 +194,7 @@ namespace hv {
         measurementOld_ = measurement;
 
         // Calculate the output
-        uint16_t output = (float)(P_ * error + I_ * integral_ + D_ * derivative);
+        uint32_t output = (float)(P_ * error + I_ * integral_ + D_ * derivative);
 
         // Limit the output to 12-bit (0 to 4095)
         if (output < 0) {
@@ -209,15 +209,15 @@ namespace hv {
 
 
 extern "C" void DMA_STR2_IRQHandler(){
-    hv::adc1_dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
-    NVIC_ClearPendingIRQ(DMA1_Stream2_IRQn);
-
     // Get the float voltages
     hv::hvVoltage_ = hv::adcMeasurements[1] * analog::getVoltageMultiplier() * 51;
     hv::hvCurrent_ = hv::adcMeasurements[0] * analog::getVoltageMultiplier() * 5000;
 
     // Set the DAC based on the setpoint
     hv::dac1_ch1.setValue(hv::pidProcess(hv::pidSetPoint_, hv::hvVoltage_));
+
+    hv::adc1_dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
+    NVIC_ClearPendingIRQ(DMA1_Stream2_IRQn);
     
 }
 

@@ -21,7 +21,6 @@ set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32H753VITx_FLASH.ld)
 set(SOURCE_BASE ${CMAKE_SOURCE_DIR}/src)
 set(SOURCES
 	${SOURCE_BASE}/main.cpp
-	${SOURCE_BASE}/readout.cpp
 	${SOURCE_BASE}/clock.cpp
 	${SOURCE_BASE}/si5340.cpp
 	${SOURCE_BASE}/usb.cpp

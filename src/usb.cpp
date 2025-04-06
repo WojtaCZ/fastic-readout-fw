@@ -214,7 +214,7 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
         {
           // If the setup is completed, we should provide some data back
           case CONTROL_STAGE_SETUP:
-            communication::processBinaryCommand(static_cast<communication::command>(request->bRequest), communication::direction::GET, messageBuffer, &messageLength);
+            communication::processBinaryCommand(static_cast<communication::command>(request->bRequest), communication::direction::GET, request->wIndex, request->wValue, messageBuffer, &messageLength);
             return tud_control_xfer(rhport, request, (void*) (uintptr_t) messageBuffer, messageLength);
             break;
           
@@ -238,7 +238,7 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
 
           // Nothing to do here
           case CONTROL_STAGE_DATA:
-            return communication::processBinaryCommand(static_cast<communication::command>(request->bRequest), communication::direction::SET, messageBuffer, &messageLength);
+            return communication::processBinaryCommand(static_cast<communication::command>(request->bRequest), communication::direction::SET, request->wIndex, request->wValue, messageBuffer, &messageLength);
             break;
 
           case CONTROL_STAGE_ACK:

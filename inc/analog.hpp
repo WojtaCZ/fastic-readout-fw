@@ -2,14 +2,14 @@
 #define ANALOG_H
 
 #include <stmcpp/error.hpp>
-#include "fastic.hpp"
+#include <cstdint>
 
 namespace analog {
     void init();
     void calibrateVref();
     void calibrateVoltageMultiplier();
     double getVoltageMultiplier();
-    float getFastICVoltage(fastic::identifier id);
+    float getFastICVoltage(uint8_t id);
     float getVbatVoltage();
     float getTemperature();
 } 
