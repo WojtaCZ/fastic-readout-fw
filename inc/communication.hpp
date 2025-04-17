@@ -15,6 +15,7 @@ namespace communication {
     enum class command {
         READOUT_STATUS,
         READOUT_UID,
+        READOUT_FIRMWARE,
         HV_ENABLE,
         HV_CURRENT,
         HV_VOLTAGE,

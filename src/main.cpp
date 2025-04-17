@@ -117,6 +117,8 @@ extern "C" int main(void){
 	fastic1::init();
 	fastic2::init();
 
+	//fastic2::enableForceWordMode(0x12345678);
+
 	board::setStatus(board::status::OK);
 	
 	while(1){

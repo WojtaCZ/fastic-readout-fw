@@ -25,27 +25,34 @@ namespace fastic::common {
         // Enable fastic power
         power::enable1V2();
 
-        // Timer 4 is used as a trigger (generate a 500kHz base clock) 
-        stmcpp::reg::write(std::ref(TIM4->PSC), 240 - 1);   
-        stmcpp::reg::write(std::ref(TIM4->ARR), 1);
+        // Timer 4 is used as a trigger (generate a pulse with frequency of 50us base clock) 
+        stmcpp::reg::write(std::ref(TIM4->PSC), 24 - 1);   
+        stmcpp::reg::write(std::ref(TIM4->ARR), 500-1);
 
         // Load all the registers
         stmcpp::reg::set(std::ref(TIM4->EGR), TIM_EGR_UG | TIM_EGR_TG);
-        //Enable the timer and its output
+        // Enable the timer and configure its output trigger (TRGO)
+        stmcpp::reg::write(std::ref(TIM4->CR2), (0b010 << 4)); // Set TRGO to update event
         stmcpp::reg::set(std::ref(TIM4->CR1), TIM_CR1_CEN);
-
         // Timer 1 is used to inject pulses into the fastic injection channels
         // Slave mode: combined reset & trigger
-        stmcpp::reg::write(std::ref(TIM1->SMCR), (0b1000 << TIM_SMCR_SMS_Pos) | (0b00011 << TIM_SMCR_TS_Pos));
+        // Set Timer 4 as the trigger source (ITR3 for TIM1)
+        //stmcpp::reg::write(std::ref(TIM1->SMCR), (0b1 << 16) | (0b11 << 4) | (0b0011));
+        stmcpp::reg::write(std::ref(TIM1->CR1), 0b1 << TIM_CR1_OPM_Pos);
+        stmcpp::reg::write(std::ref(TIM1->SMCR), (0b1 << 16) | (0b11 << 4));
+
+        stmcpp::reg::write(std::ref(TIM1->PSC), 0);
+        stmcpp::reg::write(std::ref(TIM1->ARR), 48 - 1);
 
         // Select the output compare mode 
-	    stmcpp::reg::set(std::ref(TIM1->CCMR1), TIM_CCMR1_OC2M);
-	    stmcpp::reg::set(std::ref(TIM1->CCMR2), TIM_CCMR2_OC4M);
+	    stmcpp::reg::set(std::ref(TIM1->CCMR1), (0b1 << 24));
+	    stmcpp::reg::set(std::ref(TIM1->CCMR2), (0b1 << 24));
         
         // Set the pulse width - 100ns
-        stmcpp::reg::write(std::ref(TIM1->CCR2), 24 - 1);
-        stmcpp::reg::write(std::ref(TIM1->CCR4), 24 - 1);
-	
+        stmcpp::reg::write(std::ref(TIM1->CCR2), 0);
+        stmcpp::reg::write(std::ref(TIM1->CCR4), 0);
+        
+
         // Load all the registers
         stmcpp::reg::set(std::ref(TIM1->EGR), TIM_EGR_UG);
         //Enable the timer and its output
@@ -116,7 +123,11 @@ namespace fastic1{
         if(!power::isPowerGood(power::ldo::T1V2)) return false;
         if(!power::isPowerGood(power::ldo::A1V2)) return false;
         
+        rst_n.clear();
+        rstcnt_n.set();
+        stmcpp::clock::systick::waitBlocking(1_ms);
         // Deassert reset pin
+        rstcnt_n.clear();
         rst_n.set();
         stmcpp::clock::systick::waitBlocking(1_ms);
         
@@ -133,27 +144,29 @@ namespace fastic1{
         i2c.writeRegister(0xb9, (reg | 0x20) , address);
         
         // Configure the DMA
-        dma.setNumberOfData(4*bufferSize);
         dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
         NVIC_EnableIRQ(DMA1_Stream1_IRQn);
 
         // Configure SPI
         spi.enableSoftwareSS();
         spi.enableRxDma();
-        
-        // Enable the DMA (SPI is enabled separately by a command)
-        dma.enable();
 
         return true;
  
     }
 
     void enableStream(){
+        tud_vendor_n_flush(0);
+        dma.setNumberOfData(4*bufferSize);
+        dma.enable();
         spi.enable();
     }
 
     void disableStream(){
         spi.disable();
+        dma.disable();
+        dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
+        tud_vendor_n_flush(0);
     }
 
     bool isStreaming() {
@@ -269,11 +282,11 @@ namespace fastic2 {
     stmcpp::i2c::address address (0x10);
 
     // Set up the SPI
-    stmcpp::spi::spi<stmcpp::spi::peripheral::spi4> spi (stmcpp::spi::role::slave, stmcpp::spi::mode::rxSimplex, 16, stmcpp::spi::masterDivider::div2, stmcpp::spi::protocol::motorola, stmcpp::spi::bitOrder::lsbFirst, stmcpp::spi::clockPol::idleLow, stmcpp::spi::clockPhase::firstTransition);
+    stmcpp::spi::spi<stmcpp::spi::peripheral::spi4> spi (stmcpp::spi::role::slave, stmcpp::spi::mode::rxSimplex, 8, stmcpp::spi::masterDivider::div2, stmcpp::spi::protocol::motorola, stmcpp::spi::bitOrder::msbFirst, stmcpp::spi::clockPol::idleLow, stmcpp::spi::clockPhase::firstTransition);
     
     // Set up the DMA
     stmcpp::dmamux1::dmamux<stmcpp::dmamux1::channel::channel0> dmamux1ch0(stmcpp::dmamux1::request::spi4_rx_dma);
-    stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream0> dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::byte, false, static_cast<uint32_t>(SPI2_BASE) + offsetof(SPI_TypeDef, RXDR), stmcpp::dma::datasize::word, true, (uint32_t)&buffers[0][0], (uint32_t)&buffers[1][0], 4*bufferSize, stmcpp::dma::priority::veryHigh, true, stmcpp::dma::pincOffset::psize, true);
+    stmcpp::dma::dma<stmcpp::dma::peripheral::dma1, stmcpp::dma::stream::stream0> dma(stmcpp::dma::mode::periph2mem, stmcpp::dma::datasize::byte, false, static_cast<uint32_t>(SPI4_BASE) + offsetof(SPI_TypeDef, RXDR), stmcpp::dma::datasize::word, true, (uint32_t)&buffers[0][0], (uint32_t)&buffers[1][0], 4*bufferSize, stmcpp::dma::priority::veryHigh, true, stmcpp::dma::pincOffset::psize, true);
 
     bool init() {
 
@@ -282,7 +295,12 @@ namespace fastic2 {
         if(!power::isPowerGood(power::ldo::T1V2)) return false;
         if(!power::isPowerGood(power::ldo::A1V2)) return false;
         
+
+        rst_n.clear();
+        rstcnt_n.set();
+        stmcpp::clock::systick::waitBlocking(1_ms);
         // Deassert reset pin
+        rstcnt_n.clear();
         rst_n.set();
         stmcpp::clock::systick::waitBlocking(1_ms);
         
@@ -301,7 +319,7 @@ namespace fastic2 {
         // Configure the DMA
         dma.setNumberOfData(4*bufferSize);
         dma.enableInterrupt(stmcpp::dma::interrupt::transferComplete);
-        NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+        NVIC_EnableIRQ(DMA1_Stream0_IRQn);
 
         // Configure SPI
         spi.enableSoftwareSS();
@@ -315,11 +333,17 @@ namespace fastic2 {
     }
 
     void enableStream(){
+        tud_vendor_n_flush(1);
+        dma.setNumberOfData(4*bufferSize);
+        dma.enable();
         spi.enable();
     }
 
     void disableStream(){
         spi.disable();
+        dma.disable();
+        dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
+        tud_vendor_n_flush(1);
     }
 
     bool isStreaming() {
@@ -396,7 +420,7 @@ namespace fastic2 {
 
     extern "C" void DMA_STR0_IRQHandler(){
 
-        tud_vendor_n_write(0, (uint8_t *)buffers[((~DMA1_Stream0->CR) & DMA_SxCR_CT_Msk) >> 19], bufferSize*4);
+        tud_vendor_n_write(1, (uint8_t *)buffers[((~DMA1_Stream0->CR) & DMA_SxCR_CT_Msk) >> 19], bufferSize*4);
         dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
         NVIC_ClearPendingIRQ(DMA1_Stream0_IRQn);
 

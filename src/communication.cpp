@@ -39,9 +39,11 @@ namespace communication {
     const char* commands[] = {
         "readout status",
         "readout uid",
+        "readout firmware",
         "hv enable",
         "hv current",
         "hv voltage",
+        "hv pid",
         "fastic register",
         "fastic voltage",
         "fastic syncreset",
@@ -167,6 +169,8 @@ namespace communication {
                     return command::READOUT_STATUS;
                 case 'u':
                     return command::READOUT_UID;
+                case 'f':
+                    return command::READOUT_FIRMWARE;
                 default:
                     return command::UNKNOWN;
             }
@@ -261,8 +265,21 @@ namespace communication {
 
                 if (dir == direction::GET) {
                     
-                    sprintf(printBuffer, "Readout UID: %08X%08X%08X\n\rReadout SW:   \n\rCommit: %s\n\r   Branch: %s\n\r   Build date and time: %s %s\n\r",
-                        *(uint32_t *)(UID_BASE), *(uint32_t *)(UID_BASE + 4), *(uint32_t *)(UID_BASE + 8),
+                    sprintf(printBuffer, "Readout UID: %08X%08X%08X\n\r",
+                        *(uint32_t *)(UID_BASE), *(uint32_t *)(UID_BASE + 4), *(uint32_t *)(UID_BASE + 8)
+                    );
+
+                    tud_cdc_write(printBuffer, strlen(printBuffer));
+                    tud_cdc_write_flush();
+                    return true;
+                } else {
+                    printf("This command does not support SET!\n\r");
+                    return false;
+                }
+            
+            case command::READOUT_FIRMWARE:
+                if (dir == direction::GET) {
+                    sprintf(printBuffer, "Readout FW:   \n\r   Commit: %s\n\r   Branch: %s\n\r   Build date and time: %s %s\n\r",
                         git::revision.c_str(),
                         git::branch.c_str(),
                         git::build_date.c_str(),
@@ -272,7 +289,6 @@ namespace communication {
                     tud_cdc_write(printBuffer, strlen(printBuffer));
                     tud_cdc_write_flush();
                     return true;
-                   // printf("Readout SW:\n\r   Commit: %s\r\n   Branch: %s\r\n   Build date and time: %s %s\r\n", git::revision, git::branch, git::build_date, git::build_time);
                 } else {
                     printf("This command does not support SET!\n\r");
                     return false;
@@ -941,6 +957,23 @@ namespace communication {
 
                     return true;
                    
+                } else {
+                    return false;
+                }
+
+                break;
+            
+            case command::READOUT_FIRMWARE:
+                if (dir == direction::GET) {
+                    //params = (char*)malloc(7 + 32 + 4);
+                    memcpy(params, git::revision.c_str(), 7);
+                    memset(params + 7, 0, 33);
+                    memcpy(params + 7, git::branch.c_str(), strlen(git::branch.c_str()));
+                    memcpy(params + 7 + 33, &git::build_timestamp, 4);
+
+                    *length = 7 + 33 + 4; 
+
+                    return true;
                 } else {
                     return false;
                 }
