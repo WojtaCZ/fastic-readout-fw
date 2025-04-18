@@ -1,4 +1,4 @@
-build/
+build/*
 !build/*.bin
 !build/*.elf
 !build/*.hex
