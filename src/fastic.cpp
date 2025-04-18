@@ -27,7 +27,7 @@ namespace fastic::common {
 
         // Timer 4 is used as a trigger (generate a pulse with frequency of 50us base clock) 
         stmcpp::reg::write(std::ref(TIM4->PSC), 24 - 1);   
-        stmcpp::reg::write(std::ref(TIM4->ARR), 500-1);
+        stmcpp::reg::write(std::ref(TIM4->ARR), 1000-1);
 
         // Load all the registers
         stmcpp::reg::set(std::ref(TIM4->EGR), TIM_EGR_UG | TIM_EGR_TG);
