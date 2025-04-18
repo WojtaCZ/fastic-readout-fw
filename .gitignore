@@ -1,5 +1,4 @@
 build/*
-!build/*.bin
 !build/*.elf
 !build/*.hex
 inc/git.hpp
