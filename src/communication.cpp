@@ -1286,21 +1286,40 @@ namespace communication {
                         uint8_t shortID = userboard::getShortID();
                         std::vector<uint8_t> longID;
 
-                        if(shortID == 0x0){
-                            return false;
-                        }
-
                         if(shortID != 0xF){
-                            return false;
+                            uint8_t buffer[] = {
+                                shortID,
+                                0, 0, 0, 0,
+                                0, 0, 0, 0,
+                                0, 0, 0, 0,
+                                0, 0, 0, 0,
+                            };
+        
+                            memcpy(params, buffer, sizeof(uint8_t)*sizeof(buffer));
+                            *length = sizeof(uint8_t)*sizeof(buffer);
+
+                            return true;
                         }
 
+                      
                         if(!userboard::isInitialized()){
-                            return false;
+                            uint8_t buffer[] = {
+                                shortID,
+                                0, 0, 0, 0,
+                                0, 0, 0, 0,
+                                0, 0, 0, 0,
+                                0, 0, 0, 0,
+                            };
+        
+                            memcpy(params, buffer, sizeof(uint8_t)*sizeof(buffer));
+                            *length = sizeof(uint8_t)*sizeof(buffer);
+
+                            return true;
                         }
 
                         if(userboard::getUID(longID)){
 
-                            uint8_t buffer[] = {
+                            uint8_t buffer[17] = {
                                 shortID,
                                 longID.at(0), longID.at(1), longID.at(2), longID.at(3),
                                 longID.at(4), longID.at(5), longID.at(6), longID.at(7),
@@ -1308,11 +1327,22 @@ namespace communication {
                                 longID.at(12), longID.at(13), longID.at(14), longID.at(15)
                             };
         
-                            memcpy(params, buffer, sizeof(uint8_t)*sizeof(buffer));
-                            *length = sizeof(uint8_t)*sizeof(buffer);
+                            memcpy(params, buffer, sizeof(uint8_t)*17);
+                            *length = sizeof(uint8_t)*17;
                             return true;
                         } else {
-                            return false;
+                            uint8_t buffer[] = {
+                                shortID,
+                                0, 0, 0, 0,
+                                0, 0, 0, 0,
+                                0, 0, 0, 0,
+                                0, 0, 0, 0,
+                            };
+        
+                            memcpy(params, buffer, sizeof(uint8_t)*sizeof(buffer));
+                            *length = sizeof(uint8_t)*sizeof(buffer);
+
+                            return true;
                         }
                     }
 
