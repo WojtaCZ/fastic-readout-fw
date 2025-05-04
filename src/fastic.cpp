@@ -156,6 +156,7 @@ namespace fastic1{
     }
 
     void enableStream(){
+        board::setStatus(board::status::STREAMING);
         tud_vendor_n_flush(0);
         dma.setNumberOfData(4*bufferSize);
         dma.enable();
@@ -163,6 +164,7 @@ namespace fastic1{
     }
 
     void disableStream(){
+        board::setStatus(board::status::OK);
         spi.disable();
         dma.disable();
         dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
@@ -224,6 +226,20 @@ namespace fastic1{
         if(value) {
             rstcnt_n.set();
         } else {
+            rstcnt_n.clear();
+        }
+    }
+
+    bool getReset() {
+        return rst_n.getIntendedState();
+    }
+
+    void setReset(bool value) {
+        if(value) {
+            init();
+        } else {
+            disableStream();
+            i2c.disable();
             rstcnt_n.clear();
         }
     }
@@ -333,6 +349,7 @@ namespace fastic2 {
     }
 
     void enableStream(){
+        board::setStatus(board::status::STREAMING);
         tud_vendor_n_flush(1);
         dma.setNumberOfData(4*bufferSize);
         dma.enable();
@@ -340,6 +357,7 @@ namespace fastic2 {
     }
 
     void disableStream(){
+        board::setStatus(board::status::OK);
         spi.disable();
         dma.disable();
         dma.clearInterruptFlag(stmcpp::dma::interrupt::transferComplete);
@@ -401,6 +419,20 @@ namespace fastic2 {
         if(value) {
             rstcnt_n.set();
         } else {
+            rstcnt_n.clear();
+        }
+    }
+
+    bool getReset() {
+        return rst_n.getIntendedState();
+    }
+
+    void setReset(bool value) {
+        if(value) {
+            init();
+        } else {
+            disableStream();
+            i2c.disable();
             rstcnt_n.clear();
         }
     }

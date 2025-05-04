@@ -47,6 +47,7 @@ namespace communication {
         "fastic register",
         "fastic voltage",
         "fastic syncreset",
+        "fastic icreset",
         "fastic calpulse",
         "fastic time",
         "fastic aurora",
@@ -529,6 +530,52 @@ namespace communication {
                         } else if (params[2] == 'l'){
                             fastic2::setSyncReset(false);
                             printf("FastIC 2 synchronous reset set to low\n\r");
+                            return true;
+                        } else {
+                            printf("Invalid parameter!\n\r");
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+                break;
+
+            case command::FASTIC_ICRESET:
+
+                if (dir == direction::GET) {
+                    if(params[0] == '1'){
+                        printf("FastIC 1 reset is %s\n\r", fastic1::getReset() ? "high" : "low");
+                        return true;
+                    } else if (params[0] == '2'){
+                        printf("FastIC 2 synchronous reset is %s\n\r", fastic2::getReset() ? "high" : "low");
+                        return true;
+                    } else {
+                        printf("Invalid parameter!\n\r");
+                        return false;
+                    }
+
+                } else {
+                    if(params[0] == '1'){
+                        if(params[2] == 'h'){
+                            fastic1::setReset(true);
+                            printf("FastIC 1 reset set to high\n\r");
+                            return true;
+                        } else if (params[2] == 'l'){
+                            fastic1::setReset(false);
+                            printf("FastIC 1 reset set to low\n\r");
+                            return true;
+                        } else {
+                            printf("Invalid parameter!\n\r");
+                            return false;
+                        }
+                    } else if (params[0] == '2'){
+                        if(params[2] == 'h'){
+                            fastic2::setReset(true);
+                            printf("FastIC 2 reset set to high\n\r");
+                            return true;
+                        } else if (params[2] == 'l'){
+                            fastic2::setReset(false);
+                            printf("FastIC 2 reset set to low\n\r");
                             return true;
                         } else {
                             printf("Invalid parameter!\n\r");
@@ -1160,6 +1207,34 @@ namespace communication {
                         return true;
                     } else if (index == 2){
                         fastic2::setSyncReset(static_cast<bool>(value));
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+                break;
+
+            case command::FASTIC_ICRESET:
+
+                if (dir == direction::GET) {
+                    if(index == 1){
+                        params[0] = fastic1::getReset();
+                        *length = 1;
+                        return true;
+                    } else if (index == 2){
+                        params[0] = fastic2::getReset();
+                        *length = 1;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    if(index == 1){
+                        fastic1::setReset(static_cast<bool>(value));
+                        return true;
+                    } else if (index == 2){
+                        fastic2::setReset(static_cast<bool>(value));
                         return true;
                     } else {
                         return false;

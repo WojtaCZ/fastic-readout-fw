@@ -108,6 +108,7 @@ namespace board {
 
     void setStatus(status s) {
         status_ = s;
+        processStatus();
     }
 
     void processStatus() {

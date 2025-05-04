@@ -21,6 +21,8 @@ namespace fastic1 {
     bool isInjecting();
     bool getSyncReset();
     void setSyncReset(bool value);
+    bool getReset();
+    void setReset(bool value);
     bool getTime();
     uint8_t getRegister(uint8_t regAddress);
     bool setRegister(uint8_t regAddress, uint8_t value);
@@ -40,6 +42,8 @@ namespace fastic2 {
     bool isInjecting();
     bool getSyncReset();
     void setSyncReset(bool value);
+    bool getReset();
+    void setReset(bool value);
     bool getTime();
     uint8_t getRegister(uint8_t regAddress); 
     bool setRegister(uint8_t regAddress, uint8_t value);

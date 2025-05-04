@@ -23,6 +23,7 @@ namespace communication {
         FASTIC_REGISTER,
         FASTIC_VOLTAGE,
         FASTIC_SYNCRESET,
+        FASTIC_ICRESET,
         FASTIC_CALPULSE,
         FASTIC_TIME,
         FASTIC_AURORA,
