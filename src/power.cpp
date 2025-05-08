@@ -93,8 +93,8 @@ namespace hv {
     static constexpr float hvVoltageMin_ = 0;
 
     // PID controller setup
-    /*static constexpr*/ float P_ = 100;
-    /*static constexpr*/ float I_ = 2;
+    /*static constexpr*/ float P_ = 10;
+    /*static constexpr*/ float I_ = 0.8;
     /*static constexpr*/ float D_ = 0;
     static float pidSetPoint_ = 0;
     static float measurementOld_ = 0;
