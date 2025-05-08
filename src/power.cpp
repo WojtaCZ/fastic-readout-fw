@@ -180,6 +180,8 @@ namespace hv {
         // Update the setpoint
         pidSetPoint_ = value;
 
+        integral_ = 0;
+
         return true;
     }
 
