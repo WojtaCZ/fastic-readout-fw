@@ -4,7 +4,7 @@ set(CMAKE_COLOR_MAKEFILE FALSE)
 set(CMAKE_COLOR_DIAGNOSTICS TRUE)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.10.0)
 
 # Set the project name, otherwise it is based on the root folder name
 #set (PROJECT "yournamehere")
